@@ -3,12 +3,10 @@
   import { browser } from '$app/environment';
 
   let mermaid;
-  let diagramCode = $state(`sequenceDiagram
-    participant Client
-    participant Server
-
-    Client->>Server: Request
-    Server->>Client: Response`);
+  let diagramCode = $state(`stateDiagram-v2
+    [*] --> Idle
+    Idle --> Active
+    Active --> [*]`);
 
   let savedDiagrams = $state([]);
   let currentName = $state('');
@@ -17,323 +15,297 @@
 
   const examples = [
     {
-      name: 'Basic Request-Response',
-      description: 'Simplest sequence diagram - client-server interaction',
+      name: 'Simple Toggle',
+      description: 'Basic on/off state - simplest state machine',
       complexity: 1,
-      code: `sequenceDiagram
-    participant Client
-    participant Server
-
-    Client->>Server: GET /api/users
-    Server->>Client: 200 OK (user list)`
+      code: `stateDiagram-v2
+    [*] --> Off
+    Off --> On: Turn On
+    On --> Off: Turn Off
+    Off --> [*]`
     },
     {
       name: 'User Authentication',
-      description: 'Classic login flow with validation',
+      description: 'Login/logout flow with session states',
       complexity: 2,
-      code: `sequenceDiagram
-    participant User
-    participant Frontend
-    participant Backend
-    participant Database
-
-    User->>Frontend: Enter credentials
-    Frontend->>Backend: POST /login
-    Backend->>Database: Query user
-    Database->>Backend: User data
-    Backend->>Backend: Verify password
-    Backend->>Frontend: JWT Token
-    Frontend->>User: Redirect to dashboard`
+      code: `stateDiagram-v2
+    [*] --> LoggedOut
+    LoggedOut --> LoggingIn: Submit credentials
+    LoggingIn --> LoggedIn: Success
+    LoggingIn --> LoggedOut: Failed
+    LoggedIn --> LoggedOut: Logout
+    LoggedOut --> [*]`
     },
     {
-      name: 'API with Error Handling',
-      description: 'Using alt blocks for conditional flows',
+      name: 'Order Lifecycle',
+      description: 'E-commerce order states with multiple paths',
       complexity: 3,
-      code: `sequenceDiagram
-    participant Client
-    participant API
-    participant Database
+      code: `stateDiagram-v2
+    [*] --> Pending
+    Pending --> Confirmed: Payment received
+    Pending --> Cancelled: Timeout / User cancels
 
-    Client->>API: POST /create-user
-    API->>API: Validate input
+    Confirmed --> Shipped: Dispatched
+    Shipped --> Delivered: Signed
 
-    alt Input valid
-        API->>Database: INSERT user
-        Database->>API: Success
-        API->>Client: 201 Created
-    else Input invalid
-        API->>Client: 400 Bad Request
-    end
+    Delivered --> Returned: Customer returns
+    Returned --> Refunded: Processed
 
-    alt Database error
-        Database->>API: Connection failed
-        API->>Client: 503 Service Unavailable
-    end`
+    Cancelled --> [*]
+    Refunded --> [*]
+    Delivered --> [*]`
     },
     {
-      name: 'Async Job Processing',
-      description: 'Background tasks with callbacks',
+      name: 'Document Approval Workflow',
+      description: 'Multi-stage approval with rejections',
       complexity: 4,
-      code: `sequenceDiagram
-    participant User
-    participant API
-    participant Queue
-    participant Worker
-    participant Storage
-    participant Webhook
+      code: `stateDiagram-v2
+    [*] --> Draft
+    Draft --> Submitted: Author submits
 
-    User->>API: Upload large file
-    API->>Queue: Enqueue job
-    API->>User: 202 Accepted (job_id)
+    Submitted --> UnderReview: Manager picks up
+    UnderReview --> Approved: Manager approves
+    UnderReview --> Rejected: Manager rejects
 
-    Note over Queue,Worker: Async processing
+    Rejected --> Draft: Author revises
 
-    Queue->>Worker: Dequeue job
-    activate Worker
-    Worker->>Storage: Process & store
-    Storage->>Worker: URL
-    Worker->>Webhook: POST completion
-    deactivate Worker
+    Approved --> Published: System publishes
+    Published --> Archived: After 1 year
 
-    Webhook->>User: Email notification`
+    Archived --> [*]
+
+    note right of UnderReview
+        Manager has 48hrs
+        to review
+    end note`
     },
     {
-      name: 'Microservices Communication',
-      description: 'Multiple services with orchestration',
+      name: 'Multi-Step Form Wizard',
+      description: 'Complex form with validation and progress',
       complexity: 5,
-      code: `sequenceDiagram
-    participant Client
-    participant Gateway
-    participant Auth
-    participant UserService
-    participant OrderService
-    participant PaymentService
-    participant NotificationService
+      code: `stateDiagram-v2
+    [*] --> PersonalInfo
 
-    Client->>Gateway: GET /my-orders
-    Gateway->>Auth: Validate token
-    Auth->>Gateway: User ID
+    PersonalInfo --> AddressInfo: Next (valid)
+    PersonalInfo --> PersonalInfo: Validation error
 
-    par Fetch user data
-        Gateway->>UserService: GET /users/{id}
-        UserService->>Gateway: User profile
-    and Fetch orders
-        Gateway->>OrderService: GET /orders?user={id}
-        OrderService->>Gateway: Order list
-    end
+    AddressInfo --> PersonalInfo: Back
+    AddressInfo --> PaymentInfo: Next (valid)
+    AddressInfo --> AddressInfo: Validation error
 
-    Gateway->>Client: Combined response
+    PaymentInfo --> AddressInfo: Back
+    PaymentInfo --> Review: Next (valid)
+    PaymentInfo --> PaymentInfo: Validation error
 
-    Note over Gateway: API Gateway pattern<br/>Parallel requests for performance`
+    Review --> PaymentInfo: Edit payment
+    Review --> AddressInfo: Edit address
+    Review --> PersonalInfo: Edit personal
+    Review --> Submitting: Confirm
+
+    Submitting --> Success: API success
+    Submitting --> Error: API failure
+
+    Error --> Review: Try again
+
+    Success --> [*]
+
+    note right of Review
+        User can navigate
+        back to any step
+    end note`
     },
     {
-      name: 'Event Sourcing Pattern',
-      description: 'CQRS with event store',
+      name: 'Shopping Cart States',
+      description: 'Cart lifecycle with composite states',
       complexity: 6,
-      code: `sequenceDiagram
-    participant Client
-    participant CommandAPI
-    participant EventStore
-    participant EventBus
-    participant ReadModel
-    participant QueryAPI
+      code: `stateDiagram-v2
+    [*] --> Empty
+    Empty --> Active: Add item
 
-    Note over CommandAPI,EventStore: Write Side (Commands)
+    state Active {
+        [*] --> Browsing
+        Browsing --> Calculating: Item added/removed
+        Calculating --> Browsing: Recalculated
+    }
 
-    Client->>CommandAPI: CreateOrder command
-    CommandAPI->>CommandAPI: Validate business rules
-    CommandAPI->>EventStore: Append OrderCreated event
-    EventStore->>EventBus: Publish event
+    Active --> Empty: Clear cart
+    Active --> CheckingOut: Proceed to checkout
 
-    Note over EventBus,ReadModel: Event Processing
+    state CheckingOut {
+        [*] --> ValidatingInventory
+        ValidatingInventory --> ProcessingPayment: Available
+        ValidatingInventory --> InventoryError: Out of stock
+        ProcessingPayment --> PaymentSuccess: Charged
+        ProcessingPayment --> PaymentFailed: Declined
+    }
 
-    EventBus->>ReadModel: OrderCreated event
-    ReadModel->>ReadModel: Update projection
+    CheckingOut --> Active: Back to cart
 
-    Note over ReadModel,QueryAPI: Read Side (Queries)
+    state CheckingOut {
+        InventoryError --> [*]
+        PaymentFailed --> [*]
+        PaymentSuccess --> [*]
+    }
 
-    Client->>QueryAPI: GET /orders/{id}
-    QueryAPI->>ReadModel: Query projection
-    ReadModel->>QueryAPI: Order view
-    QueryAPI->>Client: Order details
+    CheckingOut --> Completed: Payment success
+    CheckingOut --> Active: Payment failed
 
-    Note over CommandAPI,QueryAPI: CQRS: Separate read/write models`
+    Completed --> [*]`
     },
     {
-      name: 'Saga Pattern (Distributed Transaction)',
-      description: 'Compensating transactions for failures',
+      name: 'CI/CD Pipeline States',
+      description: 'Deployment pipeline with parallel stages',
       complexity: 7,
-      code: `sequenceDiagram
-    participant Client
-    participant Orchestrator
-    participant OrderService
-    participant PaymentService
-    participant InventoryService
-    participant ShippingService
+      code: `stateDiagram-v2
+    [*] --> Idle
+    Idle --> Running: Git push
 
-    Client->>Orchestrator: Place order
+    state Running {
+        [*] --> Building
+        Building --> Testing: Build success
+        Building --> Failed: Build error
 
-    Note over Orchestrator: Saga begins
+        state Testing {
+            [*] --> UnitTests
+            UnitTests --> IntegrationTests
+            IntegrationTests --> E2ETests
+        }
 
-    Orchestrator->>OrderService: Create order
-    activate OrderService
-    OrderService->>Orchestrator: Order created
-    deactivate OrderService
+        Testing --> Deploying: All tests pass
+        Testing --> Failed: Test failure
 
-    Orchestrator->>PaymentService: Charge payment
-    activate PaymentService
-    PaymentService->>Orchestrator: Payment successful
-    deactivate PaymentService
+        state Deploying {
+            [*] --> DeployStaging
+            DeployStaging --> SmokeTests
+            SmokeTests --> DeployProduction
+        }
 
-    Orchestrator->>InventoryService: Reserve items
-    activate InventoryService
-    InventoryService->>Orchestrator: ❌ Out of stock
-    deactivate InventoryService
+        Deploying --> Success: Deploy complete
+        Deploying --> Failed: Deploy error
+    }
 
-    Note over Orchestrator: Compensation required!
+    Running --> Idle: Success
+    Running --> Idle: Failed (after notification)
 
-    Orchestrator->>PaymentService: Refund payment
-    activate PaymentService
-    PaymentService->>Orchestrator: Refunded
-    deactivate PaymentService
-
-    Orchestrator->>OrderService: Cancel order
-    activate OrderService
-    OrderService->>Orchestrator: Cancelled
-    deactivate OrderService
-
-    Orchestrator->>Client: Order failed (inventory)
-
-    Note over Orchestrator: Saga pattern ensures<br/>distributed consistency`
+    note right of Deploying
+        Auto-rollback on failure
+    end note`
     },
     {
-      name: 'E-commerce Checkout Flow',
-      description: 'Real-world complex scenario with multiple systems',
+      name: 'Task Queue with Retries',
+      description: 'Job processing with exponential backoff',
       complexity: 8,
-      code: `sequenceDiagram
-    participant User
-    participant Frontend
-    participant Gateway
-    participant CartService
-    participant InventoryService
-    participant PricingService
-    participant PaymentService
-    participant OrderService
-    participant EmailService
-    participant Analytics
+      code: `stateDiagram-v2
+    [*] --> Queued
 
-    User->>Frontend: Click "Checkout"
-    Frontend->>Gateway: POST /checkout/initiate
+    Queued --> Processing: Worker picks up
 
-    Gateway->>CartService: GET /cart/{userId}
-    CartService->>Gateway: Cart items
+    state Processing {
+        [*] --> Executing
+        Executing --> Validating: Execution complete
+        Validating --> Success: Valid result
+        Validating --> Retry: Invalid result
+    }
 
-    par Validate inventory
-        Gateway->>InventoryService: Check availability
-        InventoryService->>Gateway: ✓ In stock
-    and Calculate pricing
-        Gateway->>PricingService: Calculate total
-        PricingService->>Gateway: Total + tax
-    end
+    Processing --> Completed: Success
+    Processing --> Retrying: Needs retry
 
-    Gateway->>Frontend: Checkout summary
-    Frontend->>User: Show payment form
+    state Retrying {
+        [*] --> WaitingRetry1
+        WaitingRetry1 --> Processing: After 10s
 
-    User->>Frontend: Submit payment
-    Frontend->>Gateway: POST /checkout/complete
+        Processing --> WaitingRetry2: Fail (attempt 2)
+        WaitingRetry2 --> Processing: After 30s
 
-    Gateway->>PaymentService: Charge card
-    activate PaymentService
+        Processing --> WaitingRetry3: Fail (attempt 3)
+        WaitingRetry3 --> Processing: After 90s
 
-    alt Payment successful
-        PaymentService->>Gateway: Transaction ID
+        Processing --> Failed: Max retries
+    }
 
-        Gateway->>OrderService: Create order
-        OrderService->>InventoryService: Reserve items
-        OrderService->>Gateway: Order confirmed
+    Retrying --> Completed: Eventually succeeds
+    Retrying --> DeadLetter: Max retries exceeded
 
-        par Send notifications
-            Gateway->>EmailService: Send confirmation
-            EmailService->>User: Order email
-        and Track analytics
-            Gateway->>Analytics: Track conversion
-        end
+    Completed --> [*]
 
-        Gateway->>CartService: Clear cart
-        Gateway->>Frontend: Success (order_id)
-        Frontend->>User: Show confirmation
+    state DeadLetter {
+        [*] --> ManualReview
+        ManualReview --> Queued: Admin re-queues
+        ManualReview --> Discarded: Admin discards
+    }
 
-    else Payment failed
-        PaymentService->>Gateway: ❌ Card declined
-        Gateway->>Frontend: Payment error
-        Frontend->>User: Try different card
-    end
+    DeadLetter --> [*]
 
-    deactivate PaymentService
-
-    Note over User,Analytics: Full e-commerce checkout<br/>with error handling & analytics`
+    note right of Retrying
+        Exponential backoff:
+        10s → 30s → 90s
+    end note`
     },
     {
-      name: 'Work Queue Operations Dashboard',
-      description: 'Monitoring, health checks, and task management',
-      complexity: 5,
-      code: `sequenceDiagram
-    participant Dashboard
-    participant QueueManager
-    participant Queue
-    participant Worker1
-    participant Worker2
-    participant DeadLetterQueue
-    participant Alerting
+      name: 'Saga Pattern Orchestration',
+      description: 'Distributed transaction with compensations',
+      complexity: 9,
+      code: `stateDiagram-v2
+    [*] --> SagaStarted
 
-    Note over Dashboard,Alerting: Operational Monitoring System
+    SagaStarted --> OrderCreated: Create order
 
-    Dashboard->>QueueManager: GET /queue/status
+    state OrderCreated {
+        [*] --> ReservingInventory
+        ReservingInventory --> InventoryReserved: Success
+        ReservingInventory --> CompensateOrder: Failure
+    }
 
-    QueueManager->>Queue: Count pending
-    Queue->>QueueManager: 47 tasks
+    OrderCreated --> ProcessingPayment: Inventory OK
+    OrderCreated --> Compensating: Inventory fail
 
-    QueueManager->>Worker1: Health check
-    Worker1->>QueueManager: ✓ Healthy
+    state ProcessingPayment {
+        [*] --> ChargingCard
+        ChargingCard --> PaymentCompleted: Success
+        ChargingCard --> CompensateInventory: Failure
+    }
 
-    QueueManager->>Worker2: Health check
-    Worker2->>QueueManager: ❌ Unresponsive
+    ProcessingPayment --> ArrangingShipping: Payment OK
+    ProcessingPayment --> Compensating: Payment fail
 
-    QueueManager->>Dashboard: Status report
+    state ArrangingShipping {
+        [*] --> CreatingShipment
+        CreatingShipment --> ShipmentScheduled: Success
+        CreatingShipment --> CompensatePayment: Failure
+    }
 
-    Note over Worker2,Alerting: Worker failure detected
+    ArrangingShipping --> SagaCompleted: Shipping OK
+    ArrangingShipping --> Compensating: Shipping fail
 
-    QueueManager->>Alerting: Worker2 down
-    Alerting->>Dashboard: Alert notification
+    state Compensating {
+        [*] --> RollingBack
 
-    Dashboard->>QueueManager: Restart Worker2
-    QueueManager->>Worker2: Restart command
-    Worker2->>QueueManager: ✓ Restarted
+        state RollingBack {
+            [*] --> RefundPayment
+            RefundPayment --> ReleaseInventory
+            ReleaseInventory --> CancelOrder
+        }
 
-    Note over Queue,Worker1: Normal processing
+        RollingBack --> CompensationComplete
+    }
 
-    Queue->>Worker1: Dequeue task
-    activate Worker1
-    Worker1->>Worker1: Process task
+    Compensating --> SagaFailed: Compensated
 
-    alt Task successful
-        Worker1->>Queue: ACK
-    else Task failed (retry)
-        Worker1->>Queue: NACK + retry
-        Queue->>Queue: Re-enqueue
-    else Max retries exceeded
-        Worker1->>DeadLetterQueue: Move to DLQ
-        DeadLetterQueue->>Alerting: Failed task alert
-    end
-    deactivate Worker1
+    SagaCompleted --> [*]
+    SagaFailed --> [*]
 
-    Dashboard->>DeadLetterQueue: GET /failed-tasks
-    DeadLetterQueue->>Dashboard: Failed task list
+    note right of Compensating
+        Each step has
+        compensating transaction:
+        - Refund payment
+        - Release inventory
+        - Cancel order
+    end note
 
-    Dashboard->>QueueManager: Retry task manually
-    QueueManager->>Queue: Re-enqueue task
-
-    Note over Dashboard,Alerting: Real-time queue operations<br/>with failure recovery`
+    note left of SagaCompleted
+        All steps succeeded
+        Order fully processed
+    end note`
     }
   ];
 
@@ -359,7 +331,7 @@
         securityLevel: 'loose',
       });
 
-      const saved = localStorage.getItem('mermaid-sequence-diagrams');
+      const saved = localStorage.getItem('mermaid-state-diagrams');
       if (saved) savedDiagrams = JSON.parse(saved);
 
       renderDiagram();
@@ -396,7 +368,7 @@
     };
 
     savedDiagrams = [...savedDiagrams, newDiagram];
-    localStorage.setItem('mermaid-sequence-diagrams', JSON.stringify(savedDiagrams));
+    localStorage.setItem('mermaid-state-diagrams', JSON.stringify(savedDiagrams));
     currentName = '';
   }
 
@@ -407,7 +379,7 @@
 
   function deleteDiagram(index) {
     savedDiagrams = savedDiagrams.filter((_, i) => i !== index);
-    localStorage.setItem('mermaid-sequence-diagrams', JSON.stringify(savedDiagrams));
+    localStorage.setItem('mermaid-state-diagrams', JSON.stringify(savedDiagrams));
   }
 
   function exportSVG() {
@@ -418,7 +390,7 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${currentName || 'sequence-diagram'}.svg`;
+    a.download = `${currentName || 'state-diagram'}.svg`;
     a.click();
   }
 
@@ -436,10 +408,10 @@
         <a href="/" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all">
           🏠 General
         </a>
-        <a href="/sequence" class="px-4 py-2 rounded-lg bg-white/20 text-white font-medium border-2 border-white/40">
+        <a href="/sequence" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all">
           🔄 Sequence
         </a>
-        <a href="/state" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all">
+        <a href="/state" class="px-4 py-2 rounded-lg bg-white/20 text-white font-medium border-2 border-white/40">
           🎯 State
         </a>
         <a href="/journey" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all">
@@ -454,8 +426,8 @@
     <div class="glass-enhanced rounded-2xl p-6 mb-6">
       <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
-          <h1 class="text-3xl font-bold text-white text-shadow mb-2">Sequence Diagram Mastery</h1>
-          <p class="text-white/90 text-sm">Learn interaction patterns from basic to advanced</p>
+          <h1 class="text-3xl font-bold text-white text-shadow mb-2">State Diagram Mastery</h1>
+          <p class="text-white/90 text-sm">Learn state machines from simple toggles to distributed sagas</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
@@ -507,14 +479,14 @@
         <div class="px-6 py-4 bg-white/10 border-b border-white/20 flex items-center justify-between">
           <h3 class="text-sm font-semibold text-white uppercase tracking-wide">Editor</h3>
           <span class="px-3 py-1 rounded-full bg-gradient-to-r from-primary-500 to-primary-700 text-white text-xs font-medium">
-            Sequence Diagram
+            State Diagram
           </span>
         </div>
         <textarea
           bind:value={diagramCode}
           oninput={renderDiagram}
           spellcheck="false"
-          placeholder="sequenceDiagram&#10;    participant A&#10;    participant B&#10;    A->>B: Message"
+          placeholder="stateDiagram-v2&#10;    [*] --> StateA&#10;    StateA --> StateB&#10;    StateB --> [*]"
           class="flex-1 min-h-[500px] p-6 bg-white/5 text-white font-mono text-sm leading-relaxed focus:outline-none placeholder-white/40 resize-none"
         />
       </div>
@@ -536,8 +508,8 @@
     <div class="glass-enhanced rounded-2xl p-6 mt-6">
       <div class="flex items-center justify-between mb-4">
         <div>
-          <h2 class="text-lg font-semibold text-white">Architecture Patterns</h2>
-          <p class="text-white/60 text-sm mt-1">Progressive complexity from request-response to distributed systems</p>
+          <h2 class="text-lg font-semibold text-white">State Machine Patterns</h2>
+          <p class="text-white/60 text-sm mt-1">Progressive complexity from toggles to distributed transactions</p>
         </div>
         <div class="flex items-center gap-3">
           <span class="px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
@@ -597,11 +569,11 @@
             </div>
             <p class="text-white/60 text-xs mt-2">
               {#if examples[currentExampleIndex].complexity <= 2}
-                Beginner - Basic interactions
+                Beginner - Basic state transitions
               {:else if examples[currentExampleIndex].complexity <= 4}
-                Intermediate - Error handling & async
+                Intermediate - Workflows & validation
               {:else if examples[currentExampleIndex].complexity <= 6}
-                Advanced - Microservices & patterns
+                Advanced - Composite states
               {:else}
                 Expert - Distributed systems
               {/if}
@@ -614,7 +586,7 @@
           <div class="px-4 py-3 bg-white/5 border-b border-white/20 flex items-center justify-between">
             <span class="text-white/80 text-xs font-mono">Preview Code</span>
             <span class="text-white/60 text-xs">
-              {diagramCode.split('\n').length} lines
+              {examples[currentExampleIndex].code.split('\n').length} lines
             </span>
           </div>
           <pre class="p-4 overflow-auto max-h-64 text-white/90 text-sm font-mono leading-relaxed">{examples[currentExampleIndex].code}</pre>
@@ -626,7 +598,7 @@
     {#if savedDiagrams.length > 0}
       <div class="glass-enhanced rounded-2xl p-6 mt-6">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold text-white">Saved Sequence Diagrams</h2>
+          <h2 class="text-lg font-semibold text-white">Saved State Diagrams</h2>
           <span class="px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
             {savedDiagrams.length}
           </span>
