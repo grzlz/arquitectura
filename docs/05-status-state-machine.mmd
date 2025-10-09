@@ -1,0 +1,10 @@
+stateDiagram-v2
+    [*] --> SinAsignar: Avalúo created
+    SinAsignar --> AsignadoColegio: Manager assigns
+    AsignadoColegio --> AsignadoPerito: Colegio rep assigns
+    AsignadoPerito --> EnProgreso: Perito accepts
+    EnProgreso --> EnRevision: Work submitted
+    EnRevision --> Observaciones: Needs changes
+    Observaciones --> EnProgreso: Perito fixes
+    EnRevision --> Completado: Approved
+    Completado --> [*]

@@ -1,0 +1,23 @@
+graph TD
+    A[IAValua Routes] --> B[/colegios]
+    A --> C[/mi-trabajo]
+    A --> D[/analytics]
+
+    B --> E[Colegio List]
+    B --> F[Colegio Dashboard]
+    B --> G[Perito Management]
+
+    H[Shared Services] --> I[colegiosService.js]
+    H --> J[crudService.js]
+    H --> K[analyticsService.js]
+
+    E -.uses.-> I
+    F -.uses.-> I
+    G -.uses.-> I
+
+    L[Components] --> M[ColegioCard]
+    L --> N[PeritoAssigner]
+    L --> O[WorkloadIndicator]
+
+    F -.renders.-> N
+    F -.renders.-> O

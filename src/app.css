@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import 'tailwindcss';
+
+@theme {
+	--font-primary: 'Roboto', sans-serif;
+    --color-primary-50: oklch(0.977 0.013 236.62);
+    --color-primary-100: oklch(0.951 0.026 236.824);
+    --color-primary-200: oklch(0.901 0.058 230.902);
+    --color-primary-300: oklch(0.828 0.111 230.318);
+    --color-primary-400: oklch(0.746 0.16 232.661);
+    --color-primary-500: oklch(0.685 0.169 237.323);
+    --color-primary-600: oklch(0.567 0.154556 248.5156);
+    --color-primary-700: oklch(0.5 0.134 242.749);
+    --color-primary-800: oklch(0.443 0.11 240.79);
+    --color-primary-900: oklch(0.391 0.09 240.876);
+    --color-primary-950: oklch(0.1448 0.0293 231.23);
+  
+}
+
+/* Glass Morphism Utility Classes */
+.glass-accent {
+	background: linear-gradient(
+		135deg,
+		rgba(255, 255, 255, 0.15) 0%,
+		rgba(255, 255, 255, 0.08) 50%,
+		rgba(255, 255, 255, 0.15) 100%
+	);
+	backdrop-filter: blur(20px);
+	-webkit-backdrop-filter: blur(20px);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	box-shadow:
+		0 8px 32px rgba(0, 0, 0, 0.2),
+		inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.glass-enhanced {
+	/* Enhanced whitish glass morphism with subtle gradient */
+	background: linear-gradient(
+		135deg,
+		rgba(255, 255, 255, 0.25) 0%,
+		rgba(255, 255, 255, 0.15) 35%,
+		rgba(255, 255, 255, 0.08) 65%,
+		rgba(255, 255, 255, 0.25) 100%
+	);
+
+	/* Enhanced backdrop blur for cleaner glass effect */
+	backdrop-filter: blur(28px) saturate(150%) brightness(1.15);
+	-webkit-backdrop-filter: blur(28px) saturate(150%) brightness(1.15);
+
+	/* Refined whitish border */
+	border: 1px solid rgba(255, 255, 255, 0.35);
+	background-clip: padding-box;
+	box-shadow: 
+		/* Soft ambient shadow */
+		0 24px 48px -8px rgba(0, 0, 0, 0.25),
+		/* Bright outer rim */ 0 0 0 1px rgba(255, 255, 255, 0.2),
+		/* Prominent inner highlight */ inset 0 1px 0 rgba(255, 255, 255, 0.4),
+		/* Subtle brand accent */ 0 0 32px rgba(255, 255, 255, 0.1);
+
+	position: relative;
+}
+
+.glass-enhanced::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: linear-gradient(
+		135deg,
+		rgba(255, 255, 255, 0.2) 0%,
+		rgba(255, 255, 255, 0.05) 50%,
+		rgba(255, 255, 255, 0.2) 100%
+	);
+	pointer-events: none;
+	border-radius: inherit;
+}
+
+.glass-gold {
+	background: linear-gradient(
+		135deg,
+		rgba(188, 149, 92, 0.9) 0%,
+		rgba(188, 149, 92, 0.85) 35%,
+		rgba(188, 149, 92, 0.8) 65%,
+		rgba(188, 149, 92, 0.9) 100%
+	);
+	backdrop-filter: blur(20px) saturate(120%);
+	-webkit-backdrop-filter: blur(20px) saturate(120%);
+	border: 1px solid rgba(255, 255, 255, 0.25);
+	box-shadow:
+		0 8px 32px rgba(0, 0, 0, 0.2),
+		inset 0 1px 0 rgba(255, 255, 255, 0.3),
+		0 0 24px rgba(188, 149, 92, 0.15);
+}
+
+.text-shadow {
+	text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}

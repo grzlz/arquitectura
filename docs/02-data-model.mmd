@@ -1,0 +1,29 @@
+erDiagram
+    AVALUOS ||--o{ COLEGIOS : "assigned_to"
+    COLEGIOS ||--o{ PERITOS : "has_members"
+    PERITOS ||--o{ AVALUOS : "works_on"
+
+    AVALUOS {
+        int id
+        string folio
+        int honorario_id
+        int colegio_id
+        int perito_id
+        string status
+    }
+
+    COLEGIOS {
+        int id
+        string name
+        int representative_id
+        string contact_info
+        boolean active
+    }
+
+    PERITOS {
+        int id
+        int colegio_id
+        string name
+        string specializations
+        int active_cases
+    }

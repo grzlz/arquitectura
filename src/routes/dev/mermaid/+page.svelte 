@@ -1,0 +1,300 @@
+<script>
+  import { onMount, afterUpdate } from 'svelte';
+  import { browser } from '$app/environment';
+  
+  let mermaid;
+  let diagramCode = $state(`graph TD
+    A[Your System] --> B[Component]
+    B --> C[Another Component]`);
+  
+  let savedDiagrams = $state([]);
+  let currentName = $state('');
+  let error = $state('');
+  
+  onMount(async () => {
+    if (browser) {
+      mermaid = (await import('mermaid')).default;
+      mermaid.initialize({ 
+        startOnLoad: false,
+        theme: 'default',
+        securityLevel: 'loose',
+      });
+      
+      // Load saved diagrams from localStorage
+      const saved = localStorage.getItem('mermaid-diagrams');
+      if (saved) savedDiagrams = JSON.parse(saved);
+      
+      renderDiagram();
+    }
+  });
+  
+  async function renderDiagram() {
+    if (!mermaid || !browser) return;
+    
+    const preview = document.getElementById('preview');
+    if (!preview) return;
+    
+    try {
+      preview.innerHTML = '';
+      const { svg } = await mermaid.render('preview-diagram', diagramCode);
+      preview.innerHTML = svg;
+      error = '';
+    } catch (e) {
+      error = e.message;
+      preview.innerHTML = `<div class="error">${e.message}</div>`;
+    }
+  }
+  
+  function saveDiagram() {
+    if (!currentName) {
+      alert('Please enter a diagram name');
+      return;
+    }
+    
+    const newDiagram = {
+      name: currentName,
+      code: diagramCode,
+      timestamp: new Date().toISOString()
+    };
+    
+    savedDiagrams = [...savedDiagrams, newDiagram];
+    localStorage.setItem('mermaid-diagrams', JSON.stringify(savedDiagrams));
+    currentName = '';
+  }
+  
+  function loadDiagram(diagram) {
+    diagramCode = diagram.code;
+    renderDiagram();
+  }
+  
+  function deleteDiagram(index) {
+    savedDiagrams = savedDiagrams.filter((_, i) => i !== index);
+    localStorage.setItem('mermaid-diagrams', JSON.stringify(savedDiagrams));
+  }
+  
+  function exportSVG() {
+    const svg = document.querySelector('#preview svg');
+    if (!svg) return;
+    
+    const blob = new Blob([svg.outerHTML], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${currentName || 'diagram'}.svg`;
+    a.click();
+  }
+  
+  function copyCode() {
+    navigator.clipboard.writeText(diagramCode);
+    alert('Code copied!');
+  }
+</script>
+
+<div class="container">
+  <aside class="sidebar">
+    <h3>Saved Diagrams</h3>
+    <div class="saved-list">
+      {#each savedDiagrams as diagram, i}
+        <div class="saved-item">
+          <button onclick={() => loadDiagram(diagram)}>
+            {diagram.name}
+          </button>
+          <button class="delete" onclick={() => deleteDiagram(i)}>×</button>
+        </div>
+      {/each}
+    </div>
+  </aside>
+  
+  <main>
+    <div class="controls">
+      <input 
+        type="text" 
+        bind:value={currentName} 
+        placeholder="Diagram name"
+      />
+      <button onclick={saveDiagram}>Save</button>
+      <button onclick={exportSVG}>Export SVG</button>
+      <button onclick={copyCode}>Copy Code</button>
+      <button onclick={renderDiagram}>Refresh</button>
+    </div>
+    
+    {#if error}
+      <div class="error-banner">{error}</div>
+    {/if}
+    
+    <div class="workspace">
+      <div class="editor">
+        <textarea 
+          bind:value={diagramCode}
+          oninput={renderDiagram}
+          rows="25"
+          spellcheck="false"
+        />
+      </div>
+      
+      <div class="preview-container">
+        <div id="preview"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<style>
+  .container {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    height: 100vh;
+    background: #1e1e1e;
+    color: #d4d4d4;
+  }
+  
+  .sidebar {
+    border-right: 1px solid #333;
+    padding: 1rem;
+    overflow-y: auto;
+  }
+  
+  .sidebar h3 {
+    margin-top: 0;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: #888;
+  }
+  
+  .saved-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .saved-item {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .saved-item button {
+    flex: 1;
+    padding: 0.5rem;
+    background: #2d2d2d;
+    border: 1px solid #444;
+    color: #d4d4d4;
+    cursor: pointer;
+    text-align: left;
+    font-size: 0.85rem;
+  }
+  
+  .saved-item button:hover {
+    background: #383838;
+  }
+  
+  .saved-item .delete {
+    flex: 0 0 auto;
+    width: 2rem;
+    background: #5a2d2d;
+  }
+  
+  .saved-item .delete:hover {
+    background: #7a3d3d;
+  }
+  
+  main {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  .controls {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-bottom: 1px solid #333;
+    background: #252525;
+  }
+  
+  .controls input {
+    flex: 1;
+    padding: 0.5rem;
+    background: #1e1e1e;
+    border: 1px solid #444;
+    color: #d4d4d4;
+  }
+  
+  .controls button {
+    padding: 0.5rem 1rem;
+    background: #0e639c;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  
+  .controls button:hover {
+    background: #1177bb;
+  }
+  
+  .error-banner {
+    background: #5a2d2d;
+    color: #ff6b6b;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #7a3d3d;
+    font-family: monospace;
+    font-size: 0.85rem;
+  }
+  
+  .workspace {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    padding: 1rem;
+    flex: 1;
+    overflow: hidden;
+  }
+  
+  .editor {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  textarea {
+    flex: 1;
+    width: 100%;
+    padding: 1rem;
+    background: #1e1e1e;
+    border: 1px solid #333;
+    color: #d4d4d4;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    resize: none;
+  }
+  
+  textarea:focus {
+    outline: none;
+    border-color: #0e639c;
+  }
+  
+  .preview-container {
+    border: 1px solid #333;
+    background: white;
+    overflow: auto;
+    padding: 1rem;
+  }
+  
+  #preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100%;
+  }
+  
+  #preview :global(svg) {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .error {
+    color: #ff6b6b;
+    padding: 1rem;
+    font-family: monospace;
+  }
+</style>

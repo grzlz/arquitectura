@@ -1,0 +1,20 @@
+graph TB
+    subgraph Dashboard["Colegio Representative Dashboard"]
+        A[Pending Assignments]
+        B[Available Peritos]
+        C[Active Cases]
+        D[Performance Metrics]
+    end
+
+    A --> E{Assign?}
+    E -->|Yes| F[Select Perito]
+    F --> G[Check workload]
+    G -->|OK| H[Assign case]
+    G -->|Overloaded| I[Warning modal]
+    I --> F
+
+    B --> J[Filter by<br/>specialization]
+    B --> K[Sort by<br/>workload]
+
+    C --> L[Status filters]
+    C --> M[Age tracking]

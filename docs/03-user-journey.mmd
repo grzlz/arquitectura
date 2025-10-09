@@ -1,0 +1,16 @@
+sequenceDiagram
+    participant M as Manager
+    participant S as System
+    participant C as Colegio Rep
+    participant P as Perito
+
+    M->>S: Create avalúo request
+    M->>S: Assign to Colegio X
+    S->>C: Notify new assignment
+    C->>S: View available peritos
+    C->>S: Assign to Perito
+    S->>P: Notify assignment
+    P->>S: Update status
+    S->>M: Track progress
+    P->>S: Submit completed work
+    S->>M: Notify completion

@@ -1,0 +1,8 @@
+graph LR
+    A[Manager receives<br/>Avalúo request] --> B{Assignment<br/>Type?}
+    B -->|Current| C[Assign to<br/>Honorario Perito]
+    B -->|New| D[Assign to<br/>Colegio]
+    D --> E[Colegio Rep<br/>assigns internally]
+    E --> F[Perito<br/>works case]
+    C --> F
+    F --> G[Complete<br/>Avalúo]
