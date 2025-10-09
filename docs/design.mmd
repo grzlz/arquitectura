@@ -1,0 +1,12 @@
+graph LR
+  Start
+  Process1
+  Process2
+  Decision
+  Success
+  Failure
+  End
+
+  Start --> Process1 --> Process2 --> Decision
+  Decision --> Success --> End
+  Decision --> Failure --> Process1
