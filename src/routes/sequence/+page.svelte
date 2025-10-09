@@ -290,15 +290,14 @@
 
     Dashboard->>QueueManager: GET /queue/status
 
-    par Queue metrics
-        QueueManager->>Queue: Count pending
-        Queue->>QueueManager: 47 tasks
-    and Worker health
-        QueueManager->>Worker1: Health check
-        Worker1->>QueueManager: ✓ Healthy
-        QueueManager->>Worker2: Health check
-        Worker2->>QueueManager: ❌ Unresponsive
-    end
+    QueueManager->>Queue: Count pending
+    Queue->>QueueManager: 47 tasks
+
+    QueueManager->>Worker1: Health check
+    Worker1->>QueueManager: ✓ Healthy
+
+    QueueManager->>Worker2: Health check
+    Worker2->>QueueManager: ❌ Unresponsive
 
     QueueManager->>Dashboard: Status report
 
@@ -319,16 +318,14 @@
 
     alt Task successful
         Worker1->>Queue: ACK
-        deactivate Worker1
     else Task failed (retry)
         Worker1->>Queue: NACK + retry
-        deactivate Worker1
         Queue->>Queue: Re-enqueue
     else Max retries exceeded
         Worker1->>DeadLetterQueue: Move to DLQ
-        deactivate Worker1
         DeadLetterQueue->>Alerting: Failed task alert
     end
+    deactivate Worker1
 
     Dashboard->>DeadLetterQueue: GET /failed-tasks
     DeadLetterQueue->>Dashboard: Failed task list

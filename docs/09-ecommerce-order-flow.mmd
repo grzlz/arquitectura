@@ -1,0 +1,106 @@
+sequenceDiagram
+    autonumber
+
+    actor Customer
+    participant Web as Web Frontend
+    participant API as API Gateway
+    participant Order as Order Service
+    participant Inventory as Inventory Service
+    participant Payment as Payment Service
+    participant Shipping as Shipping Service
+    participant Email as Email Service
+    participant DB as Database
+
+    Note over Customer,DB: E-Commerce Order Processing Flow
+
+    Customer->>Web: Browse products
+    Web->>API: GET /products
+    API->>Inventory: Check stock levels
+    Inventory->>DB: Query inventory
+    DB-->>Inventory: Stock data
+    Inventory-->>API: Available products
+    API-->>Web: Product catalog
+    Web-->>Customer: Display products
+
+    Customer->>Web: Add to cart
+    Web->>Web: Store cart locally
+
+    Customer->>Web: Proceed to checkout
+    Web->>API: POST /checkout
+    API->>Order: Create order draft
+    Order->>DB: Insert order (PENDING)
+    DB-->>Order: order_id
+
+    API->>Inventory: Reserve items
+    Inventory->>DB: Lock stock
+    alt Stock Available
+        DB-->>Inventory: Reserved
+        Inventory-->>API: Success
+    else Out of Stock
+        DB-->>Inventory: Insufficient stock
+        Inventory-->>API: Failure
+        API-->>Web: Out of stock error
+        Web-->>Customer: Show error
+    end
+
+    API->>Payment: Process payment
+    Payment->>Payment: Validate card
+    alt Payment Successful
+        Payment->>DB: Store transaction
+        Payment-->>API: Payment confirmed
+        API->>Order: Update status (PAID)
+        Order->>DB: Update order
+
+        API->>Inventory: Confirm reservation
+        Inventory->>DB: Decrement stock
+
+        API->>Shipping: Create shipment
+        Shipping->>DB: Insert shipping record
+        Shipping->>Shipping: Calculate delivery date
+        Shipping-->>API: Tracking number
+
+        API->>Email: Send confirmation
+        Email->>Customer: Order confirmation email
+
+        API-->>Web: Order success
+        Web-->>Customer: Show confirmation page
+
+    else Payment Failed
+        Payment-->>API: Payment declined
+        API->>Order: Update status (FAILED)
+        Order->>DB: Update order
+        API->>Inventory: Release reservation
+        Inventory->>DB: Unlock stock
+        API-->>Web: Payment error
+        Web-->>Customer: Show payment error
+    end
+
+    Note over Shipping: Background Process
+    loop Every 2 hours
+        Shipping->>DB: Query ready shipments
+        Shipping->>Shipping: Generate labels
+        Shipping->>Email: Send tracking updates
+        Email->>Customer: Shipping notification
+    end
+
+    Customer->>Web: Track order
+    Web->>API: GET /orders/:id
+    API->>Order: Fetch order details
+    Order->>DB: Query order
+    API->>Shipping: Get tracking info
+    Shipping->>DB: Query shipment
+    DB-->>Shipping: Tracking events
+    Shipping-->>API: Tracking data
+    API-->>Web: Order status
+    Web-->>Customer: Display tracking
+
+    Note over Customer,DB: Order delivered
+    Shipping->>DB: Update status (DELIVERED)
+    Shipping->>Email: Delivery confirmation
+    Email->>Customer: Thank you email
+
+    Customer->>Web: Leave review
+    Web->>API: POST /reviews
+    API->>DB: Insert review
+    API-->>Web: Review saved
+    Web-->>Customer: Thank you message

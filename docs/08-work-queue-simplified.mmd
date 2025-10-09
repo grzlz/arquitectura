@@ -1,0 +1,89 @@
+sequenceDiagram
+    participant Manager
+    participant Dashboard
+    participant Queue
+    participant Database
+    participant Analytics
+    participant Notifications
+    participant Colegio
+    participant Perito
+
+    Note over Manager,Perito: Work Queue + Analytics Flow
+
+    Manager->>Dashboard: Create avalúo
+    Dashboard->>Queue: POST request
+    Queue->>Database: Insert record
+    Database-->>Queue: ID + timestamp
+    Queue->>Analytics: Log creation event
+    Queue-->>Dashboard: Success
+    Dashboard-->>Manager: Confirmation
+
+    Manager->>Dashboard: View available Colegios
+    Dashboard->>Queue: GET colegios
+    Queue->>Analytics: Request workload data
+    Analytics->>Database: Query metrics
+    Database-->>Analytics: Stats
+    Analytics-->>Queue: Enriched data
+    Queue-->>Dashboard: Colegio list
+    Dashboard-->>Manager: Show with indicators
+
+    Manager->>Dashboard: Assign to Colegio
+    Dashboard->>Queue: PUT assign
+    Queue->>Database: Update avalúo
+    Queue->>Analytics: Log assignment
+    Queue->>Notifications: Send alert
+    Notifications->>Colegio: New assignment
+    Queue-->>Dashboard: Confirmed
+    Dashboard-->>Manager: Success
+
+    Colegio->>Dashboard: View dashboard
+    Dashboard->>Queue: GET assignments
+    Queue->>Database: Query data
+    Queue->>Analytics: Get team metrics
+    Analytics->>Database: Calculate workload
+    Database-->>Analytics: Team stats
+    Analytics-->>Queue: Dashboard data
+    Queue-->>Dashboard: Assignments + metrics
+    Dashboard-->>Colegio: Show queue
+
+    Colegio->>Dashboard: Check Perito availability
+    Dashboard->>Analytics: Request capacity
+    Analytics->>Database: Query active cases
+    Database-->>Analytics: Workload per Perito
+    Analytics-->>Dashboard: Availability matrix
+    Dashboard-->>Colegio: Show Perito list
+
+    Colegio->>Dashboard: Assign to Perito
+    Dashboard->>Queue: PUT assign perito
+    Queue->>Database: Update records
+    Queue->>Analytics: Log event
+    Queue->>Notifications: Alert Perito
+    Notifications->>Perito: Assignment notification
+    Queue-->>Dashboard: Success
+    Dashboard-->>Colegio: Updated view
+
+    Perito->>Dashboard: Update status
+    Dashboard->>Queue: PATCH status
+    Queue->>Database: Update status
+    Queue->>Analytics: Log change
+    Analytics->>Database: Recalculate KPIs
+
+    Manager->>Dashboard: View analytics
+    Dashboard->>Analytics: GET metrics
+    Analytics->>Database: Query events
+    Database-->>Analytics: Raw data
+    Note over Analytics: Process metrics<br/>Calculate KPIs<br/>Generate trends
+    Analytics-->>Dashboard: Compiled data
+    Dashboard-->>Manager: Charts and reports
+
+    Perito->>Dashboard: Submit completion
+    Dashboard->>Queue: PUT complete
+    Queue->>Database: Update status
+    Queue->>Analytics: Log completion
+    Analytics->>Database: Calculate SLA
+    Queue->>Notifications: Notify Manager
+    Notifications->>Manager: Completion alert
+    Queue-->>Dashboard: Success
+    Dashboard-->>Perito: Confirmed
+
+    Note over Analytics,Database: Daily batch processing<br/>Historical trends<br/>Performance reports
