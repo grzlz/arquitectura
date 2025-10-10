@@ -1,0 +1,309 @@
+================================================================================
+MERMAID DIAGRAM APP REFACTORING PLAN
+================================================================================
+
+PROBLEM STATEMENT
+-----------------
+Current state: 3,035 lines of duplicated code across 5 pages
+- class/+page.svelte: 1,028 lines (THE MONOLITH)
+- journey/+page.svelte: 697 lines
+- sequence/+page.svelte: 669 lines
+- state/+page.svelte: 641 lines
+- +page.svelte (General): 480 lines
+
+Duplication: ~80% of code is identical across all pages
+
+WHY REFACTOR? (THE BUSINESS CASE)
+----------------------------------
+
+1. DRY VIOLATION (Don't Repeat Yourself)
+   Symptoms:
+   - Navigation bar copied 5 times
+   - Editor/preview panels duplicated 5 times
+   - Functions (renderDiagram, saveDiagram, exportSVG) duplicated 5 times
+   - onMount logic duplicated 5 times
+
+   Pain: Bug fix requires changing 5 files
+   Cost: 5x development time for any change
+
+2. SINGLE RESPONSIBILITY PRINCIPLE VIOLATION
+   Each page does EVERYTHING:
+   - Renders UI
+   - Manages state
+   - Handles localStorage
+   - Renders Mermaid diagrams
+   - Manages examples
+   - Handles exports
+   - Manages navigation
+
+   Result: Can't test individual pieces, changes cascade everywhere
+
+3. COGNITIVE OVERLOAD
+   1,028 line files require 5+ minutes to understand
+   Developer must track:
+   - Multiple state variables scattered throughout
+   - 9+ functions defined in one place
+   - Complex markup intertwined with logic
+
+   Goal: Reduce to 30 seconds to understand component tree
+
+4. TESTING NIGHTMARE
+   Current: Can't test anything in isolation
+   - Can't test save without browser localStorage
+   - Can't test render without full DOM
+   - Can't test carousel without entire page
+
+   After: Each piece independently testable
+
+5. COLLABORATION KILLER
+   Scenario: 2 developers, 2 features
+   Result: Merge conflicts in all 5 files
+
+   After refactor: Zero conflicts (different files)
+
+6. PERFORMANCE ISSUES
+   - Mermaid library loaded 5 times
+   - Same functions defined 5 times
+   - Larger bundle size
+
+   After: Shared code bundled once
+
+================================================================================
+REFACTORING STRATEGY
+================================================================================
+
+PHASE 1: CREATE SHARED COMPONENTS
+----------------------------------
+Location: src/lib/components/
+
+1. Navigation.svelte
+   - Navigation bar with 5 diagram type links
+   - Receives current page as prop
+   - Highlights active page
+
+2. DiagramEditor.svelte
+   - Textarea for code editing
+   - Binds to store for reactive updates
+   - Handles syntax highlighting placeholder
+
+3. DiagramPreview.svelte
+   - Mermaid rendering panel
+   - Uses mermaidRenderer utility
+   - Shows loading/error states
+
+4. ExamplesCarousel.svelte
+   - Example browser with prev/next
+   - Displays complexity level
+   - Load button to apply example
+   - Receives examples array as prop
+
+5. SavedDiagramsList.svelte
+   - Grid of saved diagrams
+   - Load and delete functionality
+   - Uses savedDiagramsStore
+
+6. DiagramHeader.svelte
+   - Page title and description
+   - Action buttons (Save, Export, Copy, Refresh)
+   - Input for diagram name
+
+7. ErrorBanner.svelte
+   - Displays error messages
+   - Auto-dismissible
+   - Animated entry/exit
+
+PHASE 2: CREATE SHARED STORES/LOGIC
+------------------------------------
+Location: src/lib/stores/ and src/lib/utils/
+
+8. diagramStore.js
+   State management:
+   - diagramCode (writable)
+   - error (writable)
+   - currentName (writable)
+   - currentExampleIndex (writable)
+
+   Methods:
+   - setDiagramCode(code)
+   - setError(message)
+   - clearError()
+
+9. savedDiagramsStore.js
+   localStorage operations:
+   - loadDiagrams(storageKey)
+   - saveDiagram(diagram, storageKey)
+   - deleteDiagram(index, storageKey)
+
+   Returns reactive store of saved diagrams
+
+10. mermaidRenderer.js
+    Utility functions:
+    - initializeMermaid(theme)
+    - renderDiagram(code, elementId)
+    - exportSVG(diagramName)
+    - copyToClipboard(code)
+
+PHASE 3: CREATE MASTER LAYOUT
+------------------------------
+Location: src/lib/components/
+
+11. DiagramLayout.svelte
+    Props:
+    - title: string
+    - description: string
+    - diagramType: string
+    - storageKey: string
+    - examples: array
+    - defaultCode: string
+
+    Composition:
+    - Navigation
+    - DiagramHeader
+    - ErrorBanner
+    - Grid with:
+      - DiagramEditor
+      - DiagramPreview
+    - ExamplesCarousel
+    - SavedDiagramsList
+
+PHASE 4: REFACTOR PAGES
+-----------------------
+Each page becomes ~50 lines:
+
+Example (class/+page.svelte):
+```svelte
+<script>
+  import DiagramLayout from '$lib/components/DiagramLayout.svelte';
+
+  const examples = [
+    { name: 'Single Class', complexity: 1, code: '...' },
+    // ... 8 more examples
+  ];
+
+  const config = {
+    title: 'Class Diagram Mastery',
+    description: 'Design OOP systems',
+    diagramType: 'class',
+    storageKey: 'mermaid-class-diagrams',
+    defaultCode: 'classDiagram\n    class Animal'
+  };
+</script>
+
+<DiagramLayout {examples} {...config} />
+```
+
+================================================================================
+IMPLEMENTATION ORDER
+================================================================================
+
+1. Create utility layer (Phase 2: stores & utils)
+   - Easiest, no dependencies
+   - Can be tested immediately
+
+2. Create leaf components (Phase 1: individual components)
+   - Build from smallest to largest
+   - Test each in isolation
+
+3. Create layout composition (Phase 3: DiagramLayout)
+   - Combines all components
+   - Test with mock data
+
+4. Refactor pages one by one (Phase 4)
+   - Start with smallest (General: 480 lines)
+   - Test each page after refactor
+   - Keep old code commented until verified
+
+5. Cleanup
+   - Remove commented code
+   - Update documentation
+   - Run final tests
+
+================================================================================
+RISK MITIGATION
+================================================================================
+
+1. Feature Parity Risk
+   Mitigation: Refactor one page at a time, keep old code until verified
+
+2. Breaking Changes Risk
+   Mitigation: Create new components, don't modify existing pages initially
+
+3. localStorage Key Conflicts
+   Mitigation: Each page uses unique key, no conflicts possible
+
+4. Regression Risk
+   Mitigation: Test all 5 pages after each phase completion
+
+================================================================================
+SUCCESS METRICS
+================================================================================
+
+Before Refactor:
+- Total lines: 3,035
+- Duplication: 80%
+- Time to add new diagram type: 3 hours
+- Time to fix save bug: 1 hour (5 files)
+- Time to onboard new developer: 2 days
+
+After Refactor:
+- Total lines: ~800 (73% reduction)
+- Duplication: <5%
+- Time to add new diagram type: 20 minutes
+- Time to fix save bug: 15 minutes (1 file)
+- Time to onboard new developer: 2 hours
+
+ROI:
+- 5x faster feature development
+- 4x faster bug fixes
+- 12x faster onboarding
+- Testable, maintainable, DRY code
+
+================================================================================
+COMPONENT TREE (AFTER REFACTOR)
+================================================================================
+
+App
+├── +layout.svelte
+└── routes/
+    ├── +page.svelte (General)
+    │   └── DiagramLayout
+    │       ├── Navigation
+    │       ├── DiagramHeader
+    │       ├── ErrorBanner
+    │       ├── DiagramEditor
+    │       ├── DiagramPreview
+    │       ├── ExamplesCarousel
+    │       └── SavedDiagramsList
+    │
+    ├── sequence/+page.svelte
+    │   └── DiagramLayout (same composition)
+    │
+    ├── state/+page.svelte
+    │   └── DiagramLayout (same composition)
+    │
+    ├── journey/+page.svelte
+    │   └── DiagramLayout (same composition)
+    │
+    └── class/+page.svelte
+        └── DiagramLayout (same composition)
+
+Shared Libraries:
+├── stores/
+│   ├── diagramStore.js
+│   └── savedDiagramsStore.js
+└── utils/
+    └── mermaidRenderer.js
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+1. Review this plan with team
+2. Get approval for refactoring approach
+3. Create feature branch: refactor/diagram-components
+4. Start Phase 1: Create utility layer
+5. Progressive implementation (one phase at a time)
+6. Regular testing and verification
+7. Merge when all pages refactored and verified
+
+================================================================================
