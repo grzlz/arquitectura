@@ -3,14 +3,13 @@
   import { browser } from '$app/environment';
 
   let mermaid;
-  let diagramCode = $state(`journey
-    title Avalúo Discovery
-    section Descubrimiento
-      Hablar con solicitante: 4: Subdirección
-      Registrar requerimientos: 5: Subdirección
-    section Seguimiento
-      Compartir expectativas: 3: Solicitante
-      Validar plan inicial: 4: Subdirección`);
+  let diagramCode = $state(`graph TB
+    subgraph Customer
+      A[Browse] --> B[Buy]
+    end
+    subgraph System
+      B --> C[Process]
+    end`);
 
   let savedDiagrams = $state([]);
   let currentName = $state('');
@@ -19,136 +18,448 @@
 
   const examples = [
     {
-      name: 'Signup Happy Path',
-      description: 'First-contact experience with minimal branching',
+      name: 'Simple Handoff',
+      description: 'Two-lane process showing customer-support interaction',
       complexity: 1,
-      code: `journey
-    title Usuario inicia en IAvalua
-    section Descubrimiento
-      Visita landing page: 3: Prospecto
-      Lee beneficios: 4: Prospecto
-      Da clic en "Crear cuenta": 5: Prospecto
-    section Registro
-      Completa formulario básico: 3: Prospecto
-      Confirma correo: 4: Prospecto
-      Accede al dashboard: 5: Prospecto`
+      code: `graph TB
+    subgraph Customer
+        A[Report issue]
+        A --> B[Receive solution]
+    end
+
+    subgraph Support
+        C[Receive ticket]
+        C --> D[Investigate]
+        D --> E[Resolve issue]
+    end
+
+    A --> C
+    E --> B`
     },
     {
-      name: 'Avalúo Solicitation',
-      description: 'Happy path for creating a new Avalúo request',
+      name: 'Order Processing',
+      description: 'Three-lane e-commerce flow with handoffs',
       complexity: 2,
-      code: `journey
-    title Flujo inicial de solicitud
-    section Preparación
-      Recibe instrucciones por correo: 2: Manager
-      Junta documentos requeridos: 3: Manager
-    section Captura
-      Ingresa a portal: 4: Manager
-      Completa formulario de avalúo: 4: Manager
-      Revisa resumen: 5: Manager
-    section Post-envío
-      Envía solicitud: 5: Manager
-      Recibe confirmación: 4: Sistema
-      Espera asignación del colegio: 2: Manager`
+      code: `graph TB
+    subgraph Customer
+        A[Browse products]
+        A --> B[Add to cart]
+        B --> C[Checkout]
+    end
+
+    subgraph Payment_System[Payment System]
+        D[Process payment]
+        D --> E{Approved?}
+        E -->|Yes| F[Confirm]
+        E -->|No| G[Decline]
+    end
+
+    subgraph Warehouse
+        H[Pick items]
+        H --> I[Pack]
+        I --> J[Ship]
+    end
+
+    C --> D
+    F --> H
+    G -.-> B
+    J --> K
+
+    subgraph Customer2[Customer]
+        K[Receive package]
+    end`
     },
     {
-      name: 'Colegio Assignment Loop',
-      description: 'Introduces feedback when data is incomplete',
+      name: 'Support Ticket Escalation',
+      description: 'Four-lane support flow with escalation paths',
       complexity: 3,
-      code: `journey
-    title Subdirección asigna colegio
-    section Revisión inicial
-      Revisa cola de solicitudes: 3: Subdirección
-      Valida información: 4: Subdirección
-      Detecta faltante: 1: Subdirección
-    section Correcciones
-      Solicita datos extra: 2: Subdirección
-      Completa datos: 3: Manager
-      Confirma recepción: 4: Subdirección
-    section Asignación
-      Selecciona colegio adecuado: 4: Subdirección
-      Notifica al colegio: 3: Sistema
-      Colegio acepta caso: 4: Colegio`
+      code: `graph TB
+    subgraph User
+        A[Report bug]
+        A --> B[Provide info]
+        Q[Receive solution]
+    end
+
+    subgraph L1_Support[L1 Support]
+        C[Create ticket]
+        C --> D{Can resolve?}
+        D -->|Yes| E[Fix issue]
+        D -->|No| F[Escalate to L2]
+    end
+
+    subgraph L2_Support[L2 Support]
+        G[Investigate]
+        G --> H{Can resolve?}
+        H -->|Yes| I[Fix issue]
+        H -->|No| J[Escalate to Manager]
+    end
+
+    subgraph Manager
+        K[Review]
+        K --> L[Assign specialist]
+        L --> M[Resolve]
+    end
+
+    A --> C
+    E --> Q
+    F --> G
+    I --> Q
+    J --> K
+    M --> Q
+
+    B -.Additional info.-> C
+    B -.Additional info.-> G`
     },
     {
-      name: 'Perito Experience',
-      description: 'Parallel emotions for perito and colegio during acceptance',
+      name: 'Hiring Process',
+      description: 'Multi-stage recruitment with decision loops',
       complexity: 4,
-      code: `journey
-    title Experiencia de asignación al perito
-    section Colegio
-      Revisa disponibilidad de peritos: 3: Colegio
-      Envía propuesta a perito: 4: Colegio
-      Espera respuesta: 1: Colegio
-    section Perito
-      Recibe notificación: 3: Perito
-      Evalúa carga de trabajo: 2: Perito
-      Acepta caso: 4: Perito
-      Actualiza estado en plataforma: 3: Perito
-    section Sistema
-      Registra aceptación: 4: Sistema
-      Notifica a Subdirección y Manager: 3: Sistema`
+      code: `graph TB
+    subgraph Candidate
+        A[Submit application]
+        B[Phone interview]
+        C[Technical interview]
+        D[Final interview]
+        E[Accept offer]
+    end
+
+    subgraph Recruiter
+        F[Screen resume]
+        F --> G{Qualified?}
+        G -->|No| H[Reject]
+        G -->|Yes| I[Schedule phone screen]
+        I --> J[Conduct call]
+        J --> K{Pass?}
+        K -->|Yes| L[Forward to Manager]
+        K -->|No| H
+    end
+
+    subgraph Manager
+        M[Review candidate]
+        M --> N[Technical assessment]
+        N --> O{Pass?}
+        O -->|Yes| P[Schedule final]
+        O -->|No| H
+        P --> Q[Make decision]
+        Q --> R{Hire?}
+        R -->|Yes| S[Send offer]
+        R -->|No| H
+    end
+
+    subgraph HR
+        T[Prepare offer]
+        T --> U[Send paperwork]
+        U --> V[Process onboarding]
+    end
+
+    A --> F
+    I --> B
+    L --> M
+    P --> D
+    S --> T
+    U --> E`
     },
     {
-      name: 'Revisión con Observaciones',
-      description: 'Captures rework cycles and differing sentiment per persona',
+      name: 'Insurance Claim',
+      description: 'Complex routing with multiple decision points',
       complexity: 5,
-      code: `journey
-    title Revisión del avalúo con observaciones
-    section Perito
-      Entrega versión preliminar: 3: Perito
-      Recibe observaciones: 2: Perito
-      Agenda ajustes: 2: Perito
-      Reenvía versión corregida: 4: Perito
-    section Revisor
-      Revisa entrega inicial: 3: Revisor
-      Detecta inconsistencias: 2: Revisor
-      Documenta comentarios: 3: Revisor
-      Valida correcciones: 4: Revisor
-    section Manager
-      Recibe estatus "Observaciones": 1: Manager
-      Monitorea retrabajo: 2: Manager
-      Confirma resolución: 4: Manager`
+      code: `graph TB
+    subgraph Client
+        A[File claim]
+        B[Provide documents]
+        C[Receive payout]
+    end
+
+    subgraph Agent
+        D[Receive claim]
+        D --> E[Validate info]
+        E --> F{Complete?}
+        F -->|No| G[Request documents]
+        F -->|Yes| H[Forward to underwriter]
+    end
+
+    subgraph Underwriter
+        I[Review policy]
+        I --> J{Covered?}
+        J -->|No| K[Deny claim]
+        J -->|Yes| L{Amount?}
+        L -->|Under 10k| M[Approve]
+        L -->|Over 10k| N[Forward to Claims]
+    end
+
+    subgraph Claims_Manager[Claims Manager]
+        O[Review large claim]
+        O --> P{Investigate?}
+        P -->|Yes| Q[Order inspection]
+        P -->|No| R[Approve]
+    end
+
+    subgraph Finance
+        S[Process payment]
+        S --> T[Issue check]
+    end
+
+    A --> D
+    G --> B
+    B --> H
+    H --> I
+    K -.Rejection letter.-> Client
+    M --> S
+    N --> O
+    R --> S
+    T --> C`
     },
     {
-      name: 'Cliente Tracking Journey',
-      description: 'Shows multi-touch points including proactive communication',
+      name: 'Software Release',
+      description: 'Parallel review paths with sync points',
       complexity: 6,
-      code: `journey
-    title Seguimiento del cliente final
-    section Inicio
-      Llama para conocer estatus: 2: Cliente
-      Recibe promesa de respuesta: 3: Subdirección
-    section Proactividad
-      Sistema envía notificación automática: 4: Sistema
-      Cliente revisa portal de seguimiento: 3: Cliente
-      Envía retroalimentación: 4: Cliente
-    section Cierre
-      Recibe resultado aprobado: 5: Cliente
-      Evalúa satisfacción: 4: Cliente
-      Recomienda servicio: 5: Cliente`
+      code: `graph TB
+    subgraph Dev
+        A[Create PR]
+        A --> B[Address feedback]
+        P[Deploy to prod]
+    end
+
+    subgraph QA
+        C[Test feature]
+        C --> D{Bugs?}
+        D -->|Yes| E[Report issues]
+        D -->|No| F[Approve QA]
+    end
+
+    subgraph Security
+        G[Security scan]
+        G --> H{Vulnerabilities?}
+        H -->|Yes| I[Report CVEs]
+        H -->|No| J[Approve Security]
+    end
+
+    subgraph Code_Review[Code Review]
+        K[Review code]
+        K --> L{Changes needed?}
+        L -->|Yes| M[Request changes]
+        L -->|No| N[Approve]
+    end
+
+    subgraph Ops
+        O[Deploy to staging]
+        O --> Q[Monitor metrics]
+        Q --> R{Stable?}
+        R -->|Yes| S[Promote to prod]
+        R -->|No| T[Rollback]
+    end
+
+    A --> C
+    A --> G
+    A --> K
+
+    E --> B
+    I --> B
+    M --> B
+
+    F --> X
+    J --> X
+    N --> X
+    X{All approved?} -->|Yes| O
+    X -->|No| B
+
+    S --> P`
     },
     {
-      name: 'Multi-Persona Delivery',
-      description: 'End-to-end journey with four roles and emotional variance',
+      name: 'Loan Approval',
+      description: 'Multi-department financial process',
       complexity: 7,
-      code: `journey
-    title Entrega y facturación de avalúo
-    section Producto
-      Genera reporte final: 4: Perito
-      Revisor aprueba versión: 5: Revisor
-      Subdirección firma digital: 4: Subdirección
-    section Entrega
-      Sistema envía enlace seguro: 4: Sistema
-      Cliente descarga documento: 4: Cliente
-      Cliente solicita ajustes menores: 2: Cliente
-      Subdirección coordina aclaraciones: 3: Subdirección
-      Ajustes confirmados: 5: Cliente
-    section Facturación
-      Colegio prepara factura: 3: Colegio
-      Cliente valida datos fiscales: 2: Cliente
-      Pago registrado: 4: Sistema
-      Caso cerrado con encuesta NPS: 5: Sistema`
+      code: `graph TB
+    subgraph Applicant
+        A[Submit application]
+        B[Provide documents]
+        C[Sign agreement]
+        D[Receive funds]
+    end
+
+    subgraph Loan_Officer[Loan Officer]
+        E[Review application]
+        E --> F{Pre-qualified?}
+        F -->|No| G[Reject]
+        F -->|Yes| H[Request documents]
+        H --> I[Verify employment]
+        I --> J[Calculate DTI]
+    end
+
+    subgraph Credit
+        K[Pull credit report]
+        K --> L{Score > 680?}
+        L -->|No| M[High risk - escalate]
+        L -->|Yes| N[Approve credit]
+    end
+
+    subgraph Compliance
+        O[Regulatory check]
+        O --> P{AML compliant?}
+        P -->|No| Q[Investigate]
+        P -->|Yes| R[Approve compliance]
+    end
+
+    subgraph Underwriting
+        S[Risk assessment]
+        S --> T{Accept risk?}
+        T -->|No| G
+        T -->|Yes| U[Set terms]
+    end
+
+    subgraph Finance
+        V[Fund approval]
+        V --> W{Budget available?}
+        W -->|Yes| X[Allocate funds]
+        W -->|No| Y[Wait for budget]
+    end
+
+    A --> E
+    H --> B
+    B --> J
+    J --> K
+    J --> O
+
+    M --> S
+    N --> S
+    Q --> S
+    R --> S
+
+    U --> V
+    X --> C
+    C --> D
+
+    G -.Rejection.-> Applicant`
+    },
+    {
+      name: 'Healthcare Referral',
+      description: 'Patient journey through multiple providers',
+      complexity: 8,
+      code: `graph TB
+    subgraph Patient
+        A[Report symptoms]
+        B[Visit PCP]
+        C[Get referral]
+        H[Visit specialist]
+        N[Get test]
+        S[Receive results]
+        T[Start treatment]
+    end
+
+    subgraph PCP[Primary Care]
+        D[Examine patient]
+        D --> E{Needs specialist?}
+        E -->|No| F[Prescribe treatment]
+        E -->|Yes| G[Create referral]
+    end
+
+    subgraph Specialist
+        I[Review case]
+        I --> J{Diagnostic test needed?}
+        J -->|Yes| K[Order lab work]
+        J -->|No| L[Diagnose]
+    end
+
+    subgraph Insurance
+        M[Verify coverage]
+        M --> O{Covered?}
+        O -->|No| P[Deny - patient pays]
+        O -->|Yes| Q[Approve]
+        R[Pre-auth test]
+        R --> W{Approved?}
+        W -->|Yes| X[Authorize]
+        W -->|No| Y[Deny]
+    end
+
+    subgraph Lab
+        U[Run tests]
+        U --> V[Send results]
+    end
+
+    A --> B
+    B --> D
+    F -.Direct treatment.-> Patient
+    G --> M
+    Q --> C
+    C --> H
+    H --> I
+    K --> R
+    X --> N
+    N --> U
+    V --> S
+    S --> L
+    L --> T`
+    },
+    {
+      name: 'Enterprise Procurement',
+      description: 'Complex multi-stakeholder approval chain',
+      complexity: 9,
+      code: `graph TB
+    subgraph Requester
+        A[Identify need]
+        A --> B[Create requisition]
+        Z[Receive goods]
+    end
+
+    subgraph Manager
+        C[Review request]
+        C --> D{Approve?}
+        D -->|No| E[Reject with reason]
+        D -->|Yes| F{Budget?}
+        F -->|< 10k| G[Approve]
+        F -->|> 10k| H[Forward to Director]
+    end
+
+    subgraph Director
+        I[Strategic review]
+        I --> J{Aligns with goals?}
+        J -->|No| E
+        J -->|Yes| K[Approve]
+    end
+
+    subgraph Procurement
+        L[Market research]
+        L --> M[RFP process]
+        M --> N[Vendor evaluation]
+        N --> O[Select vendor]
+        O --> P[Negotiate terms]
+    end
+
+    subgraph Finance
+        Q[Budget check]
+        Q --> R{Funds available?}
+        R -->|No| S[Request budget allocation]
+        R -->|Yes| T[Reserve funds]
+        T --> U[Approve PO]
+    end
+
+    subgraph Legal
+        V[Contract review]
+        V --> W{Terms acceptable?}
+        W -->|No| X[Request revisions]
+        W -->|Yes| Y[Approve contract]
+    end
+
+    subgraph Vendor
+        AA[Receive PO]
+        AA --> AB[Fulfill order]
+        AB --> AC[Ship goods]
+        AC --> AD[Send invoice]
+    end
+
+    B --> C
+    E -.Rejection.-> Requester
+    G --> L
+    H --> I
+    K --> L
+    P --> Q
+    P --> V
+    X -.Negotiate.-> Procurement
+    T --> V
+    Y --> U
+    U --> AA
+    AC --> Z
+    AD --> Finance`
     }
   ];
 
@@ -174,7 +485,7 @@
         securityLevel: 'loose',
       });
 
-      const saved = localStorage.getItem('mermaid-journey-diagrams');
+      const saved = localStorage.getItem('mermaid-swimlane-diagrams');
       if (saved) savedDiagrams = JSON.parse(saved);
 
       renderDiagram();
@@ -211,7 +522,7 @@
     };
 
     savedDiagrams = [...savedDiagrams, newDiagram];
-    localStorage.setItem('mermaid-journey-diagrams', JSON.stringify(savedDiagrams));
+    localStorage.setItem('mermaid-swimlane-diagrams', JSON.stringify(savedDiagrams));
     currentName = '';
   }
 
@@ -222,7 +533,7 @@
 
   function deleteDiagram(index) {
     savedDiagrams = savedDiagrams.filter((_, i) => i !== index);
-    localStorage.setItem('mermaid-journey-diagrams', JSON.stringify(savedDiagrams));
+    localStorage.setItem('mermaid-swimlane-diagrams', JSON.stringify(savedDiagrams));
   }
 
   function exportSVG() {
@@ -233,7 +544,7 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${currentName || 'user-journey'}.svg`;
+    a.download = `${currentName || 'swimlane-diagram'}.svg`;
     a.click();
   }
 
@@ -257,10 +568,10 @@
         <a href="/state" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all">
           🎯 State
         </a>
-        <a href="/user-journey" class="px-4 py-2 rounded-lg bg-white/20 text-white font-medium border-2 border-white/40">
+        <a href="/user-journey" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all">
           🗺️ Journey
         </a>
-        <a href="/swimlane" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all">
+        <a href="/swimlane" class="px-4 py-2 rounded-lg bg-white/20 text-white font-medium border-2 border-white/40">
           🏊 Swimlane
         </a>
       </div>
@@ -269,8 +580,8 @@
     <div class="glass-enhanced rounded-2xl p-6 mb-6">
       <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
-          <h1 class="text-3xl font-bold text-white text-shadow mb-2">User Journey Studio</h1>
-          <p class="text-white/90 text-sm">Model experiencias de usuarios con diagramas Journey de Mermaid</p>
+          <h1 class="text-3xl font-bold text-white text-shadow mb-2">Swimlane Diagram Mastery</h1>
+          <p class="text-white/90 text-sm">Map multi-actor processes from simple handoffs to enterprise workflows</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
@@ -322,14 +633,14 @@
         <div class="px-6 py-4 bg-white/10 border-b border-white/20 flex items-center justify-between">
           <h3 class="text-sm font-semibold text-white uppercase tracking-wide">Editor</h3>
           <span class="px-3 py-1 rounded-full bg-gradient-to-r from-primary-500 to-primary-700 text-white text-xs font-medium">
-            Journey Diagram
+            Swimlane Diagram
           </span>
         </div>
         <textarea
           bind:value={diagramCode}
           oninput={renderDiagram}
           spellcheck="false"
-          placeholder="journey&#10;    title Experiencia&#10;    section Descubrimiento&#10;      Paso: 3: Usuario"
+          placeholder="graph TB&#10;    subgraph Actor1&#10;        A[Step]&#10;    end"
           class="flex-1 min-h-[500px] p-6 bg-white/5 text-white font-mono text-sm leading-relaxed focus:outline-none placeholder-white/40 resize-none"
         />
       </div>
@@ -347,18 +658,25 @@
       </div>
     </div>
 
+    <!-- Learning Examples Carousel -->
     <div class="glass-enhanced rounded-2xl p-6 mt-6">
       <div class="flex items-center justify-between mb-4">
         <div>
-          <h2 class="text-lg font-semibold text-white">Journey Patterns</h2>
-          <p class="text-white/60 text-sm mt-1">Siete ejemplos con complejidad creciente</p>
+          <h2 class="text-lg font-semibold text-white">Process Flow Patterns</h2>
+          <p class="text-white/60 text-sm mt-1">Progressive complexity from simple handoffs to enterprise procurement</p>
         </div>
-        <span class="px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
-          {examples[currentExampleIndex].complexity} / 7
-        </span>
+        <div class="flex items-center gap-3">
+          <span class="px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
+            Level {examples[currentExampleIndex].complexity}
+          </span>
+          <span class="px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
+            {currentExampleIndex + 1} / {examples.length}
+          </span>
+        </div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Example Info Panel -->
         <div class="lg:col-span-1 flex flex-col gap-3">
           <div class="glass-accent rounded-xl p-4">
             <div class="flex items-center gap-2 mb-3">
@@ -392,36 +710,37 @@
               onclick={loadExample}
               class="w-full mt-3 px-4 py-2 rounded-lg bg-white/90 hover:bg-white text-primary-600 font-medium transition-all hover:scale-105"
             >
-              Load & Study This Journey
+              Load & Study This Pattern
             </button>
           </div>
 
           <div class="glass-accent rounded-xl p-4">
             <h4 class="text-white/80 text-xs font-semibold uppercase tracking-wide mb-2">Complexity Progression</h4>
             <div class="flex gap-1">
-              {#each Array(7) as _, i}
+              {#each Array(9) as _, i}
                 <div class="flex-1 h-2 rounded-full {i < examples[currentExampleIndex].complexity ? 'bg-primary-500' : 'bg-white/20'}"></div>
               {/each}
             </div>
             <p class="text-white/60 text-xs mt-2">
               {#if examples[currentExampleIndex].complexity <= 2}
-                Beginner - Onboarding básicos
+                Beginner - Simple 2-3 lane flows
               {:else if examples[currentExampleIndex].complexity <= 4}
-                Intermedio - Colaboración y rework
+                Intermediate - Multi-lane with loops
               {:else if examples[currentExampleIndex].complexity <= 6}
-                Avanzado - Múltiples roles y toques
+                Advanced - Parallel paths & sync
               {:else}
-                Experto - Entrega completa y facturación
+                Expert - Enterprise workflows
               {/if}
             </p>
           </div>
         </div>
 
+        <!-- Example Code Preview -->
         <div class="lg:col-span-2 glass-accent rounded-xl overflow-hidden">
           <div class="px-4 py-3 bg-white/5 border-b border-white/20 flex items-center justify-between">
             <span class="text-white/80 text-xs font-mono">Preview Code</span>
             <span class="text-white/60 text-xs">
-              {examples[currentExampleIndex].code.split('\\n').length} lines
+              {examples[currentExampleIndex].code.split('\n').length} lines
             </span>
           </div>
           <pre class="p-4 overflow-auto max-h-64 text-white/90 text-sm font-mono leading-relaxed">{examples[currentExampleIndex].code}</pre>
@@ -429,10 +748,11 @@
       </div>
     </div>
 
+    <!-- Saved Diagrams -->
     {#if savedDiagrams.length > 0}
       <div class="glass-enhanced rounded-2xl p-6 mt-6">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold text-white">Saved Journeys</h2>
+          <h2 class="text-lg font-semibold text-white">Saved Swimlane Diagrams</h2>
           <span class="px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
             {savedDiagrams.length}
           </span>

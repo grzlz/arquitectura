@@ -1,0 +1,90 @@
+graph TB
+    subgraph "Page Layer (50 lines each)"
+        PageGeneral["+page.svelte<br/>(General)"]
+        PageSequence["sequence/+page.svelte"]
+        PageState["state/+page.svelte"]
+        PageJourney["journey/+page.svelte"]
+        PageClass["class/+page.svelte"]
+    end
+
+    subgraph "Layout Component"
+        DiagramLayout["DiagramLayout.svelte<br/>Master Composition<br/>Props: title, description, examples, storageKey"]
+    end
+
+    subgraph "UI Components (src/lib/components/)"
+        Navigation["Navigation.svelte<br/>5 diagram type links<br/>Highlights active page"]
+
+        DiagramHeader["DiagramHeader.svelte<br/>Title, description, actions<br/>Save, Export, Copy, Refresh"]
+
+        ErrorBanner["ErrorBanner.svelte<br/>Error display<br/>Animated, dismissible"]
+
+        DiagramEditor["DiagramEditor.svelte<br/>Code editor textarea<br/>Binds to diagramStore"]
+
+        DiagramPreview["DiagramPreview.svelte<br/>Mermaid preview panel<br/>Uses mermaidRenderer"]
+
+        ExamplesCarousel["ExamplesCarousel.svelte<br/>Example browser<br/>Prev/Next, complexity level"]
+
+        SavedDiagramsList["SavedDiagramsList.svelte<br/>Grid of saved diagrams<br/>Load/Delete actions"]
+    end
+
+    subgraph "State Management (src/lib/stores/)"
+        DiagramStore["diagramStore.js<br/>State: diagramCode, error,<br/>currentName, currentExampleIndex"]
+
+        SavedDiagramsStore["savedDiagramsStore.js<br/>localStorage operations<br/>load, save, delete"]
+    end
+
+    subgraph "Utilities (src/lib/utils/)"
+        MermaidRenderer["mermaidRenderer.js<br/>initializeMermaid()<br/>renderDiagram()<br/>exportSVG()<br/>copyToClipboard()"]
+    end
+
+    subgraph "External Dependencies"
+        Mermaid["mermaid library<br/>Diagram rendering"]
+        LocalStorage["Browser localStorage<br/>Persistence"]
+    end
+
+    %% Page to Layout connections
+    PageGeneral --> DiagramLayout
+    PageSequence --> DiagramLayout
+    PageState --> DiagramLayout
+    PageJourney --> DiagramLayout
+    PageClass --> DiagramLayout
+
+    %% Layout to Components connections
+    DiagramLayout --> Navigation
+    DiagramLayout --> DiagramHeader
+    DiagramLayout --> ErrorBanner
+    DiagramLayout --> DiagramEditor
+    DiagramLayout --> DiagramPreview
+    DiagramLayout --> ExamplesCarousel
+    DiagramLayout --> SavedDiagramsList
+
+    %% Components to Stores connections
+    DiagramEditor -.uses.-> DiagramStore
+    DiagramPreview -.uses.-> DiagramStore
+    DiagramHeader -.uses.-> DiagramStore
+    ExamplesCarousel -.uses.-> DiagramStore
+    SavedDiagramsList -.uses.-> SavedDiagramsStore
+    DiagramHeader -.uses.-> SavedDiagramsStore
+
+    %% Components to Utils connections
+    DiagramPreview -.uses.-> MermaidRenderer
+    DiagramHeader -.uses.-> MermaidRenderer
+
+    %% Utils to External connections
+    MermaidRenderer --> Mermaid
+    SavedDiagramsStore --> LocalStorage
+
+    %% Styling
+    classDef pageStyle fill:#fff4e6,stroke:#ffa500,stroke-width:2px
+    classDef layoutStyle fill:#e6f3ff,stroke:#0066cc,stroke-width:3px
+    classDef componentStyle fill:#e6ffe6,stroke:#00aa00,stroke-width:2px
+    classDef storeStyle fill:#ffe6f0,stroke:#cc0066,stroke-width:2px
+    classDef utilStyle fill:#f0e6ff,stroke:#6600cc,stroke-width:2px
+    classDef externalStyle fill:#f5f5f5,stroke:#666,stroke-width:1px,stroke-dasharray: 5 5
+
+    class PageGeneral,PageSequence,PageState,PageJourney,PageClass pageStyle
+    class DiagramLayout layoutStyle
+    class Navigation,DiagramHeader,ErrorBanner,DiagramEditor,DiagramPreview,ExamplesCarousel,SavedDiagramsList componentStyle
+    class DiagramStore,SavedDiagramsStore storeStyle
+    class MermaidRenderer utilStyle
+    class Mermaid,LocalStorage externalStyle

@@ -433,6 +433,27 @@
 
 <div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-primary-950 p-8 font-[family-name:var(--font-primary)]">
   <div class="max-w-7xl mx-auto">
+    <!-- Navigation -->
+    <div class="glass-enhanced rounded-2xl p-4 mb-6">
+      <div class="flex items-center gap-3 flex-wrap">
+        <a href="/" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all">
+          🏠 General
+        </a>
+        <a href="/sequence" class="px-4 py-2 rounded-lg bg-white/20 text-white font-medium border-2 border-white/40">
+          🔄 Sequence
+        </a>
+        <a href="/state" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all">
+          🎯 State
+        </a>
+        <a href="/user-journey" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all">
+          🗺️ Journey
+        </a>
+        <a href="/swimlane" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all">
+          🏊 Swimlane
+        </a>
+      </div>
+    </div>
+
     <div class="glass-enhanced rounded-2xl p-6 mb-6">
       <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
