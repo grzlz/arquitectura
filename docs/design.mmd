@@ -1,10 +1,12 @@
-stateDiagram-v2
-  [*] --> SinAsingar: Avaúo se crea
-  SinAsignar --> AsignadoColegio: Subdirección lo asignana
-  AsignadoColegio --> AsignadoPerito: Colegio lo asigna
-  AsignadoPerito --> EnProgreso: Perito comienza trabajo
-  EnProgreso --> EnJefatura: Perito entrega primera versión
-  EnJefatura --> SinRevisorAsignado: Jefatura comienza proceso de revisión
-  SinRevisorAsignado --> ConRevisorAsignado: Jefatura asigna revisor
-  ConRevisorAsignado --> RevisiónEnProceso: Revisor cambia el estado interno de asignado a en proceso
-  RevisiónEnProceso --> [*]
+graph LR
+  Start
+  Process1
+  Process2
+  Decision
+  Success
+  Failure
+  End
+
+  Start --> Process1 --> Process2 --> Decision
+  Decision --> Success --> End
+  Decision --> Failure --> Process1

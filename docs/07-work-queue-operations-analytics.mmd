@@ -1,0 +1,131 @@
+sequenceDiagram
+    participant M as Manager
+    participant UI as Dashboard UI
+    participant Q as Work Queue Service
+    participant DB as Database
+    participant A as Analytics Engine
+    participant N as Notification Service
+    participant C as Colegio Rep
+    participant P as Perito
+
+    Note over M,P: Work Queue Operations + Analytics Flow
+
+    %% Creation Phase
+    M->>UI: Create new Avalúo request
+    UI->>Q: POST /avaluos
+    Q->>DB: Insert avalúo record
+    DB-->>Q: avalúo_id, timestamp
+    Q->>A: Log event (creation)
+    A->>DB: Update analytics_events
+
+    %% Assignment Phase
+    M->>UI: View available Colegios
+    UI->>Q: GET /colegios/available
+    Q->>DB: Query active Colegios
+    Q->>A: Request workload metrics
+    A->>DB: Aggregate current workload
+    DB-->>A: Workload stats per Colegio
+    A-->>Q: Enriched Colegio data
+    Q-->>UI: Colegios list with metrics
+    UI-->>M: Display workload indicators
+
+    M->>UI: Assign to Colegio X
+    UI->>Q: PUT /avaluos/:id/assign
+    Q->>DB: BEGIN TRANSACTION
+    Q->>DB: Update avalúo.colegio_id
+    Q->>DB: Insert assignment_log
+    Q->>A: Log event (assignment)
+    A->>DB: Update real-time metrics
+    Q->>DB: COMMIT TRANSACTION
+
+    Q->>N: Trigger notification
+    N->>C: Email/Push: New assignment
+    Q-->>UI: Assignment confirmed
+    UI-->>M: Show success + updated queue
+
+    %% Colegio Internal Assignment
+    C->>UI: Login to Colegio dashboard
+    UI->>Q: GET /colegios/:id/dashboard
+    Q->>DB: Query assigned avalúos
+    Q->>A: Request team analytics
+    A->>DB: Calculate perito availability
+    A->>DB: Calculate workload distribution
+    DB-->>A: Team metrics
+    A-->>Q: Dashboard data
+    Q-->>UI: Pending work + analytics
+    UI-->>C: Display queue with charts
+
+    C->>UI: Select Perito for assignment
+    UI->>Q: GET /peritos/availability
+    Q->>A: Real-time workload check
+    A->>DB: Query active_cases per Perito
+    DB-->>A: Current assignments
+    A-->>Q: Availability matrix
+    Q-->>UI: Perito list with capacity
+
+    C->>UI: Assign to Perito Y
+    UI->>Q: PUT /avaluos/:id/assign-perito
+    Q->>DB: BEGIN TRANSACTION
+    Q->>DB: Update avalúo.perito_id
+    Q->>DB: Update avalúo.status = 'in_progress'
+    Q->>DB: Increment peritos.active_cases
+    Q->>A: Log event (perito_assignment)
+    A->>DB: Update analytics pipeline
+    Q->>DB: COMMIT TRANSACTION
+
+    Q->>N: Trigger notification
+    N->>P: Notify new case assignment
+    Q-->>UI: Assignment success
+    UI-->>C: Updated dashboard
+
+    %% Work Progress Tracking
+    P->>UI: Update work status
+    UI->>Q: PATCH /avaluos/:id/status
+    Q->>DB: Update status + timestamp
+    Q->>A: Log event (status_change)
+
+    %% Real-time Analytics Update
+    A->>DB: Recalculate KPIs
+    A->>DB: Update dashboard_cache
+    Note over A,DB: SLA tracking<br/>Average completion time<br/>Bottleneck detection
+
+    %% Dashboard Analytics Query
+    M->>UI: View analytics dashboard
+    UI->>Q: GET /analytics/overview
+    Q->>A: Fetch aggregated metrics
+    A->>DB: Query analytics_events
+    A->>DB: Query avaluos status distribution
+    A->>DB: Query workload trends
+    DB-->>A: Raw metrics data
+
+    Note over A: Parallel Analytics Processing<br/>- Calculate completion rate<br/>- Calculate avg turnaround time<br/>- Identify bottlenecks<br/>- Generate forecast trends
+
+    A-->>Q: Compiled analytics payload
+    Q-->>UI: Dashboard data
+    UI-->>M: Render charts & metrics
+
+    %% Completion Phase
+    P->>UI: Submit completed Avalúo
+    UI->>Q: PUT /avaluos/:id/complete
+    Q->>DB: BEGIN TRANSACTION
+    Q->>DB: Update status = 'completed'
+    Q->>DB: Set completion_timestamp
+    Q->>DB: Decrement peritos.active_cases
+    Q->>A: Log event (completion)
+
+    A->>DB: Calculate SLA compliance
+    A->>DB: Update historical metrics
+    A->>DB: Trigger quality score calculation
+    Q->>DB: COMMIT TRANSACTION
+
+    Q->>N: Notify stakeholders
+    N->>M: Case completed notification
+    N->>C: Performance update
+
+    Q-->>UI: Success response
+    UI-->>P: Confirmation message
+
+    %% Final Analytics Sync
+    A->>A: Batch update daily aggregates
+    A->>DB: Store processed analytics
+    Note over A,DB: End-of-day processing<br/>Historical trends<br/>Performance reports

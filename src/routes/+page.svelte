@@ -108,9 +108,9 @@
       name: 'Component Architecture',
       description: 'System architecture with services',
       code: `graph TD
-    A[IAValua Routes] --> B[/colegios]
-    A --> C[/mi-trabajo]
-    A --> D[/analytics]
+    A["IAValua Routes"] --> B["/colegios"]
+    A --> C["/mi-trabajo"]
+    A --> D["/analytics"]
 
     B --> E[Colegio List]
     B --> F[Colegio Dashboard]
@@ -276,8 +276,11 @@
         <a href="/state" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all">
           🎯 State
         </a>
-        <a href="/user-journey" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all">
+        <a href="/journey" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all">
           🗺️ Journey
+        </a>
+        <a href="/class" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all">
+          📦 Class
         </a>
         <a href="/swimlane" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all">
           🏊 Swimlane

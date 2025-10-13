@@ -1,5 +1,59 @@
 # MERMAID DIAGRAM APP REFACTORING - LazyVim Edition
 
+## Svelte 5 State Management Philosophy: Why We're Not Using Stores
+
+### The Store Era (Svelte 3-4)
+In earlier versions of Svelte, **stores** were the solution for sharing reactive state across components. They were called "stores" because they acted as containers that "stored" values and notified subscribers when values changed - like a warehouse that alerts customers when inventory updates.
+
+**The old pattern looked like this:**
+```javascript
+import { writable } from 'svelte/store';
+export const count = writable(0);
+
+// In components:
+$count += 1;  // Auto-subscription with $ prefix
+count.set(5);  // Manual update
+count.update(n => n + 1);  // Function update
+```
+
+Stores introduced concepts like:
+- `.set()` and `.update()` methods
+- Subscription management
+- The magic `$` auto-subscription syntax
+- Derived stores for computed values
+
+### The Runes Era (Svelte 5+)
+Svelte 5 introduces **runes** (`$state`, `$derived`, `$effect`) - a simpler, more JavaScript-native approach to reactivity. The philosophy changed:
+
+**From**: "State is a special reactive container you subscribe to"
+**To**: "State is just a variable that happens to be reactive"
+
+**The new pattern:**
+```javascript
+export const counter = createCounter();
+
+function createCounter() {
+    let value = $state(0);  // Reactive variable, not a container
+
+    return {
+        increment() { value += 1; },  // Direct mutation
+        multiply() { value *= 2; },
+        get() { return value; }  // Direct access
+    };
+}
+```
+
+### Why This Matters for Our Refactor
+
+**Simplicity**: No more `.set()`, `.update()`, or subscription management
+**Clarity**: Functions that mutate state directly, like regular JavaScript
+**Performance**: Svelte 5's fine-grained reactivity is more efficient
+**Intuition**: If you know JavaScript, you know how to use `$state`
+
+**We're not creating "stores" anymore - we're creating "state managers"** that encapsulate reactive state with plain functions. Think of it as the difference between a warehouse with complex inventory systems (stores) versus a simple counter with direct access (state).
+
+---
+
 ## Introduction: Your LazyVim Journey
 
 This guide teaches you to refactor 3,035 lines of duplicated code while learning LazyVim like a pro. We'll start with basic commands and progressively level up to surgical precision editing.
@@ -70,14 +124,14 @@ This guide teaches you to refactor 3,035 lines of duplicated code while learning
 
 ### Step 1.1: Create Folder Structure
 
-**What we're doing**: Creating `src/lib/stores/` and `src/lib/utils/`
+**What we're doing**: Creating `src/lib/state/` and `src/lib/utils/`
 
 **LazyVim Workflow**:
 ```
 1. Press <Space>e to open Neo-tree file explorer
 2. Navigate to src/lib/ using j/k arrows
 3. Press a (add) to create new folder
-4. Type "stores" and press Enter
+4. Type "state" and press Enter
 5. Repeat for "utils" folder
 ```
 
@@ -89,15 +143,17 @@ This guide teaches you to refactor 3,035 lines of duplicated code while learning
 - `x` - Cut
 - `p` - Paste
 
-### Step 1.2: Create diagramStore.js
+### Step 1.2: Create diagramState.svelte.js
 
-**What we're doing**: Building `src/lib/stores/diagramStore.js`
+**What we're doing**: Building `src/lib/state/diagramState.svelte.js` using Svelte 5 runes
+
+**Important**: The `.svelte.js` extension tells the Svelte compiler this file uses runes like `$state`
 
 **LazyVim Workflow**:
 ```
 1. <Space>e - Open Neo-tree
-2. Navigate to src/lib/stores/
-3. Press a, type "diagramStore.js"
+2. Navigate to src/lib/state/
+3. Press a, type "diagramState.svelte.js"
 4. Press Enter - file opens in editor
 5. Press i - Enter INSERT mode
 6. Start typing the code (see below)
@@ -106,24 +162,43 @@ This guide teaches you to refactor 3,035 lines of duplicated code while learning
 
 **Code to type**:
 ```javascript
-import { writable } from 'svelte/store';
+export const diagram = createDiagram();
 
-export const diagramCode = writable('');
-export const error = writable('');
-export const currentName = writable('');
-export const currentExampleIndex = writable(0);
+function createDiagram() {
+  let code = $state('');
+  let error = $state('');
+  let currentName = $state('');
+  let currentExampleIndex = $state(0);
 
-export function setDiagramCode(code) {
-  diagramCode.set(code);
-  clearError();
-}
-
-export function setError(message) {
-  error.set(message);
-}
-
-export function clearError() {
-  error.set('');
+  return {
+    setCode(newCode) {
+      code = newCode;
+      error = '';
+    },
+    setError(message) {
+      error = message;
+    },
+    clearError() {
+      error = '';
+    },
+    nextExample() {
+      currentExampleIndex += 1;
+    },
+    previousExample() {
+      currentExampleIndex -= 1;
+    },
+    setExampleIndex(index) {
+      currentExampleIndex = index;
+    },
+    setName(name) {
+      currentName = name;
+    },
+    // Getters for reactive access
+    getCode: () => code,
+    getError: () => error,
+    getName: () => currentName,
+    getExampleIndex: () => currentExampleIndex
+  };
 }
 ```
 
@@ -133,16 +208,48 @@ export function clearError() {
 - Try `A` to jump to end of current line and continue typing
 - Try `I` to jump to beginning of line
 
-### Step 1.3: Create savedDiagramsStore.js
+### Step 1.3: Create savedDiagramsState.svelte.js
 
 **LazyVim Workflow**:
 ```
-1. While in diagramStore.js, press <Space>ff
-2. Type "stores/" and press Enter
+1. While in diagramState.svelte.js, press <Space>ff
+2. Type "state/" and press Enter
 3. Press Ctrl-n to create new file in that directory
-   OR: <Space>e, navigate to stores/, press a
-4. Name it "savedDiagramsStore.js"
+   OR: <Space>e, navigate to state/, press a
+4. Name it "savedDiagramsState.svelte.js"
 5. Press i and start coding
+```
+
+**Code to type**:
+```javascript
+export const savedDiagrams = createSavedDiagrams();
+
+function createSavedDiagrams() {
+  let diagrams = $state([]);
+
+  return {
+    load(storageKey) {
+      const saved = localStorage.getItem(storageKey);
+      if (saved) {
+        diagrams = JSON.parse(saved);
+      }
+    },
+    save(storageKey, name, code) {
+      const newDiagram = {
+        name,
+        code,
+        timestamp: new Date().toISOString()
+      };
+      diagrams = [...diagrams, newDiagram];
+      localStorage.setItem(storageKey, JSON.stringify(diagrams));
+    },
+    delete(storageKey, index) {
+      diagrams = diagrams.filter((_, i) => i !== index);
+      localStorage.setItem(storageKey, JSON.stringify(diagrams));
+    },
+    getAll: () => diagrams
+  };
+}
 ```
 
 **Level Up - Copy/Paste Skills**:
@@ -352,12 +459,40 @@ To add semicolons to multiple lines at once:
 
   import Navigation from './Navigation.svelte';
   import DiagramHeader from './DiagramHeader.svelte';
-  // ... other imports
+  import DiagramEditor from './DiagramEditor.svelte';
+  import DiagramPreview from './DiagramPreview.svelte';
+  import ExamplesCarousel from './ExamplesCarousel.svelte';
+  import SavedDiagramsList from './SavedDiagramsList.svelte';
+  import ErrorBanner from './ErrorBanner.svelte';
+
+  import { diagram } from '$lib/state/diagramState.svelte.js';
+  import { savedDiagrams } from '$lib/state/savedDiagramsState.svelte.js';
+
+  // Initialize
+  savedDiagrams.load(storageKey);
+  diagram.setCode(defaultCode);
 </script>
 
 <Navigation currentPage={diagramType} />
 <DiagramHeader {title} {description} />
-<!-- rest of layout -->
+<ErrorBanner error={diagram.getError()} />
+<div class="main-content">
+  <DiagramEditor
+    code={diagram.getCode()}
+    onUpdate={(code) => diagram.setCode(code)}
+  />
+  <DiagramPreview code={diagram.getCode()} />
+</div>
+<ExamplesCarousel
+  {examples}
+  currentIndex={diagram.getExampleIndex()}
+  onSelect={(index) => diagram.setExampleIndex(index)}
+/>
+<SavedDiagramsList
+  diagrams={savedDiagrams.getAll()}
+  onLoad={(code) => diagram.setCode(code)}
+  onDelete={(index) => savedDiagrams.delete(storageKey, index)}
+/>
 ```
 
 **Pro Editing - Delete and Change Operations**:
@@ -399,7 +534,15 @@ To add semicolons to multiple lines at once:
   import DiagramLayout from '$lib/components/DiagramLayout.svelte';
 
   const examples = [
-    // Copy examples array from old code
+    {
+      name: 'Simple Flow',
+      code: 'graph TD\n    A[Start] --> B[Process]\n    B --> C[End]'
+    },
+    {
+      name: 'Decision Tree',
+      code: 'graph TD\n    A[Start] --> B{Decision}\n    B -->|Yes| C[Option 1]\n    B -->|No| D[Option 2]'
+    }
+    // Copy remaining examples array from old code
   ];
 
   const config = {
@@ -412,6 +555,11 @@ To add semicolons to multiple lines at once:
 </script>
 
 <DiagramLayout {examples} {...config} />
+
+<!--
+  Note: No more $state subscriptions, no .set() calls!
+  DiagramLayout handles all state management internally
+-->
 ```
 
 **Efficient Extraction Workflow**:
@@ -524,13 +672,15 @@ Apply same workflow to:
 ## COMPLETE REFACTORING CHECKLIST
 
 ### Phase 1: Utility Layer
-- [ ] Create `src/lib/stores/` folder
+- [ ] Create `src/lib/state/` folder
 - [ ] Create `src/lib/utils/` folder
-- [ ] Create `diagramStore.js`
-- [ ] Create `savedDiagramsStore.js`
+- [ ] Create `diagramState.svelte.js`
+- [ ] Create `savedDiagramsState.svelte.js`
 - [ ] Create `mermaidRenderer.js`
 
 **LazyVim Skills Practiced**: File creation, basic insert mode, Neo-tree navigation
+
+**Note**: `.svelte.js` extension is required for files using runes outside of components
 
 ### Phase 2: Components
 - [ ] Create `src/lib/components/` folder
