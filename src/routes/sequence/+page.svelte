@@ -43,7 +43,8 @@
   const examples = [
     {
       name: 'Basic Request-Response',
-      description: 'Simplest sequence diagram - client-server interaction',
+      description: 'Simplest sequence diagram — client-server interaction',
+      useCase: 'You\'re documenting a new API endpoint and need to show how a client talks to a server. This is the "hello world" of sequence diagrams — two actors, one exchange. Start here before adding any complexity.',
       complexity: 1,
       code: `sequenceDiagram
     participant Client
@@ -55,6 +56,7 @@
     {
       name: 'User Authentication',
       description: 'Classic login flow with validation',
+      useCase: 'Every developer builds a login. This diagram makes the four-actor handoff — user, frontend, backend, database — explicit. When something breaks at 2am, this is what you open to find where the chain snapped.',
       complexity: 2,
       code: `sequenceDiagram
     participant User
@@ -73,6 +75,7 @@
     {
       name: 'API with Error Handling',
       description: 'Using alt blocks for conditional flows',
+      useCase: 'An API that only shows the happy path is a lie. This diagram introduces `alt` blocks to document what actually happens — valid input, bad input, and database failures. This is what your error handling spec should look like.',
       complexity: 3,
       code: `sequenceDiagram
     participant Client
@@ -98,6 +101,7 @@
     {
       name: 'Async Job Processing',
       description: 'Background tasks with callbacks',
+      useCase: 'A user uploads a large file. You can\'t make them wait. This diagram shows how a system accepts the request immediately, processes it in the background, and notifies the user when done — the `activate/deactivate` blocks make the async boundary visible.',
       complexity: 4,
       code: `sequenceDiagram
     participant User
@@ -125,6 +129,7 @@
     {
       name: 'Microservices Communication',
       description: 'Multiple services with orchestration',
+      useCase: 'You\'re joining a team with five backend services and need to understand how a single user request touches all of them. The `par` block is the key syntax here — it shows that two requests fire simultaneously, which is often where performance bugs hide.',
       complexity: 5,
       code: `sequenceDiagram
     participant Client
@@ -154,6 +159,7 @@
     {
       name: 'Event Sourcing Pattern',
       description: 'CQRS with event store',
+      useCase: 'Your system needs an immutable audit trail and separate read/write models. This diagram shows CQRS in motion: a command lands, an event gets appended, a projection updates, and a separate query path serves reads. The `Note` annotations make the architectural intent explicit.',
       complexity: 6,
       code: `sequenceDiagram
     participant Client
@@ -187,6 +193,7 @@
     {
       name: 'Saga Pattern (Distributed Transaction)',
       description: 'Compensating transactions for failures',
+      useCase: 'An order goes through payment and inventory. Inventory fails. Now you need to refund the payment you just charged. This is the saga pattern — each step has a compensating rollback. The diagram makes the failure path as visible as the happy path, which is exactly the conversation you need to have with your team.',
       complexity: 7,
       code: `sequenceDiagram
     participant Client
@@ -234,6 +241,7 @@
     {
       name: 'E-commerce Checkout Flow',
       description: 'Real-world complex scenario with multiple systems',
+      useCase: 'You\'re onboarding onto an e-commerce platform and need to understand the full checkout journey end-to-end. This diagram maps every system involved — cart, pricing, payment, orders, email, analytics — and shows exactly which paths are parallel and which are sequential. The kind of diagram you pin to the wall on launch day.',
       complexity: 8,
       code: `sequenceDiagram
     participant User
@@ -301,6 +309,7 @@
     {
       name: 'Work Queue Operations Dashboard',
       description: 'Monitoring, health checks, and task management',
+      useCase: 'You run a distributed worker system and need to document how the ops dashboard interacts with the queue, workers, and alerting. This diagram covers the full operational loop: health checks, failure detection, manual recovery, and the DLQ retry cycle — the stuff that only gets documented after an outage.',
       complexity: 5,
       code: `sequenceDiagram
     participant Dashboard
@@ -591,7 +600,8 @@
               </div>
             </div>
 
-            <p class="text-white/70 text-sm mb-4">{examples[currentExampleIndex].description}</p>
+            <p class="text-white/50 text-xs mb-2">{examples[currentExampleIndex].description}</p>
+            <p class="text-white/70 text-sm mb-4 leading-relaxed">{examples[currentExampleIndex].useCase}</p>
 
             <div class="flex gap-2">
               <button

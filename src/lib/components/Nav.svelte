@@ -2,12 +2,9 @@
   import { page } from '$app/stores';
 
   const links = [
-    { href: '/', label: 'General' },
+    { href: '/', label: 'Flowchart' },
     { href: '/sequence', label: 'Sequence' },
-    { href: '/state', label: 'State' },
-    { href: '/journey', label: 'Journey' },
     { href: '/class', label: 'Class' },
-    { href: '/swimlane', label: 'Swimlane' },
   ];
 </script>
 

@@ -44,6 +44,7 @@
     {
       name: 'Single Class',
       description: 'Basic class with properties and methods',
+      useCase: 'You\'re designing a new model and want to capture its shape before writing any code. A single class diagram is a contract: here are the fields, here are the methods, here is the visibility. Cheaper to debate at this stage than after the PR is open.',
       complexity: 1,
       code: `classDiagram
     class User {
@@ -58,6 +59,7 @@
     {
       name: 'Two Classes with Association',
       description: 'Basic relationship between classes',
+      useCase: 'A customer places orders. That sentence implies a relationship — and relationships have cardinality. This diagram introduces the `"1" --> "*"` notation that answers: can one customer have many orders? Can an order exist without a customer? These questions matter before you write a single foreign key.',
       complexity: 2,
       code: `classDiagram
     class Customer {
@@ -80,6 +82,7 @@
     {
       name: 'Inheritance Hierarchy',
       description: 'Parent-child relationships with polymorphism',
+      useCase: 'You have Dog, Cat, and Bird — they all make sounds, but differently. The `<<abstract>>` annotation and `<|--` arrows communicate the design intent: there\'s a shared contract, and each subclass fulfills it in its own way. Classic OOP, but the diagram makes the hierarchy impossible to misread.',
       complexity: 3,
       code: `classDiagram
     class Animal {
@@ -115,6 +118,7 @@
     {
       name: 'E-commerce Domain Model',
       description: 'Complete shopping system with multiple relationships',
+      useCase: 'You\'re building a shopping system and need to align the team on the domain model before anyone writes a line of code. Six classes, six relationships — this is the kind of diagram you draw on a whiteboard in the first technical meeting. The multiplicity annotations (`"0..1"` on Shipment) already encode business rules.',
       complexity: 4,
       code: `classDiagram
     class Customer {
@@ -180,6 +184,7 @@
     {
       name: 'Authentication & Authorization System',
       description: 'Security model with roles and permissions',
+      useCase: 'You\'re implementing RBAC and need to explain to the security team how users, roles, and permissions connect — and how sessions and audit logs fit in. This diagram is the spec. When someone asks "why does this user have access to that resource?", you trace it through exactly these relationships.',
       complexity: 5,
       code: `classDiagram
     class User {
@@ -244,6 +249,7 @@
     {
       name: 'Multi-Tenant SaaS Architecture',
       description: 'Tenant isolation with subscription management',
+      useCase: 'You\'re building a SaaS product where each customer gets their own isolated workspace, their own subscription plan, and their own usage tracking. This diagram maps the tenant isolation model — who owns what, what\'s shared, and how billing connects to features. The architecture decision that shapes everything else.',
       complexity: 6,
       code: `classDiagram
     class Tenant {
@@ -322,6 +328,7 @@
     {
       name: 'Event Sourcing Pattern',
       description: 'CQRS with event store and projections',
+      useCase: 'You need a system where every state change is captured as an immutable event and the read model is derived from replaying those events. This diagram shows the full DDD stack: aggregates, domain events, event store, projections, and read models. Heavy pattern — the diagram is how you justify the complexity to your team.',
       complexity: 7,
       code: `classDiagram
     class AggregateRoot {
@@ -417,6 +424,7 @@
     {
       name: 'Data Analytics Pipeline',
       description: 'ETL, data warehouse, and BI reporting architecture',
+      useCase: 'Your data team needs to onboard a new engineer onto the analytics infrastructure. This diagram maps the full ETL pipeline — sources, transformations, quality checks, the warehouse, OLAP cubes, and the BI layer on top. The `DataSource <<interface>>` pattern shows how multiple source types plug into the same pipeline.',
       complexity: 8,
       code: `classDiagram
     class DataSource {
@@ -559,6 +567,7 @@
     {
       name: 'ML/AI Data Platform',
       description: 'Feature stores, model registry, and ML operations',
+      useCase: 'You\'re designing an MLOps platform from scratch and need to show how datasets, feature engineering, training experiments, the model registry, deployments, and drift monitoring all connect. This is the diagram you present to the architecture review board — it shows you\'ve thought through the full lifecycle, not just model training.',
       complexity: 9,
       code: `classDiagram
     class Dataset {
@@ -950,7 +959,8 @@
               </div>
             </div>
 
-            <p class="text-white/70 text-sm mb-4">{examples[currentExampleIndex].description}</p>
+            <p class="text-white/50 text-xs mb-2">{examples[currentExampleIndex].description}</p>
+            <p class="text-white/70 text-sm mb-4 leading-relaxed">{examples[currentExampleIndex].useCase}</p>
 
             <div class="flex gap-2">
               <button

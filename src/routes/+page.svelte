@@ -39,160 +39,138 @@
 
   const examples = [
     {
-      name: 'Basic Graph',
-      description: 'Simple graph with styling',
-      code: `graph LR
-    Start[Start]
-
-    %% Horizontal section
-    Start --> H1[Step 1]
-    H1 --> H2[Step 2]
-    H2 --> H3[Step 3]
-
-    %% Bridge element
-    H3 --> Bridge[ ]
-
-    %% Vertical section - use line breaks to stack
-    Bridge --> V1["Step A<br/><br/>↓<br/><br/>Step B"]
-
-    %% Styling
-    classDef horizontalStyle fill:#fff4e6,stroke:#ffa500,stroke-width:2px
-    classDef verticalStyle fill:#e6f3ff,stroke:#0066cc,stroke-width:2px
-    classDef invisible fill:none,stroke:none
-
-    class H1,H2,H3 horizontalStyle
-    class V1 verticalStyle
-    class Bridge invisible`
-    },
-    {
-      name: 'Assignment Flow',
-      description: 'Flowchart with decision nodes',
-      code: `graph LR
-    A[Manager receives<br/>Avalúo request] --> B{Assignment<br/>Type?}
-    B -->|Current| C[Assign to<br/>Honorario Perito]
-    B -->|New| D[Assign to<br/>Colegio]
-    D --> E[Colegio Rep<br/>assigns internally]
-    E --> F[Perito<br/>works case]
-    C --> F
-    F --> G[Complete<br/>Avalúo]`
-    },
-    {
-      name: 'Data Model',
-      description: 'Entity Relationship Diagram',
-      code: `erDiagram
-    AVALUOS ||--o{ COLEGIOS : "assigned_to"
-    COLEGIOS ||--o{ PERITOS : "has_members"
-    PERITOS ||--o{ AVALUOS : "works_on"
-
-    AVALUOS {
-        int id
-        string folio
-        int honorario_id
-        int colegio_id
-        int perito_id
-        string status
-    }
-
-    COLEGIOS {
-        int id
-        string name
-        int representative_id
-        string contact_info
-        boolean active
-    }
-
-    PERITOS {
-        int id
-        int colegio_id
-        string name
-        string specializations
-        int active_cases
-    }`
-    },
-    {
-      name: 'User Journey',
-      description: 'Sequence diagram showing interactions',
-      code: `sequenceDiagram
-    participant M as Manager
-    participant S as System
-    participant C as Colegio Rep
-    participant P as Perito
-
-    M->>S: Create avalúo request
-    M->>S: Assign to Colegio X
-    S->>C: Notify new assignment
-    C->>S: View available peritos
-    C->>S: Assign to Perito
-    S->>P: Notify assignment
-    P->>S: Update status
-    S->>M: Track progress
-    P->>S: Submit completed work
-    S->>M: Notify completion`
-    },
-    {
-      name: 'Component Architecture',
-      description: 'System architecture with services',
+      name: 'Linear Process',
+      description: 'A straight sequence of steps with no branching',
+      useCase: 'You need to onboard a new employee and the process is the same every time. A linear flowchart makes the steps impossible to miss or skip — no one can claim they didn\'t know what came next.',
+      complexity: 1,
       code: `graph TD
-    A["IAValua Routes"] --> B["/colegios"]
-    A --> C["/mi-trabajo"]
-    A --> D["/analytics"]
-
-    B --> E[Colegio List]
-    B --> F[Colegio Dashboard]
-    B --> G[Perito Management]
-
-    H[Shared Services] --> I[colegiosService.js]
-    H --> J[crudService.js]
-    H --> K[analyticsService.js]
-
-    E -.uses.-> I
-    F -.uses.-> I
-    G -.uses.-> I
-
-    L[Components] --> M[ColegioCard]
-    L --> N[PeritoAssigner]
-    L --> O[WorkloadIndicator]
-
-    F -.renders.-> N
-    F -.renders.-> O`
+    A[New employee arrives] --> B[Collect documents]
+    B --> C[Create system accounts]
+    C --> D[Assign workspace]
+    D --> E[Pair with buddy]
+    E --> F[Onboarding complete]`
     },
     {
-      name: 'Status State Machine',
-      description: 'State transitions diagram',
-      code: `stateDiagram-v2
-    [*] --> SinAsignar: Avalúo created
-    SinAsignar --> AsignadoColegio: Manager assigns
-    AsignadoColegio --> AsignadoPerito: Colegio rep assigns
-    AsignadoPerito --> EnProgreso: Perito accepts
-    EnProgreso --> EnRevision: Work submitted
-    EnRevision --> Observaciones: Needs changes
-    Observaciones --> EnProgreso: Perito fixes
-    EnRevision --> Completado: Approved
-    Completado --> [*]`
+      name: 'Decision Branch',
+      description: 'A flow that splits based on a yes/no condition',
+      useCase: 'A user tries to log in. You need to show what happens when it works and when it doesn\'t. Decision diamonds make branching logic visible at a glance — no need to read code to understand the behavior.',
+      complexity: 2,
+      code: `graph TD
+    A[User submits login] --> B{Credentials valid?}
+    B -->|Yes| C[Create session]
+    B -->|No| D[Increment attempt counter]
+    D --> E{Max attempts reached?}
+    E -->|Yes| F[Lock account]
+    E -->|No| G[Show error message]
+    C --> H[Redirect to dashboard]`
     },
     {
-      name: 'Dashboard Layout',
-      description: 'Complex graph with subgraphs',
-      code: `graph TB
-    subgraph Dashboard["Colegio Representative Dashboard"]
-        A[Pending Assignments]
-        B[Available Peritos]
-        C[Active Cases]
-        D[Performance Metrics]
+      name: 'Multi-Path Routing',
+      description: 'Multiple conditions route work to different destinations',
+      useCase: 'A support ticket arrives. Depending on severity and type, it routes to different teams with different SLAs. This diagram replaces a page of routing rules with something a new agent can understand in 10 seconds.',
+      complexity: 3,
+      code: `graph LR
+    A[Ticket received] --> B{Severity?}
+    B -->|Critical| C[Page on-call]
+    B -->|High| D[Assign to senior]
+    B -->|Medium| E[Add to sprint]
+    B -->|Low| F[Add to backlog]
+
+    C --> G{Type?}
+    G -->|Infrastructure| H[DevOps team]
+    G -->|Application| I[Backend team]
+    G -->|Data| J[Data team]
+
+    D --> K[Notify team lead]
+    E --> L[Next sprint planning]`
+    },
+    {
+      name: 'Parallel Tracks',
+      description: 'Concurrent paths that must all pass before continuing',
+      useCase: 'A pull request triggers code review and automated checks simultaneously — you can\'t merge until both pass. This pattern shows parallel work and the gate that reunifies the paths, critical for any approval workflow.',
+      complexity: 4,
+      code: `graph TD
+    A[PR opened] --> B[Trigger pipeline]
+    B --> C[Code review]
+    B --> D[Run tests]
+    B --> E[Security scan]
+
+    C --> F{Review approved?}
+    D --> G{Tests pass?}
+    E --> H{No vulnerabilities?}
+
+    F -->|No| I[Request changes]
+    G -->|No| J[Fix failures]
+    H -->|No| K[Fix vulnerabilities]
+
+    F -->|Yes| L[Gate]
+    G -->|Yes| L
+    H -->|Yes| L
+
+    L --> M{All checks passed?}
+    M -->|Yes| N[Merge to main]
+    M -->|No| O[Block merge]`
+    },
+    {
+      name: 'Subgraph Phases',
+      description: 'Steps grouped into named phases with clear boundaries',
+      useCase: 'A deployment pipeline has distinct phases: build, test, release. Subgraphs cluster related steps so stakeholders see both the big picture and the implementation detail in the same diagram — no context switching.',
+      complexity: 5,
+      code: `graph TD
+    subgraph Build["Build Phase"]
+        A[Pull source] --> B[Install deps]
+        B --> C[Compile assets]
+        C --> D[Build Docker image]
     end
 
-    A --> E{Assign?}
-    E -->|Yes| F[Select Perito]
-    F --> G[Check workload]
-    G -->|OK| H[Assign case]
-    G -->|Overloaded| I[Warning modal]
-    I --> F
+    subgraph Test["Test Phase"]
+        E[Unit tests] --> F[Integration tests]
+        F --> G[E2E smoke test]
+    end
 
-    B --> J[Filter by<br/>specialization]
-    B --> K[Sort by<br/>workload]
+    subgraph Release["Release Phase"]
+        H[Tag version] --> I[Push to registry]
+        I --> J[Deploy to staging]
+        J --> K{Manual approval?}
+        K -->|Approved| L[Deploy to production]
+        K -->|Rejected| M[Rollback]
+    end
 
-    C --> L[Status filters]
-    C --> M[Age tracking]`
+    Build --> Test
+    Test --> Release`
+    },
+    {
+      name: 'Full System Journey',
+      description: 'End-to-end flow across multiple systems and teams',
+      useCase: 'A customer places an order. The request touches payment, inventory, fulfillment, and notifications — each owned by a different team. This diagram is the contract between those teams: everyone sees their piece and exactly how it connects to the whole.',
+      complexity: 6,
+      code: `graph TD
+    A[Customer places order] --> B[Validate cart]
+    B --> C{Items in stock?}
+    C -->|No| D[Notify out of stock]
+    C -->|Yes| E[Reserve inventory]
+
+    E --> F[Process payment]
+    F --> G{Payment approved?}
+    G -->|Declined| H[Release inventory]
+    H --> I[Notify customer: failed]
+    G -->|Approved| J[Confirm order]
+
+    J --> K[Create shipment]
+    K --> L[Assign warehouse]
+    L --> M[Pick and pack]
+    M --> N[Hand off to carrier]
+
+    J --> O[Send confirmation email]
+    N --> P[Send tracking info]
+
+    subgraph Async["Background Jobs"]
+        Q[Update analytics]
+        R[Trigger loyalty points]
+        S[Reorder check]
+    end
+
+    J --> Async`
     }
   ];
 
@@ -402,27 +380,41 @@
     <div class="glass-enhanced rounded-2xl p-6 mt-6">
       <div class="flex items-center justify-between mb-4">
         <div>
-          <h2 class="text-lg font-semibold text-white">Learning Examples</h2>
-          <p class="text-white/60 text-sm mt-1">Progressively complex Mermaid diagrams</p>
+          <h2 class="text-lg font-semibold text-white">Flowchart Patterns</h2>
+          <p class="text-white/60 text-sm mt-1">Progressive complexity — from a single path to a full system</p>
         </div>
-        <span class="px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
-          {currentExampleIndex + 1} / {examples.length}
-        </span>
+        <div class="flex items-center gap-3">
+          <span class="px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
+            Level {examples[currentExampleIndex].complexity}
+          </span>
+          <span class="px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
+            {currentExampleIndex + 1} / {examples.length}
+          </span>
+        </div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Example Info -->
         <div class="lg:col-span-1 flex flex-col gap-3">
           <div class="glass-accent rounded-xl p-4">
-            <h3 class="text-white font-semibold mb-2">{examples[currentExampleIndex].name}</h3>
-            <p class="text-white/70 text-sm mb-4">{examples[currentExampleIndex].description}</p>
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white font-bold shrink-0">
+                {examples[currentExampleIndex].complexity}
+              </div>
+              <div class="flex-1">
+                <h3 class="text-white font-semibold">{examples[currentExampleIndex].name}</h3>
+                <p class="text-white/50 text-xs">{examples[currentExampleIndex].description}</p>
+              </div>
+            </div>
+
+            <p class="text-white/70 text-sm mb-4 leading-relaxed">{examples[currentExampleIndex].useCase}</p>
 
             <div class="flex gap-2">
               <button
                 onclick={prevExample}
                 class="flex-1 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/30 font-medium transition-all"
               >
-                ← Previous
+                ← Prev
               </button>
               <button
                 onclick={nextExample}
@@ -441,12 +433,21 @@
           </div>
 
           <div class="glass-accent rounded-xl p-4">
-            <h4 class="text-white/80 text-xs font-semibold uppercase tracking-wide mb-2">Complexity Level</h4>
+            <h4 class="text-white/80 text-xs font-semibold uppercase tracking-wide mb-2">Complexity Progression</h4>
             <div class="flex gap-1">
-              {#each Array(7) as _, i}
-                <div class="flex-1 h-2 rounded-full {i <= currentExampleIndex ? 'bg-primary-500' : 'bg-white/20'}"></div>
+              {#each Array(6) as _, i}
+                <div class="flex-1 h-2 rounded-full {i < examples[currentExampleIndex].complexity ? 'bg-primary-500' : 'bg-white/20'}"></div>
               {/each}
             </div>
+            <p class="text-white/60 text-xs mt-2">
+              {#if examples[currentExampleIndex].complexity <= 2}
+                Beginner — linear flows and simple decisions
+              {:else if examples[currentExampleIndex].complexity <= 4}
+                Intermediate — routing, parallel tracks
+              {:else}
+                Advanced — phases and full system journeys
+              {/if}
+            </p>
           </div>
         </div>
 
