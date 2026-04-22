@@ -4,9 +4,12 @@
   import Nav from '$lib/components/Nav.svelte';
   
   let mermaid;
-  let diagramCode = $state(`graph TD
-    A[Your System] --> B[Component]
-    B --> C[Another Component]`);
+  let diagramCode = $state(`flowchart LR
+  U([Usuario])
+  S[Sistema]
+
+  U -- entrada --> S
+  S -- salida --> U`);
   
   let savedDiagrams = $state([]);
   let currentName = $state('');
@@ -43,134 +46,125 @@
       description: 'A straight sequence of steps with no branching',
       useCase: 'You need to onboard a new employee and the process is the same every time. A linear flowchart makes the steps impossible to miss or skip — no one can claim they didn\'t know what came next.',
       complexity: 1,
-      code: `graph TD
-    A[New employee arrives] --> B[Collect documents]
-    B --> C[Create system accounts]
-    C --> D[Assign workspace]
-    D --> E[Pair with buddy]
-    E --> F[Onboarding complete]`
+      code: `flowchart LR
+  A([New employee arrives]) --> B[Collect documents]
+  B --> C[Create system accounts]
+  C --> D[Assign workspace]
+  D --> E[Pair with buddy]
+  E --> F([Onboarding complete])`
     },
     {
       name: 'Decision Branch',
       description: 'A flow that splits based on a yes/no condition',
       useCase: 'A user tries to log in. You need to show what happens when it works and when it doesn\'t. Decision diamonds make branching logic visible at a glance — no need to read code to understand the behavior.',
       complexity: 2,
-      code: `graph TD
-    A[User submits login] --> B{Credentials valid?}
-    B -->|Yes| C[Create session]
-    B -->|No| D[Increment attempt counter]
-    D --> E{Max attempts reached?}
-    E -->|Yes| F[Lock account]
-    E -->|No| G[Show error message]
-    C --> H[Redirect to dashboard]`
+      code: `flowchart TD
+  A[User submits login] --> B{Credentials valid?}
+  B -->|Yes| C[Create session]
+  B -->|No| D[Increment attempt counter]
+  D --> E{Max attempts reached?}
+  E -->|Yes| F[Lock account]
+  E -->|No| G[Show error message]
+  C --> H[Redirect to dashboard]`
+    },
+    {
+      name: 'Subgraph Groups',
+      description: 'Related nodes clustered into named subsystems',
+      useCase: 'Multiple actors interact with a system made of distinct services. Subgraphs make subsystem boundaries explicit — stakeholders see both the actors and the internal structure at the same time.',
+      complexity: 3,
+      code: `flowchart LR
+  U([Usuario])
+  Admin([Administrador])
+
+  subgraph S [Sistema]
+    AUTH[Servicio Auth]
+    DATA[Servicio Datos]
+    AUTH -- token --> DATA
+  end
+
+  U -- login --> S
+  Admin -- configura --> S
+  S -- respuesta --> U`
     },
     {
       name: 'Multi-Path Routing',
       description: 'Multiple conditions route work to different destinations',
       useCase: 'A support ticket arrives. Depending on severity and type, it routes to different teams with different SLAs. This diagram replaces a page of routing rules with something a new agent can understand in 10 seconds.',
-      complexity: 3,
-      code: `graph LR
-    A[Ticket received] --> B{Severity?}
-    B -->|Critical| C[Page on-call]
-    B -->|High| D[Assign to senior]
-    B -->|Medium| E[Add to sprint]
-    B -->|Low| F[Add to backlog]
+      complexity: 4,
+      code: `flowchart LR
+  A[Ticket received] --> B{Severity?}
+  B -->|Critical| C[Page on-call]
+  B -->|High| D[Assign to senior]
+  B -->|Medium| E[Add to sprint]
+  B -->|Low| F[Add to backlog]
 
-    C --> G{Type?}
-    G -->|Infrastructure| H[DevOps team]
-    G -->|Application| I[Backend team]
-    G -->|Data| J[Data team]
+  C --> G{Type?}
+  G -->|Infrastructure| H[DevOps team]
+  G -->|Application| I[Backend team]
+  G -->|Data| J[Data team]
 
-    D --> K[Notify team lead]
-    E --> L[Next sprint planning]`
+  D --> K[Notify team lead]
+  E --> L[Next sprint planning]`
     },
     {
       name: 'Parallel Tracks',
       description: 'Concurrent paths that must all pass before continuing',
       useCase: 'A pull request triggers code review and automated checks simultaneously — you can\'t merge until both pass. This pattern shows parallel work and the gate that reunifies the paths, critical for any approval workflow.',
-      complexity: 4,
-      code: `graph TD
-    A[PR opened] --> B[Trigger pipeline]
-    B --> C[Code review]
-    B --> D[Run tests]
-    B --> E[Security scan]
-
-    C --> F{Review approved?}
-    D --> G{Tests pass?}
-    E --> H{No vulnerabilities?}
-
-    F -->|No| I[Request changes]
-    G -->|No| J[Fix failures]
-    H -->|No| K[Fix vulnerabilities]
-
-    F -->|Yes| L[Gate]
-    G -->|Yes| L
-    H -->|Yes| L
-
-    L --> M{All checks passed?}
-    M -->|Yes| N[Merge to main]
-    M -->|No| O[Block merge]`
-    },
-    {
-      name: 'Subgraph Phases',
-      description: 'Steps grouped into named phases with clear boundaries',
-      useCase: 'A deployment pipeline has distinct phases: build, test, release. Subgraphs cluster related steps so stakeholders see both the big picture and the implementation detail in the same diagram — no context switching.',
       complexity: 5,
-      code: `graph TD
-    subgraph Build["Build Phase"]
-        A[Pull source] --> B[Install deps]
-        B --> C[Compile assets]
-        C --> D[Build Docker image]
-    end
+      code: `flowchart TD
+  A[PR opened] --> B[Trigger pipeline]
+  B --> C[Code review]
+  B --> D[Run tests]
+  B --> E[Security scan]
 
-    subgraph Test["Test Phase"]
-        E[Unit tests] --> F[Integration tests]
-        F --> G[E2E smoke test]
-    end
+  C --> F{Review approved?}
+  D --> G{Tests pass?}
+  E --> H{No vulnerabilities?}
 
-    subgraph Release["Release Phase"]
-        H[Tag version] --> I[Push to registry]
-        I --> J[Deploy to staging]
-        J --> K{Manual approval?}
-        K -->|Approved| L[Deploy to production]
-        K -->|Rejected| M[Rollback]
-    end
+  F -->|No| I[Request changes]
+  G -->|No| J[Fix failures]
+  H -->|No| K[Fix vulnerabilities]
 
-    Build --> Test
-    Test --> Release`
+  F -->|Yes| L[Gate]
+  G -->|Yes| L
+  H -->|Yes| L
+
+  L --> M{All checks passed?}
+  M -->|Yes| N[Merge to main]
+  M -->|No| O[Block merge]`
     },
     {
       name: 'Full System Journey',
       description: 'End-to-end flow across multiple systems and teams',
       useCase: 'A customer places an order. The request touches payment, inventory, fulfillment, and notifications — each owned by a different team. This diagram is the contract between those teams: everyone sees their piece and exactly how it connects to the whole.',
       complexity: 6,
-      code: `graph TD
-    A[Customer places order] --> B[Validate cart]
-    B --> C{Items in stock?}
-    C -->|No| D[Notify out of stock]
-    C -->|Yes| E[Reserve inventory]
+      code: `flowchart TD
+  A[Customer places order] --> B[Validate cart]
+  B --> C{Items in stock?}
+  C -->|No| D[Notify out of stock]
+  C -->|Yes| E[Reserve inventory]
 
-    E --> F[Process payment]
-    F --> G{Payment approved?}
-    G -->|Declined| H[Release inventory]
-    H --> I[Notify customer: failed]
-    G -->|Approved| J[Confirm order]
+  E --> F[Process payment]
+  F --> G{Payment approved?}
+  G -->|Declined| H[Release inventory]
+  H --> I[Notify customer: failed]
+  G -->|Approved| J[Confirm order]
 
-    J --> K[Create shipment]
-    K --> L[Assign warehouse]
-    L --> M[Pick and pack]
-    M --> N[Hand off to carrier]
+  J --> K[Create shipment]
+  K --> L[Assign warehouse]
+  L --> M[Pick and pack]
+  M --> N[Hand off to carrier]
 
-    J --> O[Send confirmation email]
-    N --> P[Send tracking info]
+  J --> O[Send confirmation email]
+  N --> P[Send tracking info]
 
-    subgraph Async["Background Jobs"]
-        Q[Update analytics]
-        R[Trigger loyalty points]
-        S[Reorder check]
-    end
+  subgraph Async [Background Jobs]
+    Q[Update analytics]
+    R[Trigger loyalty points]
+    S[Reorder check]
+  end
 
-    J --> Async`
+  J --> Async`
     }
   ];
 
