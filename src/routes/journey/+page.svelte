@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
+  import Nav from '$lib/components/Nav.svelte';
 
   let mermaid;
   let diagramCode = $state(`journey
@@ -17,6 +18,30 @@
   let currentName = $state('');
   let error = $state('');
   let currentExampleIndex = $state(0);
+  let toast = $state('');
+  let confirmingDelete = $state(-1);
+  let renderTimer;
+  let toastTimer;
+
+  function showToast(message) {
+    toast = message;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast = ''; }, 2500);
+  }
+
+  function handleInput() {
+    clearTimeout(renderTimer);
+    renderTimer = setTimeout(renderDiagram, 250);
+  }
+
+  function requestDelete(index) {
+    confirmingDelete = index;
+  }
+
+  function confirmDelete(index) {
+    deleteDiagram(index);
+    confirmingDelete = -1;
+  }
 
   const examples = [
     {
@@ -387,8 +412,10 @@
         securityLevel: 'loose',
       });
 
-      const saved = localStorage.getItem('mermaid-journey-diagrams');
-      if (saved) savedDiagrams = JSON.parse(saved);
+      try {
+        const saved = localStorage.getItem('mermaid-journey-diagrams');
+        if (saved) savedDiagrams = JSON.parse(saved);
+      } catch { /* localStorage unavailable */ }
 
       renderDiagram();
     }
@@ -407,24 +434,32 @@
       error = '';
     } catch (e) {
       error = e.message;
-      preview.innerHTML = `<div class="error text-red-400 p-4">${e.message}</div>`;
+      preview.innerHTML = '';
+      const errEl = document.createElement('div');
+      errEl.className = 'text-red-400 p-4 font-mono text-sm';
+      errEl.textContent = e.message;
+      preview.appendChild(errEl);
     }
   }
 
   function saveDiagram() {
-    if (!currentName) {
-      alert('Please enter a diagram name');
+    if (!currentName.trim()) {
+      showToast('Enter a name to save');
       return;
     }
 
     const newDiagram = {
-      name: currentName,
+      name: currentName.trim(),
       code: diagramCode,
       timestamp: new Date().toISOString()
     };
 
     savedDiagrams = [...savedDiagrams, newDiagram];
-    localStorage.setItem('mermaid-journey-diagrams', JSON.stringify(savedDiagrams));
+    try {
+      localStorage.setItem('mermaid-journey-diagrams', JSON.stringify(savedDiagrams));
+    } catch {
+      showToast('Could not save — storage unavailable');
+    }
     currentName = '';
   }
 
@@ -435,7 +470,10 @@
 
   function deleteDiagram(index) {
     savedDiagrams = savedDiagrams.filter((_, i) => i !== index);
-    localStorage.setItem('mermaid-journey-diagrams', JSON.stringify(savedDiagrams));
+    try {
+      localStorage.setItem('mermaid-journey-diagrams', JSON.stringify(savedDiagrams));
+    } catch { /* ignore */ }
+    confirmingDelete = -1;
   }
 
   function exportSVG() {
@@ -448,39 +486,23 @@
     a.href = url;
     a.download = `${currentName || 'journey-diagram'}.svg`;
     a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 100);
   }
 
   function copyCode() {
-    navigator.clipboard.writeText(diagramCode);
-    alert('Code copied!');
+    navigator.clipboard.writeText(diagramCode)
+      .then(() => showToast('Code copied to clipboard'))
+      .catch(() => showToast('Could not copy — check browser permissions'));
   }
 </script>
 
+<svelte:head>
+  <title>User Journey Mastery — Architect's Studio</title>
+</svelte:head>
+
 <div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-primary-950 p-8 font-[family-name:var(--font-primary)]">
   <div class="max-w-7xl mx-auto">
-    <!-- Navigation -->
-    <div class="glass-enhanced rounded-2xl p-4 mb-6">
-      <div class="flex items-center gap-3 flex-wrap">
-        <a href="/" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all">
-          🏠 General
-        </a>
-        <a href="/sequence" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all">
-          🔄 Sequence
-        </a>
-        <a href="/state" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all">
-          🎯 State
-        </a>
-        <a href="/journey" class="px-4 py-2 rounded-lg bg-white/20 text-white font-medium border-2 border-white/40">
-          🗺️ Journey
-        </a>
-        <a href="/class" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all">
-          📦 Class
-        </a>
-        <a href="/swimlane" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all">
-          🏊 Swimlane
-        </a>
-      </div>
-    </div>
+    <Nav />
 
     <div class="glass-enhanced rounded-2xl p-6 mb-6">
       <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
@@ -494,13 +516,14 @@
             type="text"
             bind:value={currentName}
             placeholder="Enter diagram name..."
+            aria-label="Diagram name"
             class="px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 backdrop-blur-sm min-w-[200px]"
           />
           <button
             onclick={saveDiagram}
-            class="px-4 py-2 rounded-lg bg-white/90 hover:bg-white text-primary-600 font-medium transition-all hover:scale-105 hover:shadow-lg"
+            class="glass-gold px-4 py-2 rounded-lg text-white font-medium transition-all hover:scale-105"
           >
-            💾 Save
+            Save
           </button>
           <button
             onclick={exportSVG}
@@ -516,6 +539,7 @@
           </button>
           <button
             onclick={renderDiagram}
+            aria-label="Refresh diagram"
             class="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/30 font-medium transition-all hover:rotate-90"
           >
             ↻
@@ -543,8 +567,9 @@
         </div>
         <textarea
           bind:value={diagramCode}
-          oninput={renderDiagram}
+          oninput={handleInput}
           spellcheck="false"
+          aria-label="Diagram code editor"
           placeholder="journey&#10;    title Customer Journey&#10;    section Step&#10;      Task: 5: Actor"
           class="flex-1 min-h-[500px] p-6 bg-white/5 text-white font-mono text-sm leading-relaxed focus:outline-none placeholder-white/40 resize-none"
         />
@@ -677,18 +702,32 @@
                   {new Date(diagram.timestamp).toLocaleDateString()}
                 </div>
               </button>
-              <button
-                onclick={() => deleteDiagram(index)}
-                class="w-12 rounded-lg bg-white/10 hover:bg-red-500/30 border border-white/20 hover:border-red-400/40 text-white hover:text-red-200 text-xl transition-all hover:scale-110"
-              >
-                ×
-              </button>
+              {#if confirmingDelete === index}
+                <div class="flex flex-col gap-1 w-12">
+                  <button onclick={() => confirmDelete(index)} class="rounded-lg bg-red-500/40 hover:bg-red-500/60 border border-red-400/40 text-white text-xs font-medium transition-all py-1">Del</button>
+                  <button onclick={() => confirmingDelete = -1} class="rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white/60 text-xs transition-all py-1">No</button>
+                </div>
+              {:else}
+                <button
+                  onclick={() => requestDelete(index)}
+                  aria-label="Delete {diagram.name}"
+                  class="w-12 rounded-lg bg-white/10 hover:bg-red-500/30 border border-white/20 hover:border-red-400/40 text-white hover:text-red-200 text-xl transition-all"
+                >
+                  ×
+                </button>
+              {/if}
             </div>
           {/each}
         </div>
       </div>
     {/if}
   </div>
+
+  {#if toast}
+    <div class="fixed bottom-6 right-6 glass-accent rounded-xl px-4 py-3 text-white text-sm z-50" role="status" aria-live="polite">
+      {toast}
+    </div>
+  {/if}
 </div>
 
 <style>
