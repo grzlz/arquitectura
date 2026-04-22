@@ -5,11 +5,11 @@
   
   let mermaid;
   let diagramCode = $state(`flowchart LR
-  U([Usuario])
-  S[Sistema]
+  U([User])
+  S[System]
 
-  U -- entrada --> S
-  S -- salida --> U`);
+  U -- input --> S
+  S -- output --> U`);
   
   let savedDiagrams = $state([]);
   let currentName = $state('');
@@ -42,129 +42,125 @@
 
   const examples = [
     {
-      name: 'Linear Process',
-      description: 'A straight sequence of steps with no branching',
-      useCase: 'You need to onboard a new employee and the process is the same every time. A linear flowchart makes the steps impossible to miss or skip — no one can claim they didn\'t know what came next.',
+      name: 'System with Subsystems',
+      description: 'The base pattern extended with internal structure',
+      useCase: 'The natural starting point: you have a user and a system. When you need to show that system isn\'t a black box but has internal parts that collaborate, you add subsystems. Same outer flow, more interior detail.',
       complexity: 1,
       code: `flowchart LR
-  A([New employee arrives]) --> B[Collect documents]
-  B --> C[Create system accounts]
-  C --> D[Assign workspace]
-  D --> E[Pair with buddy]
-  E --> F([Onboarding complete])`
+  U([User])
+
+  subgraph S [System]
+    SUB1[Subsystem A]
+    SUB2[Subsystem B]
+    SUB1 -- data --> SUB2
+  end
+
+  U -- input --> S
+  SUB1 -- output --> U`
     },
     {
-      name: 'Decision Branch',
-      description: 'A flow that splits based on a yes/no condition',
-      useCase: 'A user tries to log in. You need to show what happens when it works and when it doesn\'t. Decision diamonds make branching logic visible at a glance — no need to read code to understand the behavior.',
+      name: 'Bounded Contexts',
+      description: 'Actors interacting with domain-separated subsystems',
+      useCase: 'When a system grows into multiple domains, you need to show who owns what. Subgraphs map bounded contexts — team boundaries, service ownership, and interaction points — in one view that both engineers and product leads can read.',
       complexity: 2,
-      code: `flowchart TD
-  A[User submits login] --> B{Credentials valid?}
-  B -->|Yes| C[Create session]
-  B -->|No| D[Increment attempt counter]
-  D --> E{Max attempts reached?}
-  E -->|Yes| F[Lock account]
-  E -->|No| G[Show error message]
-  C --> H[Redirect to dashboard]`
+      code: `flowchart LR
+  User([User])
+  Admin([Admin])
+
+  subgraph Identity [Identity Domain]
+    AUTH[Auth Service]
+    PROFILE[Profile Service]
+    AUTH -- context --> PROFILE
+  end
+
+  subgraph Catalog [Catalog Domain]
+    PROD[Product Service]
+    SEARCH[Search Service]
+  end
+
+  User -- login --> Identity
+  Admin -- manages --> Identity
+  User -- browse --> Catalog
+  Identity -- user context --> Catalog`
     },
     {
-      name: 'Subgraph Groups',
-      description: 'Related nodes clustered into named subsystems',
-      useCase: 'Multiple actors interact with a system made of distinct services. Subgraphs make subsystem boundaries explicit — stakeholders see both the actors and the internal structure at the same time.',
+      name: 'Event-Driven Architecture',
+      description: 'Event bus routing messages to multiple consumers',
+      useCase: 'In event-driven systems, services don\'t call each other — they publish and subscribe. This diagram makes that contract visible: what events exist, who emits them, and which services react. Critical for debugging and onboarding.',
       complexity: 3,
       code: `flowchart LR
-  U([Usuario])
-  Admin([Administrador])
+  SRC([Order Service])
 
-  subgraph S [Sistema]
-    AUTH[Servicio Auth]
-    DATA[Servicio Datos]
-    AUTH -- token --> DATA
-  end
+  SRC -- order.created --> BUS[Event Bus]
 
-  U -- login --> S
-  Admin -- configura --> S
-  S -- respuesta --> U`
+  BUS -- order.created --> INV[Inventory Service]
+  BUS -- order.created --> NOTIF[Notification Service]
+  BUS -- order.created --> BILL[Billing Service]
+
+  INV -- stock.reserved --> BUS
+  NOTIF -- email.queued --> BUS
+  BILL -- invoice.created --> BUS`
     },
     {
-      name: 'Multi-Path Routing',
-      description: 'Multiple conditions route work to different destinations',
-      useCase: 'A support ticket arrives. Depending on severity and type, it routes to different teams with different SLAs. This diagram replaces a page of routing rules with something a new agent can understand in 10 seconds.',
+      name: 'Parallel Service Aggregation',
+      description: 'Orchestrator fans out and merges results from multiple services',
+      useCase: 'API composition is one of the trickiest patterns to explain. This diagram shows an orchestrator calling three services in parallel, aggregating results, and handling the timeout case — all the decisions that would otherwise live in a PR description.',
       complexity: 4,
-      code: `flowchart LR
-  A[Ticket received] --> B{Severity?}
-  B -->|Critical| C[Page on-call]
-  B -->|High| D[Assign to senior]
-  B -->|Medium| E[Add to sprint]
-  B -->|Low| F[Add to backlog]
+      code: `flowchart TD
+  Client([Client]) -- request --> ORCH[Orchestrator]
 
-  C --> G{Type?}
-  G -->|Infrastructure| H[DevOps team]
-  G -->|Application| I[Backend team]
-  G -->|Data| J[Data team]
+  ORCH -- fetch profile --> USR[User Service]
+  ORCH -- check permissions --> PERM[Permissions Service]
+  ORCH -- get flags --> FLAGS[Feature Flags]
 
-  D --> K[Notify team lead]
-  E --> L[Next sprint planning]`
+  USR -- profile --> AGG[Aggregator]
+  PERM -- roles --> AGG
+  FLAGS -- features --> AGG
+
+  AGG --> V{All resolved?}
+  V -- yes --> RESP[Compose response]
+  V -- timeout --> FB[Return defaults]
+
+  RESP -- 200 --> Client
+  FB -- 200 partial --> Client`
     },
     {
-      name: 'Parallel Tracks',
-      description: 'Concurrent paths that must all pass before continuing',
-      useCase: 'A pull request triggers code review and automated checks simultaneously — you can\'t merge until both pass. This pattern shows parallel work and the gate that reunifies the paths, critical for any approval workflow.',
+      name: 'Layered System Architecture',
+      description: 'Full stack with edge, application, data, and async layers',
+      useCase: 'Architecture review time. This diagram shows all four layers of a production system — edge, application, data, and async — and how they connect. Use it to align the team before a refactor, during incident review, or when pitching infrastructure changes.',
       complexity: 5,
       code: `flowchart TD
-  A[PR opened] --> B[Trigger pipeline]
-  B --> C[Code review]
-  B --> D[Run tests]
-  B --> E[Security scan]
+  Client([Client App])
 
-  C --> F{Review approved?}
-  D --> G{Tests pass?}
-  E --> H{No vulnerabilities?}
-
-  F -->|No| I[Request changes]
-  G -->|No| J[Fix failures]
-  H -->|No| K[Fix vulnerabilities]
-
-  F -->|Yes| L[Gate]
-  G -->|Yes| L
-  H -->|Yes| L
-
-  L --> M{All checks passed?}
-  M -->|Yes| N[Merge to main]
-  M -->|No| O[Block merge]`
-    },
-    {
-      name: 'Full System Journey',
-      description: 'End-to-end flow across multiple systems and teams',
-      useCase: 'A customer places an order. The request touches payment, inventory, fulfillment, and notifications — each owned by a different team. This diagram is the contract between those teams: everyone sees their piece and exactly how it connects to the whole.',
-      complexity: 6,
-      code: `flowchart TD
-  A[Customer places order] --> B[Validate cart]
-  B --> C{Items in stock?}
-  C -->|No| D[Notify out of stock]
-  C -->|Yes| E[Reserve inventory]
-
-  E --> F[Process payment]
-  F --> G{Payment approved?}
-  G -->|Declined| H[Release inventory]
-  H --> I[Notify customer: failed]
-  G -->|Approved| J[Confirm order]
-
-  J --> K[Create shipment]
-  K --> L[Assign warehouse]
-  L --> M[Pick and pack]
-  M --> N[Hand off to carrier]
-
-  J --> O[Send confirmation email]
-  N --> P[Send tracking info]
-
-  subgraph Async [Background Jobs]
-    Q[Update analytics]
-    R[Trigger loyalty points]
-    S[Reorder check]
+  subgraph Edge [Edge Layer]
+    GW[API Gateway]
+    CDN[CDN]
   end
 
-  J --> Async`
+  subgraph App [Application Layer]
+    AUTHSVC[Auth Service]
+    BIZ[Business Service]
+    CACHE[Cache]
+  end
+
+  subgraph Data [Data Layer]
+    DB[(Primary DB)]
+    RDB[(Read Replica)]
+  end
+
+  subgraph Async [Event Layer]
+    QUEUE[Message Queue]
+    WORKER[Background Worker]
+  end
+
+  Client -- request --> Edge
+  GW -- validate --> AUTHSVC
+  AUTHSVC -- context --> BIZ
+  BIZ -- read --> CACHE
+  CACHE -- miss --> DB
+  DB -- replicate --> RDB
+  BIZ -- emit event --> QUEUE
+  QUEUE -- process --> WORKER`
     }
   ];
 
@@ -223,7 +219,7 @@
   
   function saveDiagram() {
     if (!currentName.trim()) {
-      showToast('Enter a name to save');
+      showToast('Ingresa un nombre para guardar');
       return;
     }
 
@@ -237,7 +233,7 @@
     try {
       localStorage.setItem('mermaid-diagrams', JSON.stringify(savedDiagrams));
     } catch {
-      showToast('Could not save — storage unavailable');
+      showToast('No se pudo guardar — almacenamiento no disponible');
     }
     currentName = '';
   }
@@ -270,12 +266,12 @@
 
   function copyCode() {
     navigator.clipboard.writeText(diagramCode)
-      .then(() => showToast('Code copied to clipboard'))
-      .catch(() => showToast('Could not copy — check browser permissions'));
+      .then(() => showToast('Código copiado al portapapeles'))
+      .catch(() => showToast('No se pudo copiar — verifica los permisos del navegador'));
   }
 </script>
 <svelte:head>
-  <title>Flowchart Editor — Architect's Studio</title>
+  <title>Editor de Diagramas — Architect's Studio</title>
 </svelte:head>
 
 <div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-primary-950 p-8 font-[family-name:var(--font-primary)]">
@@ -285,39 +281,39 @@
     <div class="glass-enhanced rounded-2xl p-6 mb-6">
       <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
-          <h1 class="text-3xl font-bold text-white text-shadow mb-2">Flowchart Editor</h1>
-          <p class="text-white/90 text-sm">Create beautiful diagrams with live preview</p>
+          <h1 class="text-3xl font-bold text-white text-shadow mb-2">Editor de Diagramas</h1>
+          <p class="text-white/90 text-sm">Crea diagramas con vista previa en tiempo real</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
           <input
             type="text"
             bind:value={currentName}
-            placeholder="Enter diagram name..."
-            aria-label="Diagram name"
+            placeholder="Nombre del diagrama..."
+            aria-label="Nombre del diagrama"
             class="px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 backdrop-blur-sm min-w-[200px]"
           />
           <button
             onclick={saveDiagram}
             class="glass-gold px-4 py-2 rounded-lg text-white font-medium transition-all hover:scale-105"
           >
-            Save
+            Guardar
           </button>
           <button
             onclick={exportSVG}
             class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/30 font-medium transition-all"
           >
-            📥 Export
+            📥 Exportar
           </button>
           <button
             onclick={copyCode}
             class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/30 font-medium transition-all"
           >
-            📋 Copy
+            📋 Copiar
           </button>
           <button
             onclick={renderDiagram}
-            aria-label="Refresh diagram"
+            aria-label="Actualizar diagrama"
             class="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/30 font-medium transition-all hover:rotate-90"
           >
             ↻
@@ -341,7 +337,7 @@
       <!-- Editor Panel -->
       <div class="glass-enhanced rounded-2xl overflow-hidden flex flex-col">
         <div class="px-6 py-4 bg-white/10 border-b border-white/20 flex items-center justify-between">
-          <h3 class="text-sm font-semibold text-white uppercase tracking-wide">Editor</h3>
+          <h3 class="text-sm font-semibold text-white uppercase tracking-wide">Editor de Código</h3>
           <span class="px-3 py-1 rounded-full bg-gradient-to-r from-primary-500 to-primary-700 text-white text-xs font-medium">
             Mermaid Syntax
           </span>
@@ -350,7 +346,7 @@
           bind:value={diagramCode}
           oninput={handleInput}
           spellcheck="false"
-          aria-label="Diagram code editor"
+          aria-label="Editor de código del diagrama"
           placeholder="Start typing your Mermaid diagram..."
           class="flex-1 min-h-[500px] p-6 bg-white/5 text-white font-mono text-sm leading-relaxed focus:outline-none placeholder-white/40 resize-none"
         />
@@ -359,9 +355,9 @@
       <!-- Preview Panel -->
       <div class="glass-enhanced rounded-2xl overflow-hidden flex flex-col">
         <div class="px-6 py-4 bg-white/10 border-b border-white/20 flex items-center justify-between">
-          <h3 class="text-sm font-semibold text-white uppercase tracking-wide">Preview</h3>
+          <h3 class="text-sm font-semibold text-white uppercase tracking-wide">Vista Previa</h3>
           <span class="px-3 py-1 rounded-full bg-gradient-to-r from-primary-500 to-primary-700 text-white text-xs font-medium">
-            Live Render
+            Renderizado en Vivo
           </span>
         </div>
         <div class="flex-1 min-h-[500px] p-6 bg-gray-900 overflow-auto">
@@ -374,12 +370,12 @@
     <div class="glass-enhanced rounded-2xl p-6 mt-6">
       <div class="flex items-center justify-between mb-4">
         <div>
-          <h2 class="text-lg font-semibold text-white">Flowchart Patterns</h2>
-          <p class="text-white/60 text-sm mt-1">Progressive complexity — from a single path to a full system</p>
+          <h2 class="text-lg font-semibold text-white">Patrones de Diagramas</h2>
+          <p class="text-white/60 text-sm mt-1">Complejidad progresiva — desde un flujo simple hasta un sistema completo</p>
         </div>
         <div class="flex items-center gap-3">
           <span class="px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
-            Level {examples[currentExampleIndex].complexity}
+            Nivel {examples[currentExampleIndex].complexity}
           </span>
           <span class="px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
             {currentExampleIndex + 1} / {examples.length}
@@ -408,13 +404,13 @@
                 onclick={prevExample}
                 class="flex-1 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/30 font-medium transition-all"
               >
-                ← Prev
+                ← Anterior
               </button>
               <button
                 onclick={nextExample}
                 class="flex-1 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/30 font-medium transition-all"
               >
-                Next →
+                Siguiente →
               </button>
             </div>
 
@@ -422,24 +418,24 @@
               onclick={loadExample}
               class="w-full mt-3 px-4 py-2 rounded-lg bg-white/90 hover:bg-white text-primary-600 font-medium transition-all hover:scale-105"
             >
-              Load This Example
+              Cargar este ejemplo
             </button>
           </div>
 
           <div class="glass-accent rounded-xl p-4">
-            <h4 class="text-white/80 text-xs font-semibold uppercase tracking-wide mb-2">Complexity Progression</h4>
+            <h4 class="text-white/80 text-xs font-semibold uppercase tracking-wide mb-2">Progresión de Complejidad</h4>
             <div class="flex gap-1">
-              {#each Array(6) as _, i}
+              {#each Array(5) as _, i}
                 <div class="flex-1 h-2 rounded-full {i < examples[currentExampleIndex].complexity ? 'bg-primary-500' : 'bg-white/20'}"></div>
               {/each}
             </div>
             <p class="text-white/60 text-xs mt-2">
               {#if examples[currentExampleIndex].complexity <= 2}
-                Beginner — linear flows and simple decisions
-              {:else if examples[currentExampleIndex].complexity <= 4}
-                Intermediate — routing, parallel tracks
+                Principiante — actores, sistemas y subsistemas
+              {:else if examples[currentExampleIndex].complexity <= 3}
+                Intermedio — enrutamiento, tracks paralelos
               {:else}
-                Advanced — phases and full system journeys
+                Avanzado — fases y flujos de sistema completo
               {/if}
             </p>
           </div>
@@ -448,7 +444,7 @@
         <!-- Example Code Preview -->
         <div class="lg:col-span-2 glass-accent rounded-xl overflow-hidden">
           <div class="px-4 py-3 bg-white/5 border-b border-white/20">
-            <span class="text-white/80 text-xs font-mono">Preview Code</span>
+            <span class="text-white/80 text-xs font-mono">Vista previa del código</span>
           </div>
           <pre class="p-4 overflow-auto max-h-64 text-white/90 text-sm font-mono leading-relaxed">{examples[currentExampleIndex].code}</pre>
         </div>
@@ -459,7 +455,7 @@
     {#if savedDiagrams.length > 0}
       <div class="glass-enhanced rounded-2xl p-6 mt-6">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold text-white">Saved Diagrams</h2>
+          <h2 class="text-lg font-semibold text-white">Diagramas Guardados</h2>
           <span class="px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
             {savedDiagrams.length}
           </span>
@@ -481,13 +477,13 @@
               </button>
               {#if confirmingDelete === index}
                 <div class="flex flex-col gap-1 w-12">
-                  <button onclick={() => confirmDelete(index)} class="rounded-lg bg-red-500/40 hover:bg-red-500/60 border border-red-400/40 text-white text-xs font-medium transition-all py-1">Del</button>
+                  <button onclick={() => confirmDelete(index)} class="rounded-lg bg-red-500/40 hover:bg-red-500/60 border border-red-400/40 text-white text-xs font-medium transition-all py-1">Elim</button>
                   <button onclick={() => confirmingDelete = -1} class="rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white/60 text-xs transition-all py-1">No</button>
                 </div>
               {:else}
                 <button
                   onclick={() => requestDelete(index)}
-                  aria-label="Delete {diagram.name}"
+                  aria-label="Eliminar {diagram.name}"
                   class="w-12 rounded-lg bg-white/10 hover:bg-red-500/30 border border-white/20 hover:border-red-400/40 text-white hover:text-red-200 text-xl transition-all"
                 >
                   ×
