@@ -1,8 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap');
 @import 'tailwindcss';
 
 @theme {
 	--font-primary: 'Roboto', sans-serif;
+	--font-display: 'Fraunces', 'Georgia', serif;
+	--font-tech: 'IBM Plex Mono', ui-monospace, monospace;
+
+	/* Drafting-sheet palette (landing) */
+	--color-ink: #0d0b09;
+	--color-surface: #14110d;
+	--color-paper: #ede6da;
+	--color-brass: #c9a36a;
+	--color-brass-bright: #e4c08a;
+
 	--color-primary-50: oklch(0.977 0.013 236.62);
 	--color-primary-100: oklch(0.951 0.026 236.824);
 	--color-primary-200: oklch(0.901 0.058 230.902);
@@ -95,6 +106,80 @@
 
 .text-shadow {
 	text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* ---------------------------------------------------------------- */
+/* Drafting sheet — landing page design system                       */
+/* ---------------------------------------------------------------- */
+
+/* Ink-black graph paper: fine 24px grid + major 96px grid + vignette */
+.sheet-bg {
+	background-color: var(--color-ink);
+	background-image:
+		radial-gradient(ellipse 120% 80% at 50% -10%, rgba(201, 163, 106, 0.07), transparent 60%),
+		linear-gradient(rgba(237, 230, 218, 0.05) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(237, 230, 218, 0.05) 1px, transparent 1px),
+		linear-gradient(rgba(237, 230, 218, 0.022) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(237, 230, 218, 0.022) 1px, transparent 1px);
+	background-size:
+		100% 100%,
+		96px 96px,
+		96px 96px,
+		24px 24px,
+		24px 24px;
+}
+
+/* Film grain over the sheet, fixed so it doesn't scroll with content */
+.grain::after {
+	content: '';
+	position: fixed;
+	inset: 0;
+	z-index: 50;
+	pointer-events: none;
+	opacity: 0.35;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+}
+
+/* Registration mark — the "+" crosshair at frame corners */
+.reg-mark {
+	position: absolute;
+	width: 17px;
+	height: 17px;
+	pointer-events: none;
+}
+.reg-mark::before,
+.reg-mark::after {
+	content: '';
+	position: absolute;
+	background: rgba(201, 163, 106, 0.55);
+}
+.reg-mark::before {
+	left: 8px;
+	top: 0;
+	width: 1px;
+	height: 17px;
+}
+.reg-mark::after {
+	top: 8px;
+	left: 0;
+	height: 1px;
+	width: 17px;
+}
+
+/* Staggered page-load reveal — set --d per element */
+@keyframes rise {
+	from {
+		opacity: 0;
+		transform: translateY(18px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+.rise {
+	animation: rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+	animation-delay: var(--d, 0s);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,37 +1,32 @@
 <script>
-	import { page } from '$app/stores';
-
 	const links = [
+		{ href: '/#doctrine', label: 'Doctrine' },
 		{ href: '/#flagship', label: 'Flagship' },
-		{ href: '/flowchart', label: 'Flowchart' },
-		{ href: '/sequence', label: 'Sequence' },
-		{ href: '/state', label: 'State' },
-		{ href: '/class', label: 'Class' }
+		{ href: '/#studio', label: 'Studio' }
 	];
 </script>
 
-<div class="glass-enhanced mb-6 rounded-2xl p-4">
-	<div class="flex flex-wrap items-center gap-6">
-		<a
-			href="/"
-			class="mr-2 font-semibold tracking-tight text-white transition-colors hover:text-amber-200"
-		>
-			Art <span class="text-amber-300">Vandelay</span>
+<header class="border-b border-paper/15">
+	<div class="mx-auto flex max-w-6xl items-baseline justify-between px-6 py-5">
+		<a href="/" class="group flex items-baseline gap-3">
+			<span
+				class="font-tech text-sm font-medium tracking-[0.25em] text-paper uppercase transition-colors group-hover:text-brass-bright"
+			>
+				Art Vandelay
+			</span>
+			<span class="hidden font-tech text-[10px] tracking-[0.2em] text-paper/35 uppercase sm:inline">
+				Import / Export
+			</span>
 		</a>
-		<div class="h-5 w-px bg-white/20"></div>
-		<div class="flex flex-wrap items-center gap-2">
+		<nav class="flex items-baseline gap-6 sm:gap-8">
 			{#each links as { href, label }}
-				{@const active = $page.url.pathname === href}
 				<a
 					{href}
-					class="rounded-lg px-4 py-2 font-medium transition-all
-          {active
-						? 'border border-amber-400/30 bg-amber-500/15 text-amber-200'
-						: 'bg-white/10 text-white/70 hover:bg-white/20 hover:text-white'}"
+					class="font-tech text-[11px] tracking-[0.2em] text-paper/55 uppercase transition-colors hover:text-brass-bright"
 				>
 					{label}
 				</a>
 			{/each}
-		</div>
+		</nav>
 	</div>
-</div>
+</header>
