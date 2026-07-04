@@ -1,5 +1,6 @@
 {
   "name": "verify",
+  "version": "0.1.0",
   "description": "Install and drive real browser-based verification with Playwright — confirm a change actually rendered instead of just reporting it done.",
   "author": {
     "name": "Art Vandelay"

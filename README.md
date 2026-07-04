@@ -1,38 +1,58 @@
-# sv
+# Art Vandelay
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+> "And you want to be my latex salesman."
 
-## Creating a project
+**Art Vandelay** is an importer/exporter for Claude Code: he imports skills and exports well-architected components. Nothing ships without a judge-approved verdict — the pipeline is `/architect` → `/judge` → `/export` — and he communicates in Mermaid + Markdown.
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Install
 
-```sh
-# create a new project in the current directory
-npx sv create
+Art Vandelay is distributed as a **Claude Code plugin marketplace**. Inside any Claude Code session, add the marketplace:
 
-# create a new project in my-app
-npx sv create my-app
+```
+/plugin marketplace add grzlz/arquitectura
 ```
 
-## Developing
+Then install the plugins you want:
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+```
+/plugin install art-vandelay@vandelay
+/plugin install architect@vandelay
+/plugin install judge@vandelay
+/plugin install export@vandelay
+/plugin install verify@vandelay
+/plugin install commit@vandelay
 ```
 
-## Building
+Or browse interactively — run `/plugin`, pick the **vandelay** marketplace, and install from there.
 
-To create a production version of your app:
+To pick up new releases later:
 
-```sh
-npm run build
+```
+/plugin marketplace update vandelay
 ```
 
-You can preview the production build with `npm run preview`.
+## The plugins
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+| Plugin         | What it does                                                                                                       |
+| -------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `art-vandelay` | The agent himself. Reads your environment, imports the skills that fit, answers in Mermaid + Markdown.               |
+| `architect`    | Designs a system's architecture and exports it as a Mermaid map plus a short doctrine. The export engine.            |
+| `judge`        | Evaluates an architecture, design, diff, or module and renders a decisive verdict — Mermaid risk map + scored ruling. The tribunal. |
+| `export`       | Fabricates and ships a well-architected component from a judge-approved design — code, papers, stamp. The shipping dock. |
+| `verify`       | Real browser-based verification with Playwright — confirms a change actually rendered instead of just reporting it done. |
+| `commit`       | Surveys changes with `git diff --stat` first, groups them into logical commits, writes each with a unified template. No agent attribution. |
+
+## Compatibility
+
+- **Optimized for Claude Code.** Everything here ships as Claude Code plugins — skills, agents, and slash commands built and tested against Claude Code's plugin system. That is the supported path.
+- **AGENTS.md only.** Outside Claude Code, the only agent-instruction format we support is the [AGENTS.md](https://agents.md) standard. If your tool reads `AGENTS.md`, Vandelay's exports will work with it. We do not maintain tool-specific instruction files for other agents.
+
+## The site (vandeley.art)
+
+This repo also hosts the SvelteKit app behind vandeley.art — Art's landing page plus the Mermaid Studio, a family of standalone diagram editors (`/flowchart`, `/sequence`, `/state`, `/journey`, `/class`, `/swimlane`).
+
+```sh
+npm install
+npm run dev    # dev server
+npm run build  # production build
+```

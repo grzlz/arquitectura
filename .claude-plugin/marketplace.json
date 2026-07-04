@@ -1,0 +1,39 @@
+{
+	"name": "vandelay",
+	"description": "Art Vandelay's imported skills — importer/exporter of well-architected agents and skills.",
+	"owner": {
+		"name": "Art Vandelay"
+	},
+	"plugins": [
+		{
+			"name": "art-vandelay",
+			"source": "./plugins/art-vandelay",
+			"description": "Art Vandelay — importer/exporter of well-architected skills. Reads your environment, imports the skills that fit, and answers in Mermaid + Markdown."
+		},
+		{
+			"name": "architect",
+			"source": "./plugins/architect",
+			"description": "Design a system's architecture and export it as a Mermaid map plus a short doctrine. Art Vandelay's export engine."
+		},
+		{
+			"name": "judge",
+			"source": "./plugins/judge",
+			"description": "Evaluate an existing architecture, design, diff, or module and render a decisive verdict as a Mermaid risk map plus a scored ruling. Art Vandelay's tribunal."
+		},
+		{
+			"name": "export",
+			"source": "./plugins/export",
+			"description": "Fabricate and ship a well-architected component from a judge-approved design — code plus papers plus stamp. Art Vandelay's shipping dock."
+		},
+		{
+			"name": "verify",
+			"source": "./plugins/verify",
+			"description": "Install and drive real browser-based verification with Playwright — confirm a change actually rendered instead of just reporting it done."
+		},
+		{
+			"name": "commit",
+			"source": "./plugins/commit",
+			"description": "Survey git changes with diff --stat first, group them into logical commits, and write each with a unified template. No agent attribution."
+		}
+	]
+}

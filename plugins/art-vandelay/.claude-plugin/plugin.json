@@ -1,5 +1,6 @@
 {
   "name": "art-vandelay",
+  "version": "0.1.0",
   "description": "Art Vandelay — importer/exporter of well-architected skills. Reads your environment, imports the skills that fit, and answers in Mermaid + Markdown.",
   "author": {
     "name": "Art Vandelay"
