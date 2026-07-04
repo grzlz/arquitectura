@@ -1,14 +1,14 @@
 {
-	"name": "vandelay",
-	"description": "Art Vandelay's imported skills — importer/exporter of well-architected agents and skills.",
+	"name": "vandeley",
+	"description": "Art Vandeley's imported skills — importer/exporter of well-architected agents and skills.",
 	"owner": {
-		"name": "Art Vandelay"
+		"name": "Art Vandeley"
 	},
 	"plugins": [
 		{
-			"name": "art-vandelay",
-			"source": "./plugins/art-vandelay",
-			"description": "Art Vandelay — importer/exporter of well-architected skills. One install: the agent, /hello-art, and his full skill crate (architect, judge, export, verify, commit). Reads your environment, imports the skills that fit, and answers in Mermaid + Markdown."
+			"name": "art-vandeley",
+			"source": "./plugins/art-vandeley",
+			"description": "Art Vandeley — importer/exporter of well-architected skills. One install: the agent, /hello-art, and his full skill crate (architect, judge, export, verify, commit). Reads your environment, imports the skills that fit, and answers in Mermaid + Markdown."
 		}
 	]
 }

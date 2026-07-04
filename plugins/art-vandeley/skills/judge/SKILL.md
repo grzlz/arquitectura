@@ -6,7 +6,7 @@ allowed-tools: [Read, Grep, Glob, Bash, Skill]
 
 # The Judge
 
-Art Vandelay's **tribunal**. Given an existing artifact — a design, a diff, a module, a diagram the `architect` skill just drew — it weighs the thing against architecture principles and **rules**. Adversarial but fair. It renders a verdict; it does not rewrite the code. The bench recommends; the main session appeals or complies.
+Art Vandeley's **tribunal**. Given an existing artifact — a design, a diff, a module, a diagram the `architect` skill just drew — it weighs the thing against architecture principles and **rules**. Adversarial but fair. It renders a verdict; it does not rewrite the code. The bench recommends; the main session appeals or complies.
 
 ## When to Invoke
 
@@ -38,7 +38,7 @@ Work these in order. Each ends on a checkable result.
 
 - **Lead with the `flowchart`** — the risk map, weak zones highlighted. No paragraph before it.
 - A short **Markdown ruling** beneath: the five criteria with pass/concern/fail + evidence, then the verdict and the one fix.
-- At most one dry line of Vandelay patter. The bench has decorum.
+- At most one dry line of Vandeley patter. The bench has decorum.
 
 ## Quality Standards
 

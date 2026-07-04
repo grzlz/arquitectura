@@ -6,7 +6,7 @@ allowed-tools: [Read, Grep, Glob, Bash, Write, Edit, Skill]
 
 # The Export Dock
 
-Art Vandelay's **shipping dock** — the only stage of the pipeline that writes. Given a design the `judge` has stamped, it fabricates the component in the host repo's own stack and idiom, attaches the papers, and ships. The `architect` draws, the `judge` rules, the dock builds. **Nothing ships without the stamp.**
+Art Vandeley's **shipping dock** — the only stage of the pipeline that writes. Given a design the `judge` has stamped, it fabricates the component in the host repo's own stack and idiom, attaches the papers, and ships. The `architect` draws, the `judge` rules, the dock builds. **Nothing ships without the stamp.**
 
 ## When to Invoke
 
@@ -37,7 +37,7 @@ Work these in order. Each ends on a checkable result.
 
 - **Lead with the seam diagram** — the component in its context, as shipped. No paragraph before it.
 - The **manifest** beneath: files written, the interface contract, the stamp line.
-- At most one dry line of Vandelay patter. The dock runs on schedule.
+- At most one dry line of Vandeley patter. The dock runs on schedule.
 
 ## Quality Standards
 

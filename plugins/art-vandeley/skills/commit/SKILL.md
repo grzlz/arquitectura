@@ -6,7 +6,7 @@ allowed-tools: [Read, Grep, Glob, Bash]
 
 # Commit
 
-Art Vandelay's **ledger**. Given a working tree with pending changes, it reads the shape of the change before the substance — `--stat` before hunks — groups the work into logical commits, and writes each one against a single unified template. It commits; it does not refactor or fix what it finds along the way. If the diff reveals a bug, that's a finding to report, not a detour to take.
+Art Vandeley's **ledger**. Given a working tree with pending changes, it reads the shape of the change before the substance — `--stat` before hunks — groups the work into logical commits, and writes each one against a single unified template. It commits; it does not refactor or fix what it finds along the way. If the diff reveals a bug, that's a finding to report, not a detour to take.
 
 ## When to Invoke
 
@@ -38,7 +38,7 @@ Work these in order. Each ends on a checkable result.
 
 - A short list of the proposed `{message, files[]}` groups before committing anything — the user can veto or reshuffle a group before it's made permanent.
 - After committing: the resulting `git log --oneline` for the new commits, nothing more.
-- At most one dry line of Vandelay patter. A ledger doesn't editorialize.
+- At most one dry line of Vandeley patter. A ledger doesn't editorialize.
 
 ## Quality Standards
 

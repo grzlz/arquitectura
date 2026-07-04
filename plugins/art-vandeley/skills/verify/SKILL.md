@@ -6,7 +6,7 @@ allowed-tools: [Read, Grep, Glob, Bash, Write]
 
 # Verify
 
-Art Vandelay's **closed loop**. This project was burned once: a port was trusted, a screenshot was taken of the wrong app entirely (`~/wsr/sei`, a Campeche government portal squatting on `localhost:5173`), and a change was reported as done without ever confirming it rendered. This skill exists so that never happens again. It drives a real browser against a *confirmed* dev server and reads the result back. It does not rewrite code — it closes the loop the main session left open.
+Art Vandeley's **closed loop**. This project was burned once: a port was trusted, a screenshot was taken of the wrong app entirely (`~/wsr/sei`, a Campeche government portal squatting on `localhost:5173`), and a change was reported as done without ever confirming it rendered. This skill exists so that never happens again. It drives a real browser against a *confirmed* dev server and reads the result back. It does not rewrite code — it closes the loop the main session left open.
 
 ## When to Invoke
 
@@ -30,7 +30,7 @@ Work these in order. Each ends on a checkable result.
 
 - **Lead with the `flowchart`** — the verification loop for this run, ports and paths named. No paragraph before it.
 - A short **Markdown verdict** beneath it: the confirmed dev-server origin, the before/after screenshot paths, and the one-line verdict from step 6.
-- At most one dry line of Vandelay patter. A screenshot of the wrong warehouse is still a screenshot of the wrong warehouse.
+- At most one dry line of Vandeley patter. A screenshot of the wrong warehouse is still a screenshot of the wrong warehouse.
 
 ## Quality Standards
 

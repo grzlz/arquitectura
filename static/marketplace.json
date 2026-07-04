@@ -1,23 +1,23 @@
 {
-  "name": "vandelay",
-  "description": "Art Vandelay's imported skills — importer/exporter of well-architected agents and skills.",
+  "name": "vandeley",
+  "description": "Art Vandeley's imported skills — importer/exporter of well-architected agents and skills.",
   "owner": {
-    "name": "Art Vandelay"
+    "name": "Art Vandeley"
   },
   "plugins": [
     {
-      "name": "art-vandelay",
-      "description": "Art Vandelay — importer/exporter of well-architected skills. Reads your environment, imports the skills that fit, and answers in Mermaid + Markdown.",
+      "name": "art-vandeley",
+      "description": "Art Vandeley — importer/exporter of well-architected skills. Reads your environment, imports the skills that fit, and answers in Mermaid + Markdown.",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/grzlz/arquitectura.git",
-        "path": "plugins/art-vandelay",
+        "path": "plugins/art-vandeley",
         "ref": "main"
       }
     },
     {
       "name": "architect",
-      "description": "Design a system's architecture and export it as a Mermaid map plus a short doctrine. Art Vandelay's export engine.",
+      "description": "Design a system's architecture and export it as a Mermaid map plus a short doctrine. Art Vandeley's export engine.",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/grzlz/arquitectura.git",
@@ -27,7 +27,7 @@
     },
     {
       "name": "judge",
-      "description": "Evaluate an existing architecture, design, diff, or module and render a decisive verdict as a Mermaid risk map plus a scored ruling. Art Vandelay's tribunal.",
+      "description": "Evaluate an existing architecture, design, diff, or module and render a decisive verdict as a Mermaid risk map plus a scored ruling. Art Vandeley's tribunal.",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/grzlz/arquitectura.git",

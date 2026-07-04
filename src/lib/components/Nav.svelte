@@ -13,7 +13,7 @@
 			<span
 				class="font-tech text-sm font-medium tracking-[0.25em] text-paper uppercase transition-colors group-hover:text-brass-bright"
 			>
-				Art Vandelay
+				Art Vandeley
 			</span>
 			<span class="hidden font-tech text-[10px] tracking-[0.2em] text-paper/35 uppercase sm:inline">
 				Import / Export

@@ -9,7 +9,7 @@
 	let flagshipError = $state('');
 
 	const heroDiagram = `flowchart LR
-  ENV[["Your environment<br/>repo · stack · task"]] ==>|reads the room| ART(("Art<br/>Vandelay"))
+  ENV[["Your environment<br/>repo · stack · task"]] ==>|reads the room| ART(("Art<br/>Vandeley"))
   ART ==>|imports| FIT["Skills that fit"]
   ART ==>|exports| WELL["Well-architected<br/>components"]
   ART -.speaks in.-> DIAG{{"Mermaid + Markdown"}}`;
@@ -70,7 +70,7 @@
 	];
 
 	const marketplaceCommand = '/plugin marketplace add grzlz/arquitectura';
-	const installCommands = ['/plugin install art-vandelay@vandelay'];
+	const installCommands = ['/plugin install art-vandeley@vandeley'];
 	const crateSkills = ['architect', 'judge', 'export', 'verify', 'commit'];
 
 	let copied = $state('');
@@ -129,7 +129,7 @@
 </script>
 
 <svelte:head>
-	<title>Art Vandelay — Importer of Skills, Exporter of Well-Architected Components</title>
+	<title>Art Vandeley — Importer of Skills, Exporter of Well-Architected Components</title>
 </svelte:head>
 
 <div class="sheet-bg grain min-h-screen font-tech text-paper selection:bg-brass selection:text-ink">
@@ -147,7 +147,7 @@
 				class="rise mb-10 flex flex-wrap items-baseline justify-between gap-2 text-[10px] tracking-[0.25em] text-paper/35 uppercase"
 				style="--d: 0s"
 			>
-				<span>Vandelay Industries · Import / Export Division</span>
+				<span>Vandeley Industries · Import / Export Division</span>
 				<span class="text-brass/70">DWG № AV-001 · Rev A</span>
 			</div>
 
@@ -160,9 +160,9 @@
 			</h1>
 
 			<p class="rise mt-8 max-w-xl text-sm leading-relaxed text-paper/55" style="--d: 0.18s">
-				Art Vandelay reads your environment, imports the skills that fit, and ships components with
+				Art Vandeley reads your environment, imports the skills that fit, and ships components with
 				papers — drawn at the drafting table, tried by the tribunal, stamped at the dock. Yes —
-				<em class="text-paper/75">that</em> Art Vandelay. The cover story finally landed a real job.
+				<em class="text-paper/75">that</em> Art Vandeley. The cover story finally landed a real job.
 			</p>
 
 			<div class="rise mt-10 flex flex-wrap items-center gap-6" style="--d: 0.28s">
@@ -271,7 +271,7 @@
 						Dock the marketplace
 					</h3>
 					<p class="mt-5 max-w-md text-sm leading-relaxed text-paper/55">
-						One line registers the <span class="text-brass-bright">vandelay</span> marketplace with Claude
+						One line registers the <span class="text-brass-bright">vandeley</span> marketplace with Claude
 						Code. Art clears customs under his legal name.
 					</p>
 					<div
@@ -330,7 +330,7 @@
 			</div>
 
 			<p class="mt-4 text-xs text-paper/40">
-				New releases later — <code class="text-brass/90">/plugin marketplace update vandelay</code>.
+				New releases later — <code class="text-brass/90">/plugin marketplace update vandeley</code>.
 				Same dock, fresh cargo.
 			</p>
 		</section>
@@ -369,7 +369,7 @@
 			<div
 				class="grid grid-cols-2 gap-px border border-paper/15 bg-paper/15 text-[10px] tracking-[0.2em] uppercase md:grid-cols-5"
 			>
-				{#each [['Drawn by', 'A. Vandelay'], ['Checked', 'H.E. Pennypacker'], ['Firm', 'Vandelay Industries'], ['Scale', 'None'], ['Sheet', '1 of 1']] as [k, v]}
+				{#each [['Drawn by', 'A. Vandeley'], ['Checked', 'H.E. Pennypacker'], ['Firm', 'Vandeley Industries'], ['Scale', 'None'], ['Sheet', '1 of 1']] as [k, v]}
 					<div class="bg-ink px-4 py-3">
 						<p class="mb-1 text-paper/30">{k}</p>
 						<p class="text-paper/70">{v}</p>
