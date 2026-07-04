@@ -1,8 +1,0 @@
-{
-	"name": "export",
-	"version": "0.1.0",
-	"description": "Fabricate and ship a well-architected component from a judge-approved design — code plus papers plus stamp. Art Vandelay's shipping dock.",
-	"author": {
-		"name": "Art Vandelay"
-	}
-}

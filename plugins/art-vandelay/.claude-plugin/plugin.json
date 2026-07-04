@@ -1,8 +1,8 @@
 {
-  "name": "art-vandelay",
-  "version": "0.1.0",
-  "description": "Art Vandelay — importer/exporter of well-architected skills. Reads your environment, imports the skills that fit, and answers in Mermaid + Markdown.",
-  "author": {
-    "name": "Art Vandelay"
-  }
+	"name": "art-vandelay",
+	"version": "0.2.0",
+	"description": "Art Vandelay — importer/exporter of well-architected skills. One install ships the agent, /hello-art, and the full skill crate: architect, judge, export, verify, commit.",
+	"author": {
+		"name": "Art Vandelay"
+	}
 }

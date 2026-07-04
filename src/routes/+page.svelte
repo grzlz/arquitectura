@@ -70,14 +70,8 @@
 	];
 
 	const marketplaceCommand = '/plugin marketplace add grzlz/arquitectura';
-	const installCommands = [
-		'/plugin install art-vandelay@vandelay',
-		'/plugin install architect@vandelay',
-		'/plugin install judge@vandelay',
-		'/plugin install export@vandelay',
-		'/plugin install verify@vandelay',
-		'/plugin install commit@vandelay'
-	];
+	const installCommands = ['/plugin install art-vandelay@vandelay'];
+	const crateSkills = ['architect', 'judge', 'export', 'verify', 'commit'];
 
 	let copied = $state('');
 	let copyResetTimer;
@@ -300,19 +294,19 @@
 					<p class="mb-1 text-[10px] tracking-[0.25em] text-paper/35 uppercase">Step 02</p>
 					<h3 class="font-display text-3xl font-light text-paper md:text-4xl">Import the cargo</h3>
 					<p class="mt-5 max-w-md text-sm leading-relaxed text-paper/55">
-						Take the whole manifest — or run <code class="text-brass/90">/plugin</code>, pick
-						<span class="text-brass-bright">vandelay</span>, and browse the shelves.
+						One crate, everything inside — the agent, <code class="text-brass/90">/hello-art</code>,
+						and his five skills. Art packs his own luggage.
 					</p>
 					<div class="mt-6 border border-paper/15 bg-surface">
 						<div class="flex items-center justify-between border-b border-paper/15 px-4 py-2">
 							<span class="text-[10px] tracking-[0.25em] text-paper/35 uppercase">
-								Manifest · 6 items
+								Manifest · 1 crate
 							</span>
 							<button
 								onclick={() => copyCommand(installCommands.join('\n'), 'manifest')}
 								class="cursor-pointer text-[10px] tracking-[0.2em] text-paper/40 uppercase transition-colors hover:text-brass-bright"
 							>
-								{copied === 'manifest' ? 'Copied ✓' : 'Copy all'}
+								{copied === 'manifest' ? 'Copied ✓' : 'Copy'}
 							</button>
 						</div>
 						<div class="overflow-x-auto px-4 py-3">
@@ -322,6 +316,14 @@
 									<span class="text-brass-bright">{command}</span>
 								</div>
 							{/each}
+							<div class="mt-2 flex flex-wrap gap-x-3 gap-y-1 border-t border-paper/10 pt-3">
+								{#each crateSkills as skill (skill)}
+									<span class="text-xs whitespace-nowrap text-paper/45">
+										<span class="text-brass/70">▸</span>
+										{skill}
+									</span>
+								{/each}
+							</div>
 						</div>
 					</div>
 				</div>

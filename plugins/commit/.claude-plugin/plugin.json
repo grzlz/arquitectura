@@ -1,8 +1,0 @@
-{
-  "name": "commit",
-  "version": "0.1.0",
-  "description": "Survey git changes with diff --stat first, group them into logical commits, and write each with a unified template. No agent attribution.",
-  "author": {
-    "name": "Art Vandelay"
-  }
-}

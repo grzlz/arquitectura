@@ -1,8 +1,0 @@
-{
-  "name": "architect",
-  "version": "0.1.0",
-  "description": "Design a system's architecture and export it as a Mermaid map plus a short doctrine. Art Vandelay's export engine.",
-  "author": {
-    "name": "Art Vandelay"
-  }
-}
