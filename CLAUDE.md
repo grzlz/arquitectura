@@ -12,12 +12,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture
 
-**Mermaid Flowchart Studio** — a SvelteKit 5 app for editing and previewing Mermaid diagrams. Each route is a standalone diagram editor for a specific diagram type.
+**Art Vandelay** — a SvelteKit 5 app fronting *Art Vandelay*, an agent that imports/exports well-architected skills and communicates in Mermaid + Markdown. `/` is Art's landing (his identity + doctrine); **the Mermaid Studio is now a feature**, a family of standalone diagram editors (one route per diagram type). The agent itself lives in `.claude/` (`agents/art-vandelay.md`, `commands/hello-art.md`).
 
 ### Routes → diagram types
 | Route | Type |
 |---|---|
-| `/` | General flowcharts (graph LR/TD/TB) |
+| `/` | Art Vandelay landing (brand/identity, not an editor) |
+| `/flowchart` | General flowcharts (graph LR/TD/TB) |
 | `/sequence` | Sequence diagrams |
 | `/state` | State machine diagrams |
 | `/journey` | User journey diagrams |

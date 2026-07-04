@@ -2,17 +2,18 @@
   import { page } from '$app/stores';
 
   const links = [
-    { href: '/', label: 'Flowchart' },
+    { href: '/flowchart', label: 'Flowchart' },
     { href: '/sequence', label: 'Sequence' },
+    { href: '/state', label: 'State' },
     { href: '/class', label: 'Class' },
   ];
 </script>
 
 <div class="glass-enhanced rounded-2xl p-4 mb-6">
   <div class="flex items-center gap-6 flex-wrap">
-    <span class="text-white font-semibold tracking-tight mr-2">
-      Architect's <span class="text-amber-300">Studio</span>
-    </span>
+    <a href="/" class="text-white font-semibold tracking-tight mr-2 transition-colors hover:text-amber-200">
+      Art <span class="text-amber-300">Vandelay</span>
+    </a>
     <div class="w-px h-5 bg-white/20"></div>
     <div class="flex items-center gap-2 flex-wrap">
       {#each links as { href, label }}
