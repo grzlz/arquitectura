@@ -69,6 +69,29 @@
 		{ href: '/swimlane', label: 'Swimlane', desc: 'subgraph lanes' }
 	];
 
+	const marketplaceCommand = '/plugin marketplace add grzlz/arquitectura';
+	const installCommands = [
+		'/plugin install art-vandelay@vandelay',
+		'/plugin install architect@vandelay',
+		'/plugin install judge@vandelay',
+		'/plugin install export@vandelay',
+		'/plugin install verify@vandelay',
+		'/plugin install commit@vandelay'
+	];
+
+	let copied = $state('');
+	let copyResetTimer;
+	async function copyCommand(text, key) {
+		try {
+			await navigator.clipboard.writeText(text);
+			copied = key;
+			clearTimeout(copyResetTimer);
+			copyResetTimer = setTimeout(() => (copied = ''), 1800);
+		} catch {
+			// clipboard unavailable — leave the button label alone
+		}
+	}
+
 	onMount(async () => {
 		if (!browser) return;
 		let mermaid;
@@ -234,6 +257,80 @@
 					<span class="text-brass/70">Fig. 2</span> — The pipeline
 				</figcaption>
 			</figure>
+		</section>
+
+		<!-- Install — customs & onboarding -->
+		<section id="install" class="mb-24 scroll-mt-10">
+			<div class="mb-8 flex flex-wrap items-baseline justify-between gap-2">
+				<h2 class="text-[10px] tracking-[0.3em] text-brass/70 uppercase">
+					Customs &amp; Onboarding
+				</h2>
+				<p class="text-xs text-paper/40">
+					Two lines inside any Claude Code session, and Art's aboard.
+				</p>
+			</div>
+
+			<div class="grid gap-px border border-paper/15 bg-paper/15 md:grid-cols-2">
+				<div class="bg-ink p-8 transition-colors hover:bg-surface">
+					<p class="mb-1 text-[10px] tracking-[0.25em] text-paper/35 uppercase">Step 01</p>
+					<h3 class="font-display text-3xl font-light text-paper md:text-4xl">
+						Dock the marketplace
+					</h3>
+					<p class="mt-5 max-w-md text-sm leading-relaxed text-paper/55">
+						One line registers the <span class="text-brass-bright">vandelay</span> marketplace with Claude
+						Code. Art clears customs under his legal name.
+					</p>
+					<div
+						class="mt-6 flex items-center justify-between gap-4 border border-paper/15 bg-surface px-4 py-3"
+					>
+						<code class="overflow-x-auto text-sm whitespace-nowrap text-brass-bright">
+							<span class="text-paper/30">❯</span>
+							{marketplaceCommand}
+						</code>
+						<button
+							onclick={() => copyCommand(marketplaceCommand, 'marketplace')}
+							class="shrink-0 cursor-pointer text-[10px] tracking-[0.2em] text-paper/40 uppercase transition-colors hover:text-brass-bright"
+						>
+							{copied === 'marketplace' ? 'Copied ✓' : 'Copy'}
+						</button>
+					</div>
+				</div>
+
+				<div class="bg-ink p-8 transition-colors hover:bg-surface">
+					<p class="mb-1 text-[10px] tracking-[0.25em] text-paper/35 uppercase">Step 02</p>
+					<h3 class="font-display text-3xl font-light text-paper md:text-4xl">Import the cargo</h3>
+					<p class="mt-5 max-w-md text-sm leading-relaxed text-paper/55">
+						Take the whole manifest — or run <code class="text-brass/90">/plugin</code>, pick
+						<span class="text-brass-bright">vandelay</span>, and browse the shelves.
+					</p>
+					<div class="mt-6 border border-paper/15 bg-surface">
+						<div class="flex items-center justify-between border-b border-paper/15 px-4 py-2">
+							<span class="text-[10px] tracking-[0.25em] text-paper/35 uppercase">
+								Manifest · 6 items
+							</span>
+							<button
+								onclick={() => copyCommand(installCommands.join('\n'), 'manifest')}
+								class="cursor-pointer text-[10px] tracking-[0.2em] text-paper/40 uppercase transition-colors hover:text-brass-bright"
+							>
+								{copied === 'manifest' ? 'Copied ✓' : 'Copy all'}
+							</button>
+						</div>
+						<div class="overflow-x-auto px-4 py-3">
+							{#each installCommands as command (command)}
+								<div class="text-sm leading-7 whitespace-nowrap">
+									<span class="text-paper/30">❯</span>
+									<span class="text-brass-bright">{command}</span>
+								</div>
+							{/each}
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<p class="mt-4 text-xs text-paper/40">
+				New releases later — <code class="text-brass/90">/plugin marketplace update vandelay</code>.
+				Same dock, fresh cargo.
+			</p>
 		</section>
 
 		<!-- Studio — index of drawing sheets -->

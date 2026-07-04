@@ -2,7 +2,8 @@
 	const links = [
 		{ href: '/#doctrine', label: 'Doctrine' },
 		{ href: '/#flagship', label: 'Flagship' },
-		{ href: '/#studio', label: 'Studio' }
+		{ href: '/#studio', label: 'Studio' },
+		{ href: '/#install', label: 'Install', cta: true }
 	];
 </script>
 
@@ -18,11 +19,13 @@
 				Import / Export
 			</span>
 		</a>
-		<nav class="flex items-baseline gap-6 sm:gap-8">
-			{#each links as { href, label }}
+		<nav class="flex items-center gap-4 sm:gap-8">
+			{#each links as { href, label, cta } (href)}
 				<a
 					{href}
-					class="font-tech text-[11px] tracking-[0.2em] text-paper/55 uppercase transition-colors hover:text-brass-bright"
+					class={cta
+						? 'border border-brass/60 bg-brass/10 px-3.5 py-1.5 font-tech text-[11px] tracking-[0.2em] text-brass-bright uppercase transition-all hover:border-brass hover:bg-brass hover:text-ink'
+						: 'font-tech text-[11px] tracking-[0.2em] text-paper/55 uppercase transition-colors hover:text-brass-bright'}
 				>
 					{label}
 				</a>
