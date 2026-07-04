@@ -1,0 +1,59 @@
+{
+  "name": "vandelay",
+  "description": "Art Vandelay's imported skills — importer/exporter of well-architected agents and skills.",
+  "owner": {
+    "name": "Art Vandelay"
+  },
+  "plugins": [
+    {
+      "name": "art-vandelay",
+      "description": "Art Vandelay — importer/exporter of well-architected skills. Reads your environment, imports the skills that fit, and answers in Mermaid + Markdown.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/grzlz/arquitectura.git",
+        "path": "plugins/art-vandelay",
+        "ref": "main"
+      }
+    },
+    {
+      "name": "architect",
+      "description": "Design a system's architecture and export it as a Mermaid map plus a short doctrine. Art Vandelay's export engine.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/grzlz/arquitectura.git",
+        "path": "plugins/architect",
+        "ref": "main"
+      }
+    },
+    {
+      "name": "judge",
+      "description": "Evaluate an existing architecture, design, diff, or module and render a decisive verdict as a Mermaid risk map plus a scored ruling. Art Vandelay's tribunal.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/grzlz/arquitectura.git",
+        "path": "plugins/judge",
+        "ref": "main"
+      }
+    },
+    {
+      "name": "verify",
+      "description": "Install and drive real browser-based verification with Playwright — confirm a change actually rendered instead of just reporting it done.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/grzlz/arquitectura.git",
+        "path": "plugins/verify",
+        "ref": "main"
+      }
+    },
+    {
+      "name": "commit",
+      "description": "Survey git changes with diff --stat first, group them into logical commits, and write each with a unified template. No agent attribution.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/grzlz/arquitectura.git",
+        "path": "plugins/commit",
+        "ref": "main"
+      }
+    }
+  ]
+}
