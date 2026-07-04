@@ -6,22 +6,23 @@ Instructions for converting the Mermaid Flowchart Studio to dark mode using Lazy
 
 ### Navigation Within a Line
 
-| Command | Action | Example |
-|---------|--------|---------|
-| `l` | Move right one character | Slow for long distances |
-| `h` | Move left one character | Slow for long distances |
-| `w` | Jump to **start** of next word | Fast horizontal movement |
-| `b` | Jump **back** to start of previous word | Reverse of `w` |
-| `e` | Jump to **end** of current/next word | Useful before append |
-| `$` | Jump to **end of line** | Quick line-end access |
-| `0` | Jump to **beginning of line** (column 0) | Absolute start |
-| `^` | Jump to **first non-whitespace** character | Smart start |
-| `f{char}` | **Find** next occurrence of `{char}` on line | `f"` finds next quote |
-| `t{char}` | Jump **to** (before) next `{char}` | `t"` stops before quote |
-| `;` | Repeat last `f` or `t` motion | Find next occurrence |
-| `,` | Repeat last `f` or `t` backwards | Find previous |
+| Command   | Action                                       | Example                  |
+| --------- | -------------------------------------------- | ------------------------ |
+| `l`       | Move right one character                     | Slow for long distances  |
+| `h`       | Move left one character                      | Slow for long distances  |
+| `w`       | Jump to **start** of next word               | Fast horizontal movement |
+| `b`       | Jump **back** to start of previous word      | Reverse of `w`           |
+| `e`       | Jump to **end** of current/next word         | Useful before append     |
+| `$`       | Jump to **end of line**                      | Quick line-end access    |
+| `0`       | Jump to **beginning of line** (column 0)     | Absolute start           |
+| `^`       | Jump to **first non-whitespace** character   | Smart start              |
+| `f{char}` | **Find** next occurrence of `{char}` on line | `f"` finds next quote    |
+| `t{char}` | Jump **to** (before) next `{char}`           | `t"` stops before quote  |
+| `;`       | Repeat last `f` or `t` motion                | Find next occurrence     |
+| `,`       | Repeat last `f` or `t` backwards             | Find previous            |
 
 **Example:** To quickly move from start of line to the word "overflow":
+
 ```vim
 0        " Go to start of line
 /overflow " Search for it
@@ -34,11 +35,13 @@ wwww     " Jump forward 4 words (if it's the 4th word)
 Vim uses a **grammar** of `[operator][motion]`:
 
 **Operators:**
+
 - `c` = **change** (delete and enter insert mode)
 - `d` = **delete** (cut)
 - `y` = **yank** (copy)
 
 **Text Objects:**
+
 - `iw` = **inner word** (word without spaces)
 - `aw` = **a word** (word with spaces)
 - `i"` = **inner quotes** (text inside quotes)
@@ -47,6 +50,7 @@ Vim uses a **grammar** of `[operator][motion]`:
 - `it` = **inner tag** (HTML/XML)
 
 **Combined Examples:**
+
 - `ciw` = **change inner word** (delete word, enter insert)
 - `diw` = **delete inner word** (cut word)
 - `yiw` = **yank inner word** (copy word)
@@ -68,11 +72,13 @@ This pattern is called **Vim's composable command language**.
 **Replace Options:**
 
 **Option A - Change in word mode:**
+
 1. `ciw` on "from-primary-600" → type `from-gray-900`
 2. `w` then `ciw` on "via-primary-500" → type `via-gray-800`
 3. `w` then `ciw` on "to-primary-700" → type `to-primary-950`
 
 **Option B - Substitute command:**
+
 ```vim
 :s/from-primary-600 via-primary-500 to-primary-700/from-gray-900 via-gray-800 to-primary-950/
 ```
@@ -88,9 +94,11 @@ This pattern is called **Vim's composable command language**.
 **Replace Options:**
 
 **Option A - Change in word:**
+
 - `ciw` on "bg-white" → type `bg-gray-900`
 
 **Option B - Substitute command:**
+
 ```vim
 :s/bg-white overflow/bg-gray-900 overflow/
 ```
@@ -106,11 +114,13 @@ This pattern is called **Vim's composable command language**.
 **Replace Options:**
 
 **Option A - Change inside quotes:**
+
 - `f'` (jump to first quote)
 - `ci'` (change inside quotes)
 - Type `dark`
 
 **Option B - Substitute command:**
+
 ```vim
 :s/theme: 'default'/theme: 'dark'/
 ```
@@ -124,13 +134,15 @@ This pattern is called **Vim's composable command language**.
 **Find:** `/id="preview"` then `Enter`
 
 **Add class attribute:**
+
 - `f"` (jump to closing quote of id)
 - `a` (append after quote)
 - Type ` class="bg-gray-800 rounded-lg"`
 
 **Result:**
+
 ```html
-<div id="preview" class="bg-gray-800 rounded-lg flex items-center justify-center min-h-full"></div>
+<div id="preview" class="flex min-h-full items-center justify-center rounded-lg bg-gray-800"></div>
 ```
 
 ---
@@ -152,6 +164,7 @@ Execute all substitutions in sequence:
 ## Summary
 
 These changes will:
+
 - Convert the purple gradient background to dark grays
 - Make the preview panel dark
 - Switch Mermaid to use dark theme
@@ -169,6 +182,7 @@ Let's walk through Change #1 step by step:
 **Goal:** Change `from-primary-600 via-primary-500 to-primary-700` to dark grays
 
 **Step-by-step navigation:**
+
 ```vim
 92gg                    " Jump to line 92
 /from-primary           " Search for the text
@@ -188,6 +202,7 @@ to-primary-950          " Type replacement
 ```
 
 **Why this is powerful:**
+
 - No mouse needed
 - No holding arrow keys
 - Precise, repeatable edits
@@ -198,7 +213,9 @@ to-primary-950          " Type replacement
 ## Pro Tips
 
 ### 1. Use Dot Repeat
+
 After doing `ciw` + replacement, press `.` to repeat the last change:
+
 ```vim
 ciw                     " Change inner word
 new-text                " Type it
@@ -208,7 +225,9 @@ w                       " Move to next word
 ```
 
 ### 2. Visual Mode for Multi-word Changes
+
 If you need to change several words:
+
 ```vim
 v                       " Enter visual mode
 3w                      " Select 3 words forward
@@ -217,6 +236,7 @@ your-new-text           " Type replacement
 ```
 
 ### 3. Search and Replace Across File
+
 ```vim
 :%s/old-text/new-text/g        " Replace all in file
 :%s/old-text/new-text/gc       " Replace with confirmation
@@ -224,11 +244,13 @@ your-new-text           " Type replacement
 ```
 
 ### 4. Jump to Matching Bracket/Quote
+
 ```vim
 %                       " Jump between matching () [] {}
 ```
 
 ### 5. Undo/Redo
+
 ```vim
 u                       " Undo last change
 Ctrl-r                  " Redo
@@ -239,6 +261,7 @@ Ctrl-r                  " Redo
 ## Learning Path
 
 This workflow demonstrates **Vim's philosophy**:
+
 1. **Operators** (verbs) - what to do: `c`, `d`, `y`
 2. **Motions** (nouns) - where to do it: `w`, `$`, `iw`
 3. **Compose** them together: `ciw`, `d$`, `yaw`

@@ -1,0 +1,7 @@
+{
+  "name": "art-vandelay",
+  "description": "Art Vandelay — importer/exporter of well-architected skills. Reads your environment, imports the skills that fit, and answers in Mermaid + Markdown.",
+  "author": {
+    "name": "Art Vandelay"
+  }
+}

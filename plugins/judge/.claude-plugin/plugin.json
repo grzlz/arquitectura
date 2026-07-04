@@ -1,0 +1,7 @@
+{
+  "name": "judge",
+  "description": "Evaluate an existing architecture, design, diff, or module and render a decisive verdict as a Mermaid risk map plus a scored ruling. Art Vandelay's tribunal.",
+  "author": {
+    "name": "Art Vandelay"
+  }
+}

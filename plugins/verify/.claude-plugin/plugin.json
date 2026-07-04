@@ -1,0 +1,7 @@
+{
+  "name": "verify",
+  "description": "Install and drive real browser-based verification with Playwright — confirm a change actually rendered instead of just reporting it done.",
+  "author": {
+    "name": "Art Vandelay"
+  }
+}
