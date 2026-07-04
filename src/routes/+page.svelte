@@ -219,7 +219,7 @@
   
   function saveDiagram() {
     if (!currentName.trim()) {
-      showToast('Ingresa un nombre para guardar');
+      showToast('Enter a name to save');
       return;
     }
 
@@ -233,7 +233,7 @@
     try {
       localStorage.setItem('mermaid-diagrams', JSON.stringify(savedDiagrams));
     } catch {
-      showToast('No se pudo guardar — almacenamiento no disponible');
+      showToast('Could not save — storage unavailable');
     }
     currentName = '';
   }
@@ -266,54 +266,54 @@
 
   function copyCode() {
     navigator.clipboard.writeText(diagramCode)
-      .then(() => showToast('Código copiado al portapapeles'))
-      .catch(() => showToast('No se pudo copiar — verifica los permisos del navegador'));
+      .then(() => showToast('Code copied to clipboard'))
+      .catch(() => showToast('Could not copy — check browser permissions'));
   }
 </script>
 <svelte:head>
-  <title>Editor de Diagramas — Architect's Studio</title>
+  <title>Diagram Editor — Architect's Studio</title>
 </svelte:head>
 
-<div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-primary-950 p-8 font-[family-name:var(--font-primary)]">
+<div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-primary-950 p-4 md:p-8 font-[family-name:var(--font-primary)]">
   <div class="max-w-7xl mx-auto">
     <Nav />
 
     <div class="glass-enhanced rounded-2xl p-6 mb-6">
       <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
-          <h1 class="text-3xl font-bold text-white text-shadow mb-2">Editor de Diagramas</h1>
-          <p class="text-white/90 text-sm">Crea diagramas con vista previa en tiempo real</p>
+          <h1 class="text-3xl font-bold text-white text-shadow mb-2">Diagram Editor</h1>
+          <p class="text-white/90 text-sm">Create diagrams with real-time preview</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
           <input
             type="text"
             bind:value={currentName}
-            placeholder="Nombre del diagrama..."
-            aria-label="Nombre del diagrama"
-            class="px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 backdrop-blur-sm min-w-[200px]"
+            placeholder="Diagram name..."
+            aria-label="Diagram name"
+            class="px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 backdrop-blur-sm w-full sm:w-auto sm:min-w-[200px]"
           />
           <button
             onclick={saveDiagram}
             class="glass-gold px-4 py-2 rounded-lg text-white font-medium transition-all hover:scale-105"
           >
-            Guardar
+            Save
           </button>
           <button
             onclick={exportSVG}
             class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/30 font-medium transition-all"
           >
-            📥 Exportar
+            Export
           </button>
           <button
             onclick={copyCode}
             class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/30 font-medium transition-all"
           >
-            📋 Copiar
+            Copy
           </button>
           <button
             onclick={renderDiagram}
-            aria-label="Actualizar diagrama"
+            aria-label="Refresh diagram"
             class="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/30 font-medium transition-all hover:rotate-90"
           >
             ↻
@@ -337,7 +337,7 @@
       <!-- Editor Panel -->
       <div class="glass-enhanced rounded-2xl overflow-hidden flex flex-col">
         <div class="px-6 py-4 bg-white/10 border-b border-white/20 flex items-center justify-between">
-          <h3 class="text-sm font-semibold text-white uppercase tracking-wide">Editor de Código</h3>
+          <h3 class="text-sm font-semibold text-white uppercase tracking-wide">Code Editor</h3>
           <span class="px-3 py-1 rounded-full bg-gradient-to-r from-primary-500 to-primary-700 text-white text-xs font-medium">
             Mermaid Syntax
           </span>
@@ -346,21 +346,21 @@
           bind:value={diagramCode}
           oninput={handleInput}
           spellcheck="false"
-          aria-label="Editor de código del diagrama"
+          aria-label="Diagram code editor"
           placeholder="Start typing your Mermaid diagram..."
-          class="flex-1 min-h-[500px] p-6 bg-white/5 text-white font-mono text-sm leading-relaxed focus:outline-none placeholder-white/40 resize-none"
+          class="flex-1 min-h-[300px] md:min-h-[500px] p-6 bg-white/5 text-white font-mono text-sm leading-relaxed focus:outline-none placeholder-white/40 resize-none"
         />
       </div>
 
       <!-- Preview Panel -->
       <div class="glass-enhanced rounded-2xl overflow-hidden flex flex-col">
         <div class="px-6 py-4 bg-white/10 border-b border-white/20 flex items-center justify-between">
-          <h3 class="text-sm font-semibold text-white uppercase tracking-wide">Vista Previa</h3>
+          <h3 class="text-sm font-semibold text-white uppercase tracking-wide">Preview</h3>
           <span class="px-3 py-1 rounded-full bg-gradient-to-r from-primary-500 to-primary-700 text-white text-xs font-medium">
-            Renderizado en Vivo
+            Live Render
           </span>
         </div>
-        <div class="flex-1 min-h-[500px] p-6 bg-gray-900 overflow-auto">
+        <div class="flex-1 min-h-[300px] md:min-h-[500px] p-6 bg-gray-900 overflow-auto">
           <div id="preview" class="bg-gray-800 rounded-lg flex items-center justify-center min-h-full"></div>
         </div>
       </div>
@@ -370,12 +370,12 @@
     <div class="glass-enhanced rounded-2xl p-6 mt-6">
       <div class="flex items-center justify-between mb-4">
         <div>
-          <h2 class="text-lg font-semibold text-white">Patrones de Diagramas</h2>
-          <p class="text-white/60 text-sm mt-1">Complejidad progresiva — desde un flujo simple hasta un sistema completo</p>
+          <h2 class="text-lg font-semibold text-white">Diagram Patterns</h2>
+          <p class="text-white/60 text-sm mt-1">Progressive complexity — from a simple flow to a full system</p>
         </div>
         <div class="flex items-center gap-3">
           <span class="px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
-            Nivel {examples[currentExampleIndex].complexity}
+            Level {examples[currentExampleIndex].complexity}
           </span>
           <span class="px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
             {currentExampleIndex + 1} / {examples.length}
@@ -404,13 +404,13 @@
                 onclick={prevExample}
                 class="flex-1 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/30 font-medium transition-all"
               >
-                ← Anterior
+                ← Previous
               </button>
               <button
                 onclick={nextExample}
                 class="flex-1 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/30 font-medium transition-all"
               >
-                Siguiente →
+                Next →
               </button>
             </div>
 
@@ -418,12 +418,12 @@
               onclick={loadExample}
               class="w-full mt-3 px-4 py-2 rounded-lg bg-white/90 hover:bg-white text-primary-600 font-medium transition-all hover:scale-105"
             >
-              Cargar este ejemplo
+              Load this example
             </button>
           </div>
 
           <div class="glass-accent rounded-xl p-4">
-            <h4 class="text-white/80 text-xs font-semibold uppercase tracking-wide mb-2">Progresión de Complejidad</h4>
+            <h4 class="text-white/80 text-xs font-semibold uppercase tracking-wide mb-2">Complexity Progression</h4>
             <div class="flex gap-1">
               {#each Array(5) as _, i}
                 <div class="flex-1 h-2 rounded-full {i < examples[currentExampleIndex].complexity ? 'bg-primary-500' : 'bg-white/20'}"></div>
@@ -431,11 +431,11 @@
             </div>
             <p class="text-white/60 text-xs mt-2">
               {#if examples[currentExampleIndex].complexity <= 2}
-                Principiante — actores, sistemas y subsistemas
+                Beginner — actors, systems and subsystems
               {:else if examples[currentExampleIndex].complexity <= 3}
-                Intermedio — enrutamiento, tracks paralelos
+                Intermediate — routing, parallel tracks
               {:else}
-                Avanzado — fases y flujos de sistema completo
+                Advanced — phases and full system flows
               {/if}
             </p>
           </div>
@@ -444,7 +444,7 @@
         <!-- Example Code Preview -->
         <div class="lg:col-span-2 glass-accent rounded-xl overflow-hidden">
           <div class="px-4 py-3 bg-white/5 border-b border-white/20">
-            <span class="text-white/80 text-xs font-mono">Vista previa del código</span>
+            <span class="text-white/80 text-xs font-mono">Code preview</span>
           </div>
           <pre class="p-4 overflow-auto max-h-64 text-white/90 text-sm font-mono leading-relaxed">{examples[currentExampleIndex].code}</pre>
         </div>
@@ -455,7 +455,7 @@
     {#if savedDiagrams.length > 0}
       <div class="glass-enhanced rounded-2xl p-6 mt-6">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold text-white">Diagramas Guardados</h2>
+          <h2 class="text-lg font-semibold text-white">Saved Diagrams</h2>
           <span class="px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
             {savedDiagrams.length}
           </span>
@@ -477,13 +477,13 @@
               </button>
               {#if confirmingDelete === index}
                 <div class="flex flex-col gap-1 w-12">
-                  <button onclick={() => confirmDelete(index)} class="rounded-lg bg-red-500/40 hover:bg-red-500/60 border border-red-400/40 text-white text-xs font-medium transition-all py-1">Elim</button>
+                  <button onclick={() => confirmDelete(index)} class="rounded-lg bg-red-500/40 hover:bg-red-500/60 border border-red-400/40 text-white text-xs font-medium transition-all py-1">Del</button>
                   <button onclick={() => confirmingDelete = -1} class="rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white/60 text-xs transition-all py-1">No</button>
                 </div>
               {:else}
                 <button
                   onclick={() => requestDelete(index)}
-                  aria-label="Eliminar {diagram.name}"
+                  aria-label="Delete {diagram.name}"
                   class="w-12 rounded-lg bg-white/10 hover:bg-red-500/30 border border-white/20 hover:border-red-400/40 text-white hover:text-red-200 text-xl transition-all"
                 >
                   ×

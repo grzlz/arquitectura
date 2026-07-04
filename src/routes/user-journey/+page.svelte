@@ -4,13 +4,13 @@
 
   let mermaid;
   let diagramCode = $state(`journey
-    title Avalúo Discovery
-    section Descubrimiento
-      Hablar con solicitante: 4: Subdirección
-      Registrar requerimientos: 5: Subdirección
-    section Seguimiento
-      Compartir expectativas: 3: Solicitante
-      Validar plan inicial: 4: Subdirección`);
+    title Product Discovery
+    section Discovery
+      Talk to stakeholder: 4: Team
+      Register requirements: 5: Team
+    section Follow-up
+      Share expectations: 3: Stakeholder
+      Validate initial plan: 4: Team`);
 
   let savedDiagrams = $state([]);
   let currentName = $state('');
@@ -23,132 +23,132 @@
       description: 'First-contact experience with minimal branching',
       complexity: 1,
       code: `journey
-    title Usuario inicia en IAvalua
-    section Descubrimiento
-      Visita landing page: 3: Prospecto
-      Lee beneficios: 4: Prospecto
-      Da clic en "Crear cuenta": 5: Prospecto
-    section Registro
-      Completa formulario básico: 3: Prospecto
-      Confirma correo: 4: Prospecto
-      Accede al dashboard: 5: Prospecto`
+    title User starts onboarding
+    section Discovery
+      Visits landing page: 3: Prospect
+      Reads benefits: 4: Prospect
+      Clicks "Create account": 5: Prospect
+    section Registration
+      Completes basic form: 3: Prospect
+      Confirms email: 4: Prospect
+      Accesses dashboard: 5: Prospect`
     },
     {
       name: 'Avalúo Solicitation',
       description: 'Happy path for creating a new Avalúo request',
       complexity: 2,
       code: `journey
-    title Flujo inicial de solicitud
-    section Preparación
-      Recibe instrucciones por correo: 2: Manager
-      Junta documentos requeridos: 3: Manager
-    section Captura
-      Ingresa a portal: 4: Manager
-      Completa formulario de avalúo: 4: Manager
-      Revisa resumen: 5: Manager
-    section Post-envío
-      Envía solicitud: 5: Manager
-      Recibe confirmación: 4: Sistema
-      Espera asignación del colegio: 2: Manager`
+    title Initial request flow
+    section Preparation
+      Receives email instructions: 2: Manager
+      Gathers required documents: 3: Manager
+    section Submission
+      Logs into portal: 4: Manager
+      Completes appraisal form: 4: Manager
+      Reviews summary: 5: Manager
+    section Post-submission
+      Submits request: 5: Manager
+      Receives confirmation: 4: System
+      Awaits college assignment: 2: Manager`
     },
     {
       name: 'Colegio Assignment Loop',
       description: 'Introduces feedback when data is incomplete',
       complexity: 3,
       code: `journey
-    title Subdirección asigna colegio
-    section Revisión inicial
-      Revisa cola de solicitudes: 3: Subdirección
-      Valida información: 4: Subdirección
-      Detecta faltante: 1: Subdirección
-    section Correcciones
-      Solicita datos extra: 2: Subdirección
-      Completa datos: 3: Manager
-      Confirma recepción: 4: Subdirección
-    section Asignación
-      Selecciona colegio adecuado: 4: Subdirección
-      Notifica al colegio: 3: Sistema
-      Colegio acepta caso: 4: Colegio`
+    title Subdirectorate assigns college
+    section Initial Review
+      Reviews request queue: 3: Subdirectorate
+      Validates information: 4: Subdirectorate
+      Detects missing data: 1: Subdirectorate
+    section Corrections
+      Requests additional data: 2: Subdirectorate
+      Completes data: 3: Manager
+      Confirms receipt: 4: Subdirectorate
+    section Assignment
+      Selects appropriate college: 4: Subdirectorate
+      Notifies college: 3: System
+      College accepts case: 4: College`
     },
     {
       name: 'Perito Experience',
       description: 'Parallel emotions for perito and colegio during acceptance',
       complexity: 4,
       code: `journey
-    title Experiencia de asignación al perito
-    section Colegio
-      Revisa disponibilidad de peritos: 3: Colegio
-      Envía propuesta a perito: 4: Colegio
-      Espera respuesta: 1: Colegio
-    section Perito
-      Recibe notificación: 3: Perito
-      Evalúa carga de trabajo: 2: Perito
-      Acepta caso: 4: Perito
-      Actualiza estado en plataforma: 3: Perito
-    section Sistema
-      Registra aceptación: 4: Sistema
-      Notifica a Subdirección y Manager: 3: Sistema`
+    title Expert assignment experience
+    section College
+      Reviews expert availability: 3: College
+      Sends proposal to expert: 4: College
+      Awaits response: 1: College
+    section Expert
+      Receives notification: 3: Expert
+      Evaluates workload: 2: Expert
+      Accepts case: 4: Expert
+      Updates status on platform: 3: Expert
+    section System
+      Records acceptance: 4: System
+      Notifies Subdirectorate and Manager: 3: System`
     },
     {
       name: 'Revisión con Observaciones',
       description: 'Captures rework cycles and differing sentiment per persona',
       complexity: 5,
       code: `journey
-    title Revisión del avalúo con observaciones
-    section Perito
-      Entrega versión preliminar: 3: Perito
-      Recibe observaciones: 2: Perito
-      Agenda ajustes: 2: Perito
-      Reenvía versión corregida: 4: Perito
-    section Revisor
-      Revisa entrega inicial: 3: Revisor
-      Detecta inconsistencias: 2: Revisor
-      Documenta comentarios: 3: Revisor
-      Valida correcciones: 4: Revisor
+    title Appraisal review with observations
+    section Expert
+      Submits preliminary version: 3: Expert
+      Receives observations: 2: Expert
+      Schedules adjustments: 2: Expert
+      Resubmits corrected version: 4: Expert
+    section Reviewer
+      Reviews initial submission: 3: Reviewer
+      Detects inconsistencies: 2: Reviewer
+      Documents comments: 3: Reviewer
+      Validates corrections: 4: Reviewer
     section Manager
-      Recibe estatus "Observaciones": 1: Manager
-      Monitorea retrabajo: 2: Manager
-      Confirma resolución: 4: Manager`
+      Receives "Observations" status: 1: Manager
+      Monitors rework: 2: Manager
+      Confirms resolution: 4: Manager`
     },
     {
       name: 'Cliente Tracking Journey',
       description: 'Shows multi-touch points including proactive communication',
       complexity: 6,
       code: `journey
-    title Seguimiento del cliente final
-    section Inicio
-      Llama para conocer estatus: 2: Cliente
-      Recibe promesa de respuesta: 3: Subdirección
-    section Proactividad
-      Sistema envía notificación automática: 4: Sistema
-      Cliente revisa portal de seguimiento: 3: Cliente
-      Envía retroalimentación: 4: Cliente
-    section Cierre
-      Recibe resultado aprobado: 5: Cliente
-      Evalúa satisfacción: 4: Cliente
-      Recomienda servicio: 5: Cliente`
+    title End client follow-up
+    section Start
+      Calls to check status: 2: Client
+      Receives promise of response: 3: Subdirectorate
+    section Proactivity
+      System sends automatic notification: 4: System
+      Client checks tracking portal: 3: Client
+      Sends feedback: 4: Client
+    section Closure
+      Receives approved result: 5: Client
+      Rates satisfaction: 4: Client
+      Recommends service: 5: Client`
     },
     {
       name: 'Multi-Persona Delivery',
       description: 'End-to-end journey with four roles and emotional variance',
       complexity: 7,
       code: `journey
-    title Entrega y facturación de avalúo
-    section Producto
-      Genera reporte final: 4: Perito
-      Revisor aprueba versión: 5: Revisor
-      Subdirección firma digital: 4: Subdirección
-    section Entrega
-      Sistema envía enlace seguro: 4: Sistema
-      Cliente descarga documento: 4: Cliente
-      Cliente solicita ajustes menores: 2: Cliente
-      Subdirección coordina aclaraciones: 3: Subdirección
-      Ajustes confirmados: 5: Cliente
-    section Facturación
-      Colegio prepara factura: 3: Colegio
-      Cliente valida datos fiscales: 2: Cliente
-      Pago registrado: 4: Sistema
-      Caso cerrado con encuesta NPS: 5: Sistema`
+    title Appraisal delivery and billing
+    section Product
+      Generates final report: 4: Expert
+      Reviewer approves version: 5: Reviewer
+      Subdirectorate signs digitally: 4: Subdirectorate
+    section Delivery
+      System sends secure link: 4: System
+      Client downloads document: 4: Client
+      Client requests minor adjustments: 2: Client
+      Subdirectorate coordinates clarifications: 3: Subdirectorate
+      Adjustments confirmed: 5: Client
+    section Billing
+      College prepares invoice: 3: College
+      Client validates tax data: 2: Client
+      Payment recorded: 4: System
+      Case closed with NPS survey: 5: System`
     }
   ];
 
@@ -243,7 +243,7 @@
   }
 </script>
 
-<div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-primary-950 p-8 font-[family-name:var(--font-primary)]">
+<div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-primary-950 p-4 md:p-8 font-[family-name:var(--font-primary)]">
   <div class="max-w-7xl mx-auto">
     <!-- Navigation -->
     <div class="glass-enhanced rounded-2xl p-4 mb-6">
@@ -270,7 +270,7 @@
       <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
           <h1 class="text-3xl font-bold text-white text-shadow mb-2">User Journey Studio</h1>
-          <p class="text-white/90 text-sm">Model experiencias de usuarios con diagramas Journey de Mermaid</p>
+          <p class="text-white/90 text-sm">Model user experiences with Mermaid Journey diagrams</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
@@ -278,7 +278,7 @@
             type="text"
             bind:value={currentName}
             placeholder="Enter diagram name..."
-            class="px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 backdrop-blur-sm min-w-[200px]"
+            class="px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 backdrop-blur-sm w-full sm:w-auto sm:min-w-[200px]"
           />
           <button
             onclick={saveDiagram}
@@ -290,13 +290,13 @@
             onclick={exportSVG}
             class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/30 font-medium transition-all"
           >
-            📥 Export
+            Export
           </button>
           <button
             onclick={copyCode}
             class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/30 font-medium transition-all"
           >
-            📋 Copy
+            Copy
           </button>
           <button
             onclick={renderDiagram}
@@ -329,8 +329,8 @@
           bind:value={diagramCode}
           oninput={renderDiagram}
           spellcheck="false"
-          placeholder="journey&#10;    title Experiencia&#10;    section Descubrimiento&#10;      Paso: 3: Usuario"
-          class="flex-1 min-h-[500px] p-6 bg-white/5 text-white font-mono text-sm leading-relaxed focus:outline-none placeholder-white/40 resize-none"
+          placeholder="journey&#10;    title Experience&#10;    section Discovery&#10;      Step: 3: User"
+          class="flex-1 min-h-[300px] md:min-h-[500px] p-6 bg-white/5 text-white font-mono text-sm leading-relaxed focus:outline-none placeholder-white/40 resize-none"
         />
       </div>
 
@@ -341,7 +341,7 @@
             Live Render
           </span>
         </div>
-        <div class="flex-1 min-h-[500px] p-6 bg-gray-900 overflow-auto">
+        <div class="flex-1 min-h-[300px] md:min-h-[500px] p-6 bg-gray-900 overflow-auto">
           <div id="preview" class="bg-gray-800 rounded-lg flex items-center justify-center min-h-full"></div>
         </div>
       </div>
@@ -351,7 +351,7 @@
       <div class="flex items-center justify-between mb-4">
         <div>
           <h2 class="text-lg font-semibold text-white">Journey Patterns</h2>
-          <p class="text-white/60 text-sm mt-1">Siete ejemplos con complejidad creciente</p>
+          <p class="text-white/60 text-sm mt-1">Seven examples with increasing complexity</p>
         </div>
         <span class="px-3 py-1 rounded-full bg-white/20 text-white text-sm font-medium">
           {examples[currentExampleIndex].complexity} / 7
@@ -405,13 +405,13 @@
             </div>
             <p class="text-white/60 text-xs mt-2">
               {#if examples[currentExampleIndex].complexity <= 2}
-                Beginner - Onboarding básicos
+                Beginner - Basic onboarding
               {:else if examples[currentExampleIndex].complexity <= 4}
-                Intermedio - Colaboración y rework
+                Intermediate - Collaboration and rework
               {:else if examples[currentExampleIndex].complexity <= 6}
-                Avanzado - Múltiples roles y toques
+                Advanced - Multiple roles and touchpoints
               {:else}
-                Experto - Entrega completa y facturación
+                Expert - Full delivery and billing
               {/if}
             </p>
           </div>
