@@ -69,7 +69,8 @@
 		{ href: '/swimlane', label: 'Swimlane', desc: 'subgraph lanes' }
 	];
 
-	const marketplaceCommand = '/plugin marketplace add grzlz/arquitectura';
+	const marketplaceCommand = '/plugin marketplace add https://vandeley.art/marketplace.json';
+	const marketplaceSourceCommand = '/plugin marketplace add grzlz/arquitectura';
 	const installCommands = ['/plugin install art-vandeley@vandeley'];
 	const crateSkills = ['architect', 'judge', 'export', 'verify', 'commit'];
 
@@ -271,8 +272,9 @@
 						Dock the marketplace
 					</h3>
 					<p class="mt-5 max-w-md text-sm leading-relaxed text-paper/55">
-						One line registers the <span class="text-brass-bright">vandeley</span> marketplace with Claude
-						Code. Art clears customs under his legal name.
+						One line registers the <span class="text-brass-bright">vandeley</span> marketplace with
+						Claude Code, straight from <span class="text-brass-bright">vandeley.art</span>. Or dock
+						from source, under his legal name.
 					</p>
 					<div
 						class="mt-6 flex items-center justify-between gap-4 border border-paper/15 bg-surface px-4 py-3"
@@ -288,6 +290,14 @@
 							{copied === 'marketplace' ? 'Copied ✓' : 'Copy'}
 						</button>
 					</div>
+					<button
+						onclick={() => copyCommand(marketplaceSourceCommand, 'source')}
+						class="mt-3 cursor-pointer text-xs text-paper/40 transition-colors hover:text-brass-bright"
+					>
+						{copied === 'source'
+							? 'Copied ✓ · grzlz/arquitectura'
+							: 'or from source · grzlz/arquitectura'}
+					</button>
 				</div>
 
 				<div class="bg-ink p-8 transition-colors hover:bg-surface">

@@ -14,12 +14,18 @@ flowchart LR
 
 This repo holds both halves of the operation:
 
-- **The marketplace** — one Claude Code plugin under `plugins/art-vandeley/`, published via `.claude-plugin/marketplace.json`. One install ships the agent and his full skill crate.
+- **The marketplace** — one Claude Code plugin under `plugins/art-vandeley/`, published two ways: `.claude-plugin/marketplace.json` for the GitHub-repo install, and `static/marketplace.json` served at [vandeley.art/marketplace.json](https://vandeley.art/marketplace.json) for the URL install. One install ships the agent and his full skill crate.
 - **The site** — the SvelteKit app behind [vandeley.art](https://vandeley.art): Art's landing page plus the Mermaid Studio.
 
 ## Install
 
-Art Vandeley is distributed as a **Claude Code plugin marketplace**. Inside any Claude Code session:
+Art Vandeley is distributed as a **Claude Code plugin marketplace**. Inside any Claude Code session, dock it straight from the site:
+
+```
+/plugin marketplace add https://vandeley.art/marketplace.json
+```
+
+Prefer the source? The same marketplace is served from the GitHub repo:
 
 ```
 /plugin marketplace add grzlz/arquitectura
