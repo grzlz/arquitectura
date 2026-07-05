@@ -1,7 +1,7 @@
 {
 	"name": "art-vandeley",
 	"version": "0.2.0",
-	"description": "Art Vandeley — importer/exporter of well-architected skills. One install ships the agent, /hello-art, and the full skill crate: architect, judge, export, verify, commit.",
+	"description": "Art Vandeley — importer of skills, exporter of well-architected components. One install ships the agent, /hello-art, and the full skill crate: architect, judge, export, verify, commit.",
 	"author": {
 		"name": "Art Vandeley"
 	}

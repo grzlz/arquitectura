@@ -1,13 +1,13 @@
 {
   "name": "vandeley",
-  "description": "Art Vandeley's imported skills — importer/exporter of well-architected agents and skills.",
+  "description": "Art Vandeley's skill crate — importer of skills, exporter of well-architected components.",
   "owner": {
     "name": "Art Vandeley"
   },
   "plugins": [
     {
       "name": "art-vandeley",
-      "description": "Art Vandeley — importer/exporter of well-architected skills. One install: the agent, /hello-art, and his full skill crate (architect, judge, export, verify, commit). Reads your environment, imports the skills that fit, and answers in Mermaid + Markdown.",
+      "description": "Art Vandeley — importer of skills, exporter of well-architected components. One install: the agent, /hello-art, and his full skill crate (architect, judge, export, verify, commit). Reads your environment, imports the skills that fit, ships components with papers, and answers in Mermaid + Markdown.",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/grzlz/arquitectura.git",

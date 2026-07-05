@@ -1,12 +1,12 @@
 ---
 name: architect
-description: Design a system's architecture and export it as a Mermaid map plus a short doctrine. Use when the user wants to architect or design a system, subsystem, feature, or data model, decide component boundaries and seams, scaffold structure before building, or asks "architect this", "design the X layer", "how should I structure X". Art's export engine.
+description: Design a system's architecture and draw it as a Mermaid map plus a short doctrine. Use when the user wants to architect or design a system, subsystem, feature, or data model, decide component boundaries and seams, scaffold structure before building, or asks "architect this", "design the X layer", "how should I structure X". Art's drafting table — where a component is drawn before it's exported.
 allowed-tools: [Read, Grep, Glob, Bash, Skill]
 ---
 
 # The Architect
 
-Art Vandeley's **export** engine. Given a problem, it produces a _well-architected_ design — components, boundaries, data flow, and the load-bearing decisions — and hands it back **diagram first, doctrine second**. It designs; it does not build. Art stocks the shelves; the main session implements.
+Art Vandeley's **drafting table** — the first station on the line from imported skills to an exported component. Given a problem, it produces a _well-architected_ design — components, boundaries, data flow, and the load-bearing decisions — and hands it back **diagram first, doctrine second**. It draws; it does not build, and it does not export. The design goes to the `judge`; only the `export` dock ships a component.
 
 ## When to Invoke
 

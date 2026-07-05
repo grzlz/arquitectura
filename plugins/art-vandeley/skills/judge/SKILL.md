@@ -12,7 +12,7 @@ Art Vandeley's **tribunal**. Given an existing artifact — a design, a diff, a 
 
 - "/judge" followed by a design, file, module, or diff
 - "is this well-architected", "poke holes in this", "render a verdict", "review this before I commit"
-- Right after the `architect` skill exports a design — the judge is its natural second half
+- Right after the `architect` skill draws a design — the judge is its natural second half
 - Any moment the question is _should this ship, and if not what's the one fix_ — not _rewrite it for me_
 
 ## The Bar
