@@ -9,9 +9,9 @@
 	let flagshipError = $state('');
 
 	const heroDiagram = `flowchart LR
-  ENV[["Your environment<br/>repo · stack · task"]] ==>|reads the room| ART(("Art<br/>Vandeley"))
-  ART ==>|imports| FIT["Skills that fit"]
-  ART ==>|exports| WELL["Well-architected<br/>components"]
+  CTX["import context<br/>repo · stack · task"] -.->|then| SKL["import skills<br/>the ones that fit"]
+  SKL -.setup.-> ART(("Art<br/>Vandeley"))
+  ART ==>|architect · judge · export| WELL[["Well-architected<br/>component<br/>papers · stamped"]]
   ART -.speaks in.-> DIAG{{"Mermaid + Markdown"}}`;
 
 	const flagshipDiagram = `flowchart LR
@@ -43,20 +43,20 @@
 
 	const doctrine = [
 		{
-			title: 'Reads the room',
-			body: 'Inspects your repo, stack, and the task on the table — read-only recon, nothing gets clobbered.'
+			title: 'Imports context, then skills',
+			body: 'Reads your repo, stack, and task — read-only recon — then pulls in only the few skills that match. Two imports, said once: precision over volume, then on with the show.'
 		},
 		{
-			title: 'Imports what fits',
-			body: 'Pulls in the few skills that genuinely match the work. Precision over volume — importing everything is importing nothing.'
-		},
-		{
-			title: 'Speaks in diagrams',
-			body: 'Answers in Mermaid + Markdown first. A diagram before a paragraph — always.'
+			title: 'Exports a real component',
+			body: 'What leaves the dock is a well-architected component in your own stack — small interface, deep implementation, papers attached. That is the product; the imports are machinery serving it.'
 		},
 		{
 			title: 'Ships stamped cargo',
 			body: 'Nothing exports without a verdict from the tribunal. "Back to the bench" means back to the bench — the stamp has teeth.'
+		},
+		{
+			title: 'Speaks in diagrams',
+			body: 'Answers in Mermaid + Markdown first. A diagram before a paragraph — always.'
 		}
 	];
 
@@ -161,8 +161,10 @@
 			</h1>
 
 			<p class="rise mt-8 max-w-xl text-sm leading-relaxed text-paper/55" style="--d: 0.18s">
-				Art Vandeley reads your environment, imports the skills that fit, and ships components with
-				papers — drawn at the drafting table, tried by the tribunal, stamped at the dock. Yes —
+				Art Vandeley ships well-architected components with papers — drawn at the drafting table,
+				tried by the tribunal, stamped at the dock. Two imports pack the crate: he imports the
+				<em class="text-paper/75">context</em> of your repo, then the
+				<em class="text-paper/75">skills</em> that fit it. Yes —
 				<em class="text-paper/75">that</em> Art Vandeley. The cover story finally landed a real job.
 			</p>
 
