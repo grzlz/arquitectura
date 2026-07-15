@@ -17,7 +17,15 @@ Art Vandeley's **drafting table** — the first station on the line from importe
 
 ## Vocabulary
 
-Design in terms of **deep modules** — a lot of behaviour behind a small interface, placed at a clean seam. Use the `codebase-design` skill's glossary exactly (module, interface, implementation, depth, seam); import it when you need the full vocabulary. Precision over volume: the smallest design that covers the work beats the most complete one.
+Design in terms of **deep modules** — a lot of behaviour behind a small interface, placed at a clean seam. Use these five terms precisely; they are the shared vocabulary of the whole pipeline (the `judge` rules in the same words):
+
+- **Module** — a unit of the design with one responsibility: a file, a class, a service, a subgraph on the map.
+- **Interface** — everything a caller must know to use the module: signatures, contracts, invariants, error behaviour. Small is good.
+- **Implementation** — everything the module does that callers never see. Deep is good.
+- **Depth** — the ratio of implementation hidden to interface exposed. A deep module hides a lot behind a little; a shallow one makes the caller learn as much as it does.
+- **Seam** — the boundary where two modules meet; clean when either side can change or be tested without the other noticing.
+
+Precision over volume: the smallest design that covers the work beats the most complete one.
 
 ## Process
 

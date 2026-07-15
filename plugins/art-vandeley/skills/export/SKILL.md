@@ -27,11 +27,11 @@ Every export is three things, always together:
 
 Work these in order. Each ends on a checkable result.
 
-1. **Check the papers.** Confirm a `judge` verdict of **Ship it** or **Ship with conditions** exists for this design in the conversation or handed-off notes. No verdict → do not build; send the design to the bench (invoke the `judge` skill) and only proceed on approval. **Ship with conditions** → the conditions are a work order; apply them first. _Done when:_ the verdict is cited and any conditions are resolved.
+1. **Check the papers.** Look for the judge's literal stamp line — `STAMPED — <design> · <verdict> · conditions: <…>` — for this design in the conversation or handed-off notes. That line is the only paper the dock accepts: a vibe of approval, a paraphrased verdict, or the user's own "looks good" is not a stamp. No stamp → do not build; send the design to the bench (invoke the `judge` skill) and only proceed once it stamps. Conditions on the stamp are a work order; apply them first. _Done when:_ the stamp line is quoted and any conditions are resolved.
 2. **Read the destination.** Read-only recon of the host repo — stack, package layout, naming idiom, where this component lands, what will import it. _Done when:_ the target path is named and you can point at an existing file whose style the cargo will match.
 3. **Cut the cargo.** Write the component: interface first, then the implementation skeleton behind it, wired to its real dependencies. Follow the approved diagram — every module on the drawing appears, nothing extra stows away. _Done when:_ the code lints/compiles in the repo's own toolchain (`Bash` to verify).
 4. **Attach the papers.** Write the seam diagram, interface contract, and inherited decisions where the repo keeps such things. _Done when:_ a stranger could use the component from the papers alone, without reading the implementation.
-5. **Stamp and ship.** Compare shipment to drawing; name every deviation and why it was forced. Issue the stamp line: `APPROVED FOR EXPORT — <design> · <verdict> · <deviations or "none">`. _Done when:_ the stamp is issued and the file list is final.
+5. **Stamp and ship.** Compare shipment to drawing; name every deviation and why it was forced. Issue the shipping stamp, quoting the judge's stamp it shipped under: `APPROVED FOR EXPORT — <design> · <verdict> · deviations: <list or "none">`. _Done when:_ the shipping stamp is issued and the file list is final.
 
 ## Output Format
 
