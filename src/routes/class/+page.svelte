@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 	import Nav from '$lib/components/Nav.svelte';
+	import { mermaidInit } from '$lib/mermaidTheme.js';
 
 	let mermaid;
 	let diagramCode = $state(`classDiagram
@@ -757,11 +758,7 @@
 	onMount(async () => {
 		if (browser) {
 			mermaid = (await import('mermaid')).default;
-			mermaid.initialize({
-				startOnLoad: false,
-				theme: 'dark',
-				securityLevel: 'loose'
-			});
+			mermaid.initialize(mermaidInit);
 
 			try {
 				const saved = localStorage.getItem('mermaid-class-diagrams');
@@ -789,7 +786,7 @@
 			error = e.message;
 			preview.innerHTML = '';
 			const errEl = document.createElement('div');
-			errEl.className = 'text-red-400 p-4 font-mono text-sm';
+			errEl.className = 'p-4 font-tech text-sm text-red-300';
 			errEl.textContent = e.message;
 			preview.appendChild(errEl);
 		}
@@ -853,21 +850,33 @@
 </script>
 
 <svelte:head>
-	<title>Class Diagram Mastery — Architect's Studio</title>
+	<title>Class — The Studio · Art Vandeley</title>
 </svelte:head>
 
-<div
-	class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-primary-950 p-8 font-[family-name:var(--font-primary)]"
->
-	<div class="mx-auto max-w-7xl">
-		<Nav />
+<div class="sheet-bg grain min-h-screen font-tech text-paper selection:bg-brass selection:text-ink">
+	<Nav />
 
-		<div class="glass-enhanced mb-6 rounded-2xl p-6">
-			<div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+	<main class="mx-auto max-w-7xl px-6 py-10">
+		<header class="relative mb-12 border border-paper/15 p-6 md:p-8">
+			<span class="reg-mark -top-[9px] -left-[9px]"></span>
+			<span class="reg-mark -top-[9px] -right-[9px]"></span>
+			<span class="reg-mark -bottom-[9px] -left-[9px]"></span>
+			<span class="reg-mark -right-[9px] -bottom-[9px]"></span>
+
+			<div
+				class="mb-8 flex flex-wrap items-baseline justify-between gap-2 text-[10px] tracking-[0.25em] text-paper/35 uppercase"
+			>
+				<span>The Studio · Drawing Sheet</span>
+				<span class="text-brass/70">SHT 05 · Class</span>
+			</div>
+
+			<div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
 				<div>
-					<h1 class="text-shadow mb-2 text-3xl font-bold text-white">Class Diagram Mastery</h1>
-					<p class="text-sm text-white/90">
-						Design object-oriented systems from simple classes to ML platforms
+					<h1 class="font-display text-4xl font-light tracking-tight text-paper md:text-5xl">
+						Class
+					</h1>
+					<p class="mt-3 text-sm text-paper/55">
+						Object-oriented systems — from simple classes to ML platforms
 					</p>
 				</div>
 
@@ -877,59 +886,53 @@
 						bind:value={currentName}
 						placeholder="Enter diagram name..."
 						aria-label="Diagram name"
-						class="min-w-[200px] rounded-lg border border-white/30 bg-white/20 px-4 py-2 text-white placeholder-white/60 backdrop-blur-sm focus:ring-2 focus:ring-white/50 focus:outline-none"
+						class="w-full border border-paper/15 bg-surface px-4 py-2 text-sm text-paper placeholder-paper/30 transition-colors focus:border-brass/60 focus:outline-none sm:w-auto sm:min-w-[200px]"
 					/>
 					<button
 						onclick={saveDiagram}
-						class="glass-gold rounded-lg px-4 py-2 font-medium text-white transition-all hover:scale-105"
+						class="cursor-pointer border border-brass/60 bg-brass/10 px-4 py-2 text-[11px] tracking-[0.2em] text-brass-bright uppercase transition-all hover:border-brass hover:bg-brass hover:text-ink"
 					>
 						Save
 					</button>
 					<button
 						onclick={exportSVG}
-						class="rounded-lg border border-white/30 bg-white/10 px-4 py-2 font-medium text-white transition-all hover:bg-white/20"
+						class="cursor-pointer border border-paper/15 px-4 py-2 text-[11px] tracking-[0.2em] text-paper/55 uppercase transition-colors hover:border-paper/40 hover:text-paper"
 					>
-						📥 Export
+						Export
 					</button>
 					<button
 						onclick={copyCode}
-						class="rounded-lg border border-white/30 bg-white/10 px-4 py-2 font-medium text-white transition-all hover:bg-white/20"
+						class="cursor-pointer border border-paper/15 px-4 py-2 text-[11px] tracking-[0.2em] text-paper/55 uppercase transition-colors hover:border-paper/40 hover:text-paper"
 					>
-						📋 Copy
+						Copy
 					</button>
 					<button
 						onclick={renderDiagram}
 						aria-label="Refresh diagram"
-						class="rounded-lg border border-white/30 bg-white/10 px-3 py-2 font-medium text-white transition-all hover:rotate-90 hover:bg-white/20"
+						class="cursor-pointer border border-paper/15 px-3 py-2 text-[11px] text-paper/55 transition-all hover:rotate-90 hover:border-paper/40 hover:text-paper"
 					>
 						↻
 					</button>
 				</div>
 			</div>
-		</div>
+		</header>
 
 		{#if error}
-			<div
-				class="glass-accent animate-in slide-in-from-top mb-6 rounded-xl border-red-400/40 bg-red-500/30 p-4"
-			>
-				<div class="flex items-center gap-3 text-white">
-					<span class="text-xl">⚠️</span>
-					<span class="font-mono text-sm">{error}</span>
-				</div>
+			<div class="mb-6 border border-red-400/40 bg-red-950/30 p-4">
+				<p class="text-sm text-red-300">
+					<span class="mr-3 text-[10px] tracking-[0.2em] text-red-400/70 uppercase">
+						Held at customs
+					</span>
+					{error}
+				</p>
 			</div>
 		{/if}
 
 		<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-			<div class="glass-enhanced flex flex-col overflow-hidden rounded-2xl">
-				<div
-					class="flex items-center justify-between border-b border-white/20 bg-white/10 px-6 py-4"
-				>
-					<h3 class="text-sm font-semibold tracking-wide text-white uppercase">Editor</h3>
-					<span
-						class="rounded-full bg-gradient-to-r from-primary-500 to-primary-700 px-3 py-1 text-xs font-medium text-white"
-					>
-						Class Diagram
-					</span>
+			<div class="flex flex-col overflow-hidden border border-paper/15 bg-ink">
+				<div class="flex items-center justify-between border-b border-paper/15 px-6 py-3">
+					<h3 class="text-[10px] tracking-[0.25em] text-paper/35 uppercase">Code Editor</h3>
+					<span class="text-[10px] tracking-[0.2em] text-brass/70 uppercase">Class diagram</span>
 				</div>
 				<textarea
 					bind:value={diagramCode}
@@ -937,109 +940,57 @@
 					spellcheck="false"
 					aria-label="Diagram code editor"
 					placeholder="classDiagram&#10;    class MyClass&#10;        +property&#10;        +method()"
-					class="min-h-[500px] flex-1 resize-none bg-white/5 p-6 font-mono text-sm leading-relaxed text-white placeholder-white/40 focus:outline-none"
+					class="min-h-[300px] flex-1 resize-none bg-transparent p-6 text-sm leading-relaxed text-paper placeholder-paper/30 focus:outline-none md:min-h-[500px]"
 				/>
 			</div>
 
-			<div class="glass-enhanced flex flex-col overflow-hidden rounded-2xl">
-				<div
-					class="flex items-center justify-between border-b border-white/20 bg-white/10 px-6 py-4"
-				>
-					<h3 class="text-sm font-semibold tracking-wide text-white uppercase">Preview</h3>
-					<span
-						class="rounded-full bg-gradient-to-r from-primary-500 to-primary-700 px-3 py-1 text-xs font-medium text-white"
-					>
-						Live Render
-					</span>
+			<div class="flex flex-col overflow-hidden border border-paper/15 bg-ink">
+				<div class="flex items-center justify-between border-b border-paper/15 px-6 py-3">
+					<h3 class="text-[10px] tracking-[0.25em] text-paper/35 uppercase">Preview</h3>
+					<span class="text-[10px] tracking-[0.2em] text-brass/70 uppercase">Live render</span>
 				</div>
-				<div class="min-h-[500px] flex-1 overflow-auto bg-gray-900 p-6">
-					<div
-						id="preview"
-						class="flex min-h-full items-center justify-center rounded-lg bg-gray-800"
-					></div>
+				<div class="min-h-[300px] flex-1 overflow-auto p-6 md:min-h-[500px]">
+					<div id="preview" class="flex min-h-full items-center justify-center"></div>
 				</div>
 			</div>
 		</div>
 
 		<!-- Learning Examples Carousel -->
-		<div class="glass-enhanced mt-6 rounded-2xl p-6">
-			<div class="mb-4 flex items-center justify-between">
-				<div>
-					<h2 class="text-lg font-semibold text-white">OOP Design Patterns</h2>
-					<p class="mt-1 text-sm text-white/60">
-						Progressive complexity from single classes to data platforms
-					</p>
-				</div>
-				<div class="flex items-center gap-3">
-					<span class="rounded-full bg-white/20 px-3 py-1 text-sm font-medium text-white">
-						Level {examples[currentExampleIndex].complexity}
-					</span>
-					<span class="rounded-full bg-white/20 px-3 py-1 text-sm font-medium text-white">
-						{currentExampleIndex + 1} / {examples.length}
-					</span>
+		<section class="mt-12">
+			<div class="mb-6 flex flex-wrap items-baseline justify-between gap-2">
+				<h2 class="text-[10px] tracking-[0.3em] text-brass/70 uppercase">OOP Design Patterns</h2>
+				<div class="flex items-center gap-4 text-[10px] tracking-[0.2em] text-paper/35 uppercase">
+					<span>Level {examples[currentExampleIndex].complexity}</span>
+					<span class="text-brass/70">{currentExampleIndex + 1} / {examples.length}</span>
 				</div>
 			</div>
 
-			<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+			<div class="grid grid-cols-1 gap-px border border-paper/15 bg-paper/15 lg:grid-cols-3">
 				<!-- Example Info Panel -->
-				<div class="flex flex-col gap-3 lg:col-span-1">
-					<div class="glass-accent rounded-xl p-4">
-						<div class="mb-3 flex items-center gap-2">
-							<div
-								class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary-500 to-primary-700 font-bold text-white"
-							>
-								{examples[currentExampleIndex].complexity}
-							</div>
-							<div class="flex-1">
-								<h3 class="font-semibold text-white">{examples[currentExampleIndex].name}</h3>
-								<p class="text-xs text-white/60">
-									Complexity Level {examples[currentExampleIndex].complexity}
-								</p>
-							</div>
-						</div>
+				<div class="flex flex-col bg-ink p-6 lg:col-span-1">
+					<p class="mb-1 text-[10px] tracking-[0.25em] text-paper/35 uppercase">
+						Pattern {(currentExampleIndex + 1).toString().padStart(2, '0')}
+					</p>
+					<h3 class="font-display text-2xl font-light text-paper">
+						{examples[currentExampleIndex].name}
+					</h3>
+					<p class="mt-1 text-xs text-paper/40">{examples[currentExampleIndex].description}</p>
 
-						<p class="mb-2 text-xs text-white/50">{examples[currentExampleIndex].description}</p>
-						<p class="mb-4 text-sm leading-relaxed text-white/70">
-							{examples[currentExampleIndex].useCase}
-						</p>
+					<p class="mt-4 text-sm leading-relaxed text-paper/55">
+						{examples[currentExampleIndex].useCase}
+					</p>
 
-						<div class="flex gap-2">
-							<button
-								onclick={prevExample}
-								class="flex-1 rounded-lg border border-white/30 bg-white/10 px-4 py-2 font-medium text-white transition-all hover:bg-white/20"
-							>
-								← Prev
-							</button>
-							<button
-								onclick={nextExample}
-								class="flex-1 rounded-lg border border-white/30 bg-white/10 px-4 py-2 font-medium text-white transition-all hover:bg-white/20"
-							>
-								Next →
-							</button>
-						</div>
-
-						<button
-							onclick={loadExample}
-							class="mt-3 w-full rounded-lg bg-white/90 px-4 py-2 font-medium text-primary-600 transition-all hover:scale-105 hover:bg-white"
-						>
-							Load & Study This Pattern
-						</button>
-					</div>
-
-					<div class="glass-accent rounded-xl p-4">
-						<h4 class="mb-2 text-xs font-semibold tracking-wide text-white/80 uppercase">
-							Complexity Progression
-						</h4>
+					<div class="mt-6">
 						<div class="flex gap-1">
-							{#each Array(9) as _, i}
+							{#each Array(9), i (i)}
 								<div
-									class="h-2 flex-1 rounded-full {i < examples[currentExampleIndex].complexity
-										? 'bg-primary-500'
-										: 'bg-white/20'}"
+									class="h-1 flex-1 {i < examples[currentExampleIndex].complexity
+										? 'bg-brass/70'
+										: 'bg-paper/10'}"
 								></div>
 							{/each}
 						</div>
-						<p class="mt-2 text-xs text-white/60">
+						<p class="mt-2 text-xs text-paper/40">
 							{#if examples[currentExampleIndex].complexity <= 2}
 								Beginner - Basic OOP concepts
 							{:else if examples[currentExampleIndex].complexity <= 4}
@@ -1051,60 +1002,78 @@
 							{/if}
 						</p>
 					</div>
+
+					<div class="mt-auto flex gap-2 pt-6">
+						<button
+							onclick={prevExample}
+							class="flex-1 cursor-pointer border border-paper/15 px-4 py-2 text-[11px] tracking-[0.2em] text-paper/55 uppercase transition-colors hover:border-paper/40 hover:text-paper"
+						>
+							← Prev
+						</button>
+						<button
+							onclick={nextExample}
+							class="flex-1 cursor-pointer border border-paper/15 px-4 py-2 text-[11px] tracking-[0.2em] text-paper/55 uppercase transition-colors hover:border-paper/40 hover:text-paper"
+						>
+							Next →
+						</button>
+					</div>
+
+					<button
+						onclick={loadExample}
+						class="mt-2 w-full cursor-pointer border border-brass/60 bg-brass/10 px-4 py-2 text-[11px] tracking-[0.2em] text-brass-bright uppercase transition-all hover:border-brass hover:bg-brass hover:text-ink"
+					>
+						Load & study this pattern
+					</button>
 				</div>
 
 				<!-- Example Code Preview -->
-				<div class="glass-accent overflow-hidden rounded-xl lg:col-span-2">
-					<div
-						class="flex items-center justify-between border-b border-white/20 bg-white/5 px-4 py-3"
-					>
-						<span class="font-mono text-xs text-white/80">Preview Code</span>
-						<span class="text-xs text-white/60">
+				<div class="flex flex-col overflow-hidden bg-ink lg:col-span-2">
+					<div class="flex items-center justify-between border-b border-paper/15 px-4 py-3">
+						<span class="text-[10px] tracking-[0.25em] text-paper/35 uppercase">Preview code</span>
+						<span class="text-[10px] tracking-[0.2em] text-paper/35 uppercase">
 							{examples[currentExampleIndex].code.split('\n').length} lines
 						</span>
 					</div>
 					<pre
-						class="max-h-64 overflow-auto p-4 font-mono text-sm leading-relaxed text-white/90">{examples[
+						class="max-h-64 flex-1 overflow-auto p-4 text-sm leading-relaxed text-paper/80">{examples[
 							currentExampleIndex
 						].code}</pre>
 				</div>
 			</div>
-		</div>
+		</section>
 
 		<!-- Saved Diagrams -->
 		{#if savedDiagrams.length > 0}
-			<div class="glass-enhanced mt-6 rounded-2xl p-6">
-				<div class="mb-4 flex items-center justify-between">
-					<h2 class="text-lg font-semibold text-white">Saved Class Diagrams</h2>
-					<span class="rounded-full bg-white/20 px-3 py-1 text-sm font-medium text-white">
-						{savedDiagrams.length}
-					</span>
+			<section class="mt-12">
+				<div class="mb-6 flex flex-wrap items-baseline justify-between gap-2">
+					<h2 class="text-[10px] tracking-[0.3em] text-brass/70 uppercase">Saved Class Diagrams</h2>
+					<p class="text-xs text-paper/40">{savedDiagrams.length} in the manifest</p>
 				</div>
 
 				<div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-					{#each savedDiagrams as diagram, index}
-						<div class="animate-in slide-in-from-left flex gap-2">
+					{#each savedDiagrams as diagram, index (diagram.timestamp)}
+						<div class="flex gap-px border border-paper/15 bg-paper/15">
 							<button
 								onclick={() => loadDiagram(diagram)}
-								class="group flex-1 rounded-lg border border-white/20 bg-white/10 p-3 text-left transition-all hover:scale-105 hover:border-white/40 hover:bg-white/20"
+								class="group flex-1 cursor-pointer bg-ink p-4 text-left transition-colors hover:bg-surface"
 							>
-								<div class="mb-1 text-sm font-medium text-white group-hover:text-white/90">
+								<div class="text-sm text-paper transition-colors group-hover:text-brass-bright">
 									{diagram.name}
 								</div>
-								<div class="text-xs text-white/60">
+								<div class="mt-1 text-xs text-paper/40">
 									{new Date(diagram.timestamp).toLocaleDateString()}
 								</div>
 							</button>
 							{#if confirmingDelete === index}
-								<div class="flex w-12 flex-col gap-1">
+								<div class="flex w-14 flex-col gap-px">
 									<button
 										onclick={() => confirmDelete(index)}
-										class="rounded-lg border border-red-400/40 bg-red-500/40 py-1 text-xs font-medium text-white transition-all hover:bg-red-500/60"
+										class="flex-1 cursor-pointer bg-ink text-[10px] tracking-[0.15em] text-red-300 uppercase transition-colors hover:bg-red-950/40"
 										>Del</button
 									>
 									<button
 										onclick={() => (confirmingDelete = -1)}
-										class="rounded-lg border border-white/20 bg-white/10 py-1 text-xs text-white/60 transition-all hover:bg-white/20"
+										class="flex-1 cursor-pointer bg-ink text-[10px] tracking-[0.15em] text-paper/40 uppercase transition-colors hover:bg-surface"
 										>No</button
 									>
 								</div>
@@ -1112,7 +1081,7 @@
 								<button
 									onclick={() => requestDelete(index)}
 									aria-label="Delete {diagram.name}"
-									class="w-12 rounded-lg border border-white/20 bg-white/10 text-xl text-white transition-all hover:border-red-400/40 hover:bg-red-500/30 hover:text-red-200"
+									class="w-14 cursor-pointer bg-ink text-lg text-paper/40 transition-colors hover:bg-red-950/30 hover:text-red-300"
 								>
 									×
 								</button>
@@ -1120,13 +1089,13 @@
 						</div>
 					{/each}
 				</div>
-			</div>
+			</section>
 		{/if}
-	</div>
+	</main>
 
 	{#if toast}
 		<div
-			class="glass-accent fixed right-6 bottom-6 z-50 rounded-xl px-4 py-3 text-sm text-white"
+			class="fixed right-6 bottom-6 z-[60] border border-brass/50 bg-ink px-4 py-3 text-sm text-paper"
 			role="status"
 			aria-live="polite"
 		>
@@ -1139,6 +1108,5 @@
 	#preview :global(svg) {
 		max-width: 100%;
 		height: auto;
-		filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.08));
 	}
 </style>

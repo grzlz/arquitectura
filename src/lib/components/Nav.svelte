@@ -1,4 +1,6 @@
 <script>
+	import { resolve } from '$app/paths';
+
 	const links = [
 		{ href: '/#doctrine', label: 'Doctrine' },
 		{ href: '/#flagship', label: 'Flagship' },
@@ -9,7 +11,7 @@
 
 <header class="border-b border-paper/15">
 	<div class="mx-auto flex max-w-6xl items-baseline justify-between px-6 py-5">
-		<a href="/" class="group flex items-baseline gap-3">
+		<a href={resolve('/')} class="group flex items-baseline gap-3">
 			<span
 				class="font-tech text-sm font-medium tracking-[0.25em] text-paper uppercase transition-colors group-hover:text-brass-bright"
 			>

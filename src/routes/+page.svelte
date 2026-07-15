@@ -1,11 +1,13 @@
 <script>
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
+	import { resolve } from '$app/paths';
 	import Nav from '$lib/components/Nav.svelte';
+	import { mermaidInit } from '$lib/mermaidTheme.js';
 
-	let heroEl = $state();
+	let heroSvg = $state('');
 	let heroError = $state('');
-	let flagshipEl = $state();
+	let flagshipSvg = $state('');
 	let flagshipError = $state('');
 
 	const heroDiagram = `flowchart LR
@@ -92,38 +94,21 @@
 		let mermaid;
 		try {
 			mermaid = (await import('mermaid')).default;
-			mermaid.initialize({
-				startOnLoad: false,
-				securityLevel: 'loose',
-				theme: 'base',
-				themeVariables: {
-					background: 'transparent',
-					fontFamily: "'IBM Plex Mono', monospace",
-					primaryColor: '#14110d',
-					primaryTextColor: '#ede6da',
-					primaryBorderColor: '#6b5c44',
-					nodeTextColor: '#ede6da',
-					lineColor: '#c9a36a',
-					secondaryColor: '#14110d',
-					tertiaryColor: '#0d0b09',
-					edgeLabelBackground: '#0d0b09',
-					clusterBkg: '#14110d'
-				}
-			});
-		} catch (e) {
+			mermaid.initialize(mermaidInit);
+		} catch {
 			heroError = flagshipError = 'The diagram declined to render — even Art has off days.';
 			return;
 		}
 		try {
 			const { svg } = await mermaid.render('hero-diagram', heroDiagram);
-			if (heroEl) heroEl.innerHTML = svg;
-		} catch (e) {
+			heroSvg = svg;
+		} catch {
 			heroError = 'The diagram declined to render — even Art has off days.';
 		}
 		try {
 			const { svg } = await mermaid.render('flagship-diagram', flagshipDiagram);
-			if (flagshipEl) flagshipEl.innerHTML = svg;
-		} catch (e) {
+			flagshipSvg = svg;
+		} catch {
 			flagshipError = 'The diagram declined to render — even Art has off days.';
 		}
 	});
@@ -170,7 +155,7 @@
 
 			<div class="rise mt-10 flex flex-wrap items-center gap-6" style="--d: 0.28s">
 				<a
-					href="/flowchart"
+					href={resolve('/flowchart')}
 					class="group inline-flex items-center gap-3 border border-brass/60 bg-brass/10 px-6 py-3 text-xs tracking-[0.2em] text-brass-bright uppercase transition-all hover:border-brass hover:bg-brass hover:text-ink"
 				>
 					Enter the Studio
@@ -185,10 +170,10 @@
 				{#if heroError}
 					<p class="py-8 text-center text-sm text-paper/40">{heroError}</p>
 				{/if}
-				<div
-					bind:this={heroEl}
-					class="flex justify-center overflow-x-auto [&_svg]:h-auto [&_svg]:max-w-full"
-				></div>
+				<div class="flex justify-center overflow-x-auto [&_svg]:h-auto [&_svg]:max-w-full">
+					<!-- eslint-disable-next-line svelte/no-at-html-tags -- SVG comes from mermaid.render over a hardcoded diagram, not user input -->
+					{@html heroSvg}
+				</div>
 				<figcaption class="mt-4 text-[10px] tracking-[0.25em] text-paper/35 uppercase">
 					<span class="text-brass/70">Fig. 1</span> — Operating principle
 				</figcaption>
@@ -199,7 +184,7 @@
 		<section id="doctrine" class="mb-24 scroll-mt-10">
 			<h2 class="mb-2 text-[10px] tracking-[0.3em] text-brass/70 uppercase">The Doctrine</h2>
 			<div class="border-t border-paper/15">
-				{#each doctrine as { title, body }, i}
+				{#each doctrine as { title, body }, i (title)}
 					<div
 						class="grid gap-2 border-b border-paper/15 py-7 transition-colors hover:bg-paper/[0.03] md:grid-cols-12 md:items-baseline md:gap-6"
 					>
@@ -225,7 +210,7 @@
 			</div>
 
 			<div class="grid gap-px border border-paper/15 bg-paper/15 md:grid-cols-3">
-				{#each flagshipCargo as { command, role, body, tagline }, i}
+				{#each flagshipCargo as { command, role, body, tagline }, i (command)}
 					<article class="group relative bg-ink p-8 transition-colors hover:bg-surface">
 						<span
 							class="absolute top-6 right-6 rotate-6 border border-brass/30 px-2 py-1 text-[9px] tracking-[0.2em] text-brass/50 uppercase transition-colors group-hover:border-brass/60 group-hover:text-brass/80"
@@ -246,10 +231,10 @@
 				{#if flagshipError}
 					<p class="py-8 text-center text-sm text-paper/40">{flagshipError}</p>
 				{/if}
-				<div
-					bind:this={flagshipEl}
-					class="flex justify-center overflow-x-auto [&_svg]:h-auto [&_svg]:max-w-full"
-				></div>
+				<div class="flex justify-center overflow-x-auto [&_svg]:h-auto [&_svg]:max-w-full">
+					<!-- eslint-disable-next-line svelte/no-at-html-tags -- SVG comes from mermaid.render over a hardcoded diagram, not user input -->
+					{@html flagshipSvg}
+				</div>
 				<figcaption class="mt-4 text-[10px] tracking-[0.25em] text-paper/35 uppercase">
 					<span class="text-brass/70">Fig. 2</span> — The pipeline
 				</figcaption>
@@ -354,7 +339,7 @@
 				<p class="text-xs text-paper/40">Art's showroom — one editor per diagram type.</p>
 			</div>
 			<div class="border-t border-paper/15">
-				{#each studioTypes as { href, label, desc }, i}
+				{#each studioTypes as { href, label, desc }, i (href)}
 					<a
 						{href}
 						class="group grid grid-cols-[3rem_1fr_auto] items-baseline gap-4 border-b border-paper/15 py-5 transition-colors hover:bg-paper/[0.04] sm:grid-cols-[5rem_1fr_1fr_auto]"
@@ -381,7 +366,7 @@
 			<div
 				class="grid grid-cols-2 gap-px border border-paper/15 bg-paper/15 text-[10px] tracking-[0.2em] uppercase md:grid-cols-5"
 			>
-				{#each [['Drawn by', 'A. Vandeley'], ['Checked', 'H.E. Pennypacker'], ['Firm', 'Vandeley Industries'], ['Scale', 'None'], ['Sheet', '1 of 1']] as [k, v]}
+				{#each [['Drawn by', 'A. Vandeley'], ['Checked', 'H.E. Pennypacker'], ['Firm', 'Vandeley Industries'], ['Scale', 'None'], ['Sheet', '1 of 1']] as [k, v] (k)}
 					<div class="bg-ink px-4 py-3">
 						<p class="mb-1 text-paper/30">{k}</p>
 						<p class="text-paper/70">{v}</p>
