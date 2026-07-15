@@ -141,7 +141,7 @@
 				class="rise max-w-4xl font-display text-5xl leading-[0.95] font-light tracking-tight text-paper sm:text-6xl md:text-8xl"
 				style="--d: 0.08s"
 			>
-				Importer of skills. <br /> Exporter of
+				Importer of skills. <br /> Exporter of <br />
 				<em class="font-normal text-brass-bright">well-architected <br /> components</em>.
 			</h1>
 
