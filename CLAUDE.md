@@ -20,16 +20,15 @@ The plugin marketplace is served straight from this repo's GitHub remote — `gi
 
 ### Routes → diagram types
 
-| Route          | Type                                                 |
-| -------------- | ---------------------------------------------------- |
-| `/`            | Art Vandeley landing (brand/identity, not an editor) |
-| `/flowchart`   | General flowcharts (graph LR/TD/TB)                  |
-| `/sequence`    | Sequence diagrams                                    |
-| `/state`       | State machine diagrams                               |
-| `/journey`     | User journey diagrams                                |
-| `/class`       | Class diagrams                                       |
-| `/swimlane`    | Swimlane (subgraph-based) diagrams                   |
-| `/dev/mermaid` | Dev/scratch page                                     |
+| Route        | Type                                                 |
+| ------------ | ---------------------------------------------------- |
+| `/`          | Art Vandeley landing (brand/identity, not an editor) |
+| `/flowchart` | General flowcharts (graph LR/TD/TB)                  |
+| `/sequence`  | Sequence diagrams                                    |
+| `/state`     | State machine diagrams                               |
+| `/journey`   | User journey diagrams                                |
+| `/class`     | Class diagrams                                       |
+| `/swimlane`  | Swimlane (subgraph-based) diagrams                   |
 
 ### Per-page pattern (all routes follow this)
 

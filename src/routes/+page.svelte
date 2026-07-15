@@ -138,11 +138,11 @@
 			</div>
 
 			<h1
-				class="rise max-w-4xl font-display text-6xl leading-[0.95] font-light tracking-tight text-paper md:text-8xl"
+				class="rise max-w-4xl font-display text-5xl leading-[0.95] font-light tracking-tight text-paper sm:text-6xl md:text-8xl"
 				style="--d: 0.08s"
 			>
 				Importer of skills. Exporter of
-				<em class="font-normal text-brass-bright">well&#8209;architected components</em>.
+				<em class="font-normal text-brass-bright">well-architected components</em>.
 			</h1>
 
 			<p class="rise mt-8 max-w-xl text-sm leading-relaxed text-paper/55" style="--d: 0.18s">
@@ -253,7 +253,7 @@
 			</div>
 
 			<div class="grid gap-px border border-paper/15 bg-paper/15 md:grid-cols-2">
-				<div class="bg-ink p-8 transition-colors hover:bg-surface">
+				<div class="min-w-0 bg-ink p-8 transition-colors hover:bg-surface">
 					<p class="mb-1 text-[10px] tracking-[0.25em] text-paper/35 uppercase">Step 01</p>
 					<h3 class="font-display text-3xl font-light text-paper md:text-4xl">
 						Dock the marketplace
@@ -264,9 +264,11 @@
 						from source, under his legal name.
 					</p>
 					<div
-						class="mt-6 flex items-center justify-between gap-4 border border-paper/15 bg-surface px-4 py-3"
+						class="mt-6 flex min-w-0 items-center justify-between gap-4 border border-paper/15 bg-surface px-4 py-3"
 					>
-						<code class="overflow-x-auto text-sm whitespace-nowrap text-brass-bright">
+						<code
+							class="min-w-0 flex-1 overflow-x-auto text-sm whitespace-nowrap text-brass-bright"
+						>
 							<span class="text-paper/30">❯</span>
 							{marketplaceCommand}
 						</code>
@@ -287,7 +289,7 @@
 					</button>
 				</div>
 
-				<div class="bg-ink p-8 transition-colors hover:bg-surface">
+				<div class="min-w-0 bg-ink p-8 transition-colors hover:bg-surface">
 					<p class="mb-1 text-[10px] tracking-[0.25em] text-paper/35 uppercase">Step 02</p>
 					<h3 class="font-display text-3xl font-light text-paper md:text-4xl">Import the cargo</h3>
 					<p class="mt-5 max-w-md text-sm leading-relaxed text-paper/55">
