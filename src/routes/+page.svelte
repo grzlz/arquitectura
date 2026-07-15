@@ -142,7 +142,7 @@
 				style="--d: 0.08s"
 			>
 				Importer of skills. <br /> Exporter of
-				<em class="font-normal text-brass-bright">well-architected components</em>.
+				<em class="font-normal text-brass-bright">well-architected <br /> components</em>.
 			</h1>
 
 			<p class="rise mt-8 max-w-xl text-sm leading-relaxed text-paper/55" style="--d: 0.18s">
