@@ -6,7 +6,7 @@ allowed-tools: [Read, Grep, Glob, Bash, Write]
 
 # Verify
 
-Art Vandeley's **closed loop**. This project was burned once: a port was trusted, a screenshot was taken of the wrong app entirely (`~/wsr/sei`, a Campeche government portal squatting on `localhost:5173`), and a change was reported as done without ever confirming it rendered. This skill exists so that never happens again. It drives a real browser against a *confirmed* dev server and reads the result back. It does not rewrite code — it closes the loop the main session left open.
+Art Vandeley's **closed loop**. This project was burned once: a port was trusted, a screenshot was taken of the wrong app entirely (`~/wsr/sei`, a Campeche government portal squatting on `localhost:5173`), and a change was reported as done without ever confirming it rendered. This skill exists so that never happens again. It drives a real browser against a _confirmed_ dev server and reads the result back. It does not rewrite code — it closes the loop the main session left open.
 
 ## When to Invoke
 
@@ -20,8 +20,8 @@ Art Vandeley's **closed loop**. This project was burned once: a port was trusted
 Work these in order. Each ends on a checkable result.
 
 1. **Draw the loop.** A Mermaid `flowchart` of this run: dev-server-check → screenshot → read-back → verdict. Lead with it — no paragraph first. _Done when:_ the diagram names the actual port and path under test.
-2. **Never trust a port.** Find what's listening: `lsof -iTCP -sTCP:LISTEN -P | grep <port>`. Get its PID, then confirm it's *this* repo, not a stranger: `ps -p <pid> -o command` and `lsof -p <pid> | grep cwd`. _Done when:_ the process's cwd resolves to this repo's path — or, if it doesn't, this repo's own `vite dev` has been started on a different explicit port (`npm run dev -- --port <N>`) instead of assuming.
-3. **Install if missing.** Check `npm ls playwright`; if absent, run `"$CLAUDE_PLUGIN_ROOT/scripts/verify-setup.sh"` from the project root (idempotent — installs the playwright devDependency, the chromium binary, and a `scripts/screenshot.mjs` + `npm run screenshot` in *this* project, each only if missing; never touches the plugin's own directory). _Done when:_ `npx playwright --version` succeeds and `npm run screenshot` exists.
+2. **Never trust a port.** Find what's listening: `lsof -iTCP -sTCP:LISTEN -P | grep <port>`. Get its PID, then confirm it's _this_ repo, not a stranger: `ps -p <pid> -o command` and `lsof -p <pid> | grep cwd`. _Done when:_ the process's cwd resolves to this repo's path — or, if it doesn't, this repo's own `vite dev` has been started on a different explicit port (`npm run dev -- --port <N>`) instead of assuming.
+3. **Install if missing.** Check `npm ls playwright`; if absent, run `"$CLAUDE_PLUGIN_ROOT/scripts/verify-setup.sh"` from the project root (idempotent — installs the playwright devDependency, the chromium binary, and a `scripts/screenshot.mjs` + `npm run screenshot` in _this_ project, each only if missing; never touches the plugin's own directory). _Done when:_ `npx playwright --version` succeeds and `npm run screenshot` exists.
 4. **Screenshot before/after.** Drive `npm run screenshot [path] [out.png]` (`chromium.launch`, `page.goto`, `page.screenshot({ fullPage: true })`) against the confirmed URL from step 2, once before the change and once after. _Done when:_ two PNGs exist on disk at known paths.
 5. **Read it back.** Use Read on the screenshot PNG(s) directly — the point is closing the loop, not trusting that the script exited 0. _Done when:_ you can describe, from the pixels, what actually changed.
 6. **Render the verdict.** One of: **confirmed** (the change is visibly present) / **not confirmed** (screenshot shows the old state or an error page) / **wrong target** (loop broke at step 2 — caught before wasting a screenshot). _Done when:_ the verdict names which step it rests on.
