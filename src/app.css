@@ -27,6 +27,12 @@
 	--color-primary-950: oklch(0.1448 0.0293 231.23);
 }
 
+/* Match the drafting-sheet ink so overscroll/rubber-band bounce never flashes white */
+html,
+body {
+	background-color: var(--color-ink);
+}
+
 /* Glass Morphism Utility Classes */
 .glass-accent {
 	background: linear-gradient(
