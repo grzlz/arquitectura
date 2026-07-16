@@ -12,7 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture
 
-**Art Vandeley** — a SvelteKit 5 app fronting _Art Vandeley_, an agent that imports skills and exports well-architected components (the `/architect` → `/judge` → `/export` pipeline; nothing ships without a judge-approved verdict) and communicates in Mermaid + Markdown. `/` is Art's landing (his identity + doctrine); **the Mermaid Studio is now a feature**, a family of standalone diagram editors (one route per diagram type). The agent ships as **one Claude Code plugin** in `plugins/art-vandeley/` — agent, `/hello-art` command, and all skills (`architect`, `judge`, `export`, `verify`, `commit`) in a single install. Never split the skills back into separate marketplace plugins; the one-crate install is a deliberate product decision.
+**Art Vandeley** — a SvelteKit 5 app fronting _Art Vandeley_, an agent that imports skills and exports well-architected components (the `/architect` → `/judge` → `/export` pipeline; nothing ships without a judge-approved verdict) and communicates in Mermaid + Markdown. `/` is Art's landing (his identity + doctrine); **the Mermaid Studio is now a feature**, a family of standalone diagram editors (one route per diagram type). The agent ships as **one Claude Code plugin** in `plugins/art-vandeley/` — agent, `/hello-art` command, and all skills (`architect`, `judge`, `export`, `verify`, `commit`, `next-steps`) in a single install. Never split the skills back into separate marketplace plugins; the one-crate install is a deliberate product decision.
 
 ### Distribution
 

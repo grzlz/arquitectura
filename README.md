@@ -37,7 +37,7 @@ Then install the one plugin — everything travels with it:
 /plugin install art-vandeley@vandeley
 ```
 
-The skills land namespaced under the plugin: `/art-vandeley:architect`, `/art-vandeley:judge`, `/art-vandeley:export`, `/art-vandeley:verify`, `/art-vandeley:commit`.
+The skills land namespaced under the plugin: `/art-vandeley:architect`, `/art-vandeley:judge`, `/art-vandeley:export`, `/art-vandeley:verify`, `/art-vandeley:commit`, `/art-vandeley:next-steps`.
 
 Or browse interactively — run `/plugin`, pick the **vandeley** marketplace, and install from there. To pick up new releases later:
 
@@ -57,11 +57,12 @@ The flagship skills form a three-stage pipeline. Each stage does one job and ref
 
 ## The support crew
 
-| Skill          | What it does                                                                                                                                              |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `art-vandeley` | The agent himself. Reads your environment (repo, stack, task), imports the skills that fit, answers in Mermaid + Markdown. Say `/hello-art`.              |
-| `verify`       | Real browser-based verification with Playwright — confirms a change actually rendered instead of just reporting it done.                                  |
-| `commit`       | Surveys changes with `git diff --stat` before reading hunks, groups them into logical commits, writes each with a unified template. No agent attribution. |
+| Skill          | What it does                                                                                                                                                                                                                                                  |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `art-vandeley` | The agent himself. Reads your environment (repo, stack, task), imports the skills that fit, answers in Mermaid + Markdown. Say `/hello-art`.                                                                                                                  |
+| `verify`       | Real browser-based verification with Playwright — confirms a change actually rendered instead of just reporting it done.                                                                                                                                      |
+| `commit`       | Surveys changes with `git diff --stat` before reading hunks, groups them into logical commits, writes each with a unified template. No agent attribution.                                                                                                     |
+| `next-steps`   | The dispatch desk. Reads recent git history (`git log --oneline -5`, `git show`), `ROADMAP.md`, and working-tree status, then calls the next moves in priority order — a route map plus a ranked list. Read-only; hands each move to the skill that works it. |
 
 ## Compatibility
 
@@ -100,7 +101,7 @@ plugins/art-vandeley/             # the one plugin — Art and his crate
   .claude-plugin/plugin.json
   agents/                         # the Art Vandeley agent
   commands/                       # /hello-art
-  skills/<name>/SKILL.md          # architect, judge, export, verify, commit
+  skills/<name>/SKILL.md          # architect, judge, export, verify, commit, next-steps
   scripts/                        # verify's Playwright bootstrap
 src/routes/                       # landing page + one route per diagram editor
 src/lib/                          # shared components and rune-based state
