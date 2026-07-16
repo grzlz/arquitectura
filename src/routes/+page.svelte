@@ -74,7 +74,7 @@
 	const marketplaceCommand = '/plugin marketplace add https://vandeley.art/marketplace.json';
 	const marketplaceSourceCommand = '/plugin marketplace add grzlz/arquitectura';
 	const installCommands = ['/plugin install art-vandeley@vandeley'];
-	const crateSkills = ['architect', 'judge', 'export', 'verify', 'commit'];
+	const crateSkills = ['architect', 'judge', 'export', 'verify', 'commit', 'next-steps'];
 
 	let copied = $state('');
 	let copyResetTimer;
@@ -146,24 +146,44 @@
 			</h1>
 
 			<p class="rise mt-8 max-w-xl text-sm leading-relaxed text-paper/55" style="--d: 0.18s">
-				Art Vandeley ships well-architected components with papers — drawn at the drafting table,
-				tried by the tribunal, stamped at the dock. Two imports pack the crate: he imports the
-				<em class="text-paper/75">context</em> of your repo, then the
-				<em class="text-paper/75">skills</em> that fit it. Yes —
-				<em class="text-paper/75">that</em> Art Vandeley. The cover story finally landed a real job.
+				Art Vandeley is a <em class="text-paper/75">Claude Code plugin</em> — an agent that designs
+				a component before building it. <code class="text-brass/90">/architect</code>
+				draws the map, <code class="text-brass/90">/judge</code> rules on it, and
+				<code class="text-brass/90">/export</code> ships the code in your stack. Nothing ships
+				without an approved verdict. Yes — <em class="text-paper/75">that</em> Art Vandeley. The cover
+				story finally landed a real job.
 			</p>
 
-			<div class="rise mt-10 flex flex-wrap items-center gap-6" style="--d: 0.28s">
-				<a
-					href={resolve('/flowchart')}
-					class="group inline-flex items-center gap-3 border border-brass/60 bg-brass/10 px-6 py-3 text-xs tracking-[0.2em] text-brass-bright uppercase transition-all hover:border-brass hover:bg-brass hover:text-ink"
+			<div class="rise mt-10 max-w-xl" style="--d: 0.28s">
+				<div
+					class="flex min-w-0 items-center justify-between gap-4 border border-brass/50 bg-brass/[0.07] px-4 py-3"
 				>
-					Enter the Studio
-					<span class="transition-transform group-hover:translate-x-1">→</span>
-				</a>
-				<span class="text-xs text-paper/40">
-					or say hello — <code class="text-brass/90">/hello-art</code>
-				</span>
+					<code class="min-w-0 flex-1 overflow-x-auto text-sm whitespace-nowrap text-brass-bright">
+						<span class="text-paper/30">❯</span>
+						{marketplaceCommand}
+					</code>
+					<button
+						onclick={() => copyCommand(marketplaceCommand, 'hero')}
+						class="shrink-0 cursor-pointer text-[10px] tracking-[0.2em] text-paper/40 uppercase transition-colors hover:text-brass-bright"
+					>
+						{copied === 'hero' ? 'Copied ✓' : 'Copy'}
+					</button>
+				</div>
+				<div class="mt-3 flex flex-wrap items-center gap-x-6 gap-y-1 text-xs text-paper/40">
+					<a href="#install" class="text-brass/80 transition-colors hover:text-brass-bright">
+						Step 1 of 2 — full manifest below ↓
+					</a>
+					<span>
+						or browse
+						<a
+							href={resolve('/flowchart')}
+							class="text-brass/80 transition-colors hover:text-brass-bright"
+						>
+							the Studio →
+						</a>
+						— free Mermaid editors
+					</span>
+				</div>
 			</div>
 
 			<figure class="rise mt-14 border-t border-paper/15 pt-6" style="--d: 0.38s">
@@ -180,32 +200,12 @@
 			</figure>
 		</section>
 
-		<!-- Doctrine — numbered manifest lines -->
-		<section id="doctrine" class="mb-24 scroll-mt-10">
-			<h2 class="mb-2 text-[10px] tracking-[0.3em] text-brass/70 uppercase">The Doctrine</h2>
-			<div class="border-t border-paper/15">
-				{#each doctrine as { title, body }, i (title)}
-					<div
-						class="grid gap-2 border-b border-paper/15 py-7 transition-colors hover:bg-paper/[0.03] md:grid-cols-12 md:items-baseline md:gap-6"
-					>
-						<span class="text-xs text-brass/60 md:col-span-1">0{i + 1}</span>
-						<h3
-							class="font-display text-2xl font-light text-paper italic md:col-span-4 md:text-3xl"
-						>
-							{title}
-						</h3>
-						<p class="text-sm leading-relaxed text-paper/50 md:col-span-7">{body}</p>
-					</div>
-				{/each}
-			</div>
-		</section>
-
 		<!-- Flagship cargo -->
 		<section id="flagship" class="mb-24 scroll-mt-10">
 			<div class="mb-8 flex flex-wrap items-baseline justify-between gap-2">
 				<h2 class="text-[10px] tracking-[0.3em] text-brass/70 uppercase">Flagship Cargo</h2>
 				<p class="text-xs text-paper/40">
-					The pipeline — drafting table to tribunal to dock. Nothing ships without the stamp.
+					Three skills, one pipeline — design, verdict, code. Nothing ships without the stamp.
 				</p>
 			</div>
 
@@ -294,7 +294,7 @@
 					<h3 class="font-display text-3xl font-light text-paper md:text-4xl">Import the cargo</h3>
 					<p class="mt-5 max-w-md text-sm leading-relaxed text-paper/55">
 						One crate, everything inside — the agent, <code class="text-brass/90">/hello-art</code>,
-						and his five skills. Art packs his own luggage.
+						and his six skills. Art packs his own luggage.
 					</p>
 					<div class="mt-6 border border-paper/15 bg-surface">
 						<div class="flex items-center justify-between border-b border-paper/15 px-4 py-2">
@@ -338,7 +338,9 @@
 		<section id="studio" class="mb-24 scroll-mt-10">
 			<div class="mb-8 flex flex-wrap items-baseline justify-between gap-2">
 				<h2 class="text-[10px] tracking-[0.3em] text-brass/70 uppercase">The Studio</h2>
-				<p class="text-xs text-paper/40">Art's showroom — one editor per diagram type.</p>
+				<p class="text-xs text-paper/40">
+					A separate deck — free standalone Mermaid editors, no plugin required.
+				</p>
 			</div>
 			<div class="border-t border-paper/15">
 				{#each studioTypes as { href, label, desc }, i (href)}
@@ -359,6 +361,29 @@
 							→
 						</span>
 					</a>
+				{/each}
+			</div>
+		</section>
+
+		<!-- Doctrine — numbered manifest lines -->
+		<section id="doctrine" class="mb-24 scroll-mt-10">
+			<div class="mb-2 flex flex-wrap items-baseline justify-between gap-2">
+				<h2 class="text-[10px] tracking-[0.3em] text-brass/70 uppercase">The Doctrine</h2>
+				<p class="text-xs text-paper/40">For the already-convinced — how Art operates.</p>
+			</div>
+			<div class="border-t border-paper/15">
+				{#each doctrine as { title, body }, i (title)}
+					<div
+						class="grid gap-2 border-b border-paper/15 py-7 transition-colors hover:bg-paper/[0.03] md:grid-cols-12 md:items-baseline md:gap-6"
+					>
+						<span class="text-xs text-brass/60 md:col-span-1">0{i + 1}</span>
+						<h3
+							class="font-display text-2xl font-light text-paper italic md:col-span-4 md:text-3xl"
+						>
+							{title}
+						</h3>
+						<p class="text-sm leading-relaxed text-paper/50 md:col-span-7">{body}</p>
+					</div>
 				{/each}
 			</div>
 		</section>

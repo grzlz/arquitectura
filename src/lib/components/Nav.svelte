@@ -2,9 +2,9 @@
 	import { resolve } from '$app/paths';
 
 	const links = [
-		{ href: '/#doctrine', label: 'Doctrine' },
-		{ href: '/#flagship', label: 'Flagship' },
+		{ href: '/#flagship', label: 'Pipeline' },
 		{ href: '/#studio', label: 'Studio' },
+		{ href: '/#doctrine', label: 'Doctrine' },
 		{ href: '/#install', label: 'Install', cta: true }
 	];
 </script>
