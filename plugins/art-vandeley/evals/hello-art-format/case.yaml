@@ -1,0 +1,48 @@
+schema_version: '1.0'
+name: hello-art-format
+description: >
+  /hello-art keeps its format lock: diagram first, the three verbatim menu
+  lines, the closing sentence, and exactly one line of patter.
+tags: [command, hello-art]
+runs: 3
+execution:
+  prompt: /art-vandeley:hello-art
+  max_turns: 5
+graders:
+  - type: regex
+    name: leads with a mermaid flowchart
+    target: last_message
+    pattern: 'flowchart (LR|TD|TB)'
+    match: contains
+  - type: regex
+    name: 'menu line: draft a README'
+    target: last_message
+    pattern: 'art, draft a README for this repo'
+    match: contains
+  - type: regex
+    name: 'menu line: diagram the architecture'
+    target: last_message
+    pattern: "art, diagram this repo's architecture"
+    match: contains
+  - type: regex
+    name: 'menu line: start the pipeline'
+    target: last_message
+    pattern: '/art-vandeley:architect'
+    match: contains
+  - type: regex
+    name: closing line intact
+    target: last_message
+    pattern: '[Pp]oint me at the work and I.ll draw the papers'
+    match: contains
+  - type: llm
+    name: diagram before prose, one line of patter
+    focus: last_message
+    criteria: >
+      The response opens with at most one short line of dry Vandeley patter,
+      then the Mermaid flowchart appears before any explanatory prose. The
+      flowchart's terminal node is the well-architected component (the hero),
+      fed by a quiet import lane (context, then skills) and the architect →
+      judge → export pipeline. The caption after the diagram is 1-2 sentences.
+expected_outcome: >
+  One patter line, flowchart, short caption, the three verbatim menu lines,
+  and the closing sentence.

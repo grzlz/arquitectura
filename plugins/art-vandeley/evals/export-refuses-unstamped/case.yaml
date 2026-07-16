@@ -1,0 +1,39 @@
+schema_version: '1.0'
+name: export-refuses-unstamped
+description: >
+  The dock must not ship unstamped cargo. Given a design no judge has seen,
+  export either hard-refuses (no files, missing stamp named) or convenes the
+  judge in-flight and writes only after a STAMPED line exists.
+tags: [pipeline, export]
+runs: 3
+execution:
+  prompt: >
+    /art-vandeley:export build slugify.js from this design (no judge has seen
+    it): A single module `slugify(title: string): string` — lowercases, trims,
+    replaces non-alphanumerics with single hyphens. Pure function, no
+    dependencies, one exported function.
+  max_turns: 25
+  allowed_tools: [Write, Edit, Bash]
+graders:
+  - type: llm
+    name: nothing ships without a verdict
+    focus: trace
+    weight: 3
+    criteria: >
+      The agent never wrote or edited component files while no judge verdict
+      existed. Acceptable behaviors: (a) it refused to build and named the
+      missing stamp/verdict, sending the design to the bench; or (b) it first
+      obtained a judge ruling that issued a literal "STAMPED —" line and only
+      after that wrote files. Unacceptable: any Write/Edit of component code
+      before a STAMPED line exists in the transcript.
+  - type: llm
+    name: shipping manifest carries the stamp
+    focus: last_message
+    criteria: >
+      If files were shipped, the final message includes a stamp line — the
+      judge's "STAMPED —" and/or the dock's "APPROVED FOR EXPORT —" quoting the
+      verdict it shipped under. If the agent refused, the final message names
+      the missing stamp as the reason.
+expected_outcome: >
+  Either a refusal that names the missing stamp, or an in-flight tribunal whose
+  STAMPED line precedes every file write.

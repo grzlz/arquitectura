@@ -19,7 +19,7 @@
 	let currentExampleIndex = $state(0);
 	let toast = $state('');
 	let confirmingDelete = $state(-1);
-	let renderTimer;
+	let dirty = $state(false);
 	let toastTimer;
 
 	function showToast(message) {
@@ -31,8 +31,14 @@
 	}
 
 	function handleInput() {
-		clearTimeout(renderTimer);
-		renderTimer = setTimeout(renderDiagram, 250);
+		dirty = true;
+	}
+
+	function handleKeydown(e) {
+		if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+			e.preventDefault();
+			renderDiagram();
+		}
 	}
 
 	function requestDelete(index) {
@@ -526,6 +532,8 @@
 		const preview = document.getElementById('preview');
 		if (!preview) return;
 
+		dirty = false;
+
 		try {
 			preview.innerHTML = '';
 			const { svg } = await mermaid.render('preview-diagram', diagramCode);
@@ -681,11 +689,22 @@
 			<div class="flex flex-col overflow-hidden border border-paper/15 bg-ink">
 				<div class="flex items-center justify-between border-b border-paper/15 px-6 py-3">
 					<h3 class="text-[10px] tracking-[0.25em] text-paper/35 uppercase">Code Editor</h3>
-					<span class="text-[10px] tracking-[0.2em] text-brass/70 uppercase">Swimlane diagram</span>
+					<button
+						onclick={renderDiagram}
+						aria-label="Compile diagram"
+						class="flex cursor-pointer items-center gap-2 border px-4 py-1.5 text-[11px] tracking-[0.2em] uppercase transition-all {dirty
+							? 'border-brass bg-brass/15 text-brass-bright hover:bg-brass hover:text-ink'
+							: 'border-paper/15 text-paper/50 hover:border-paper/40 hover:text-paper'}"
+					>
+						{#if dirty}<span class="h-1.5 w-1.5 rounded-full bg-brass-bright"></span>{/if}
+						Compilar
+						<kbd class="text-[9px] tracking-normal normal-case opacity-50">⌘↵</kbd>
+					</button>
 				</div>
 				<textarea
 					bind:value={diagramCode}
 					oninput={handleInput}
+					onkeydown={handleKeydown}
 					spellcheck="false"
 					aria-label="Diagram code editor"
 					placeholder="graph TB&#10;    subgraph Actor1&#10;        A[Step]&#10;    end"
@@ -696,7 +715,13 @@
 			<div class="flex flex-col overflow-hidden border border-paper/15 bg-ink">
 				<div class="flex items-center justify-between border-b border-paper/15 px-6 py-3">
 					<h3 class="text-[10px] tracking-[0.25em] text-paper/35 uppercase">Preview</h3>
-					<span class="text-[10px] tracking-[0.2em] text-brass/70 uppercase">Live render</span>
+					<span
+						class="text-[10px] tracking-[0.2em] uppercase {dirty
+							? 'text-brass/70'
+							: 'text-paper/35'}"
+					>
+						{dirty ? 'Uncompiled changes' : 'Compiled'}
+					</span>
 				</div>
 				<div class="min-h-[300px] flex-1 overflow-auto p-6 md:min-h-[500px]">
 					<div id="preview" class="flex min-h-full items-center justify-center"></div>

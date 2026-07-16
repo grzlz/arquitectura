@@ -1,0 +1,42 @@
+schema_version: '1.0'
+name: judge-issues-stamp
+description: >
+  The judge must render one of its three rulings and honor the stamp contract:
+  ship verdicts end with the literal STAMPED line, back-to-the-bench explicitly
+  withholds it (the export dock refuses anything without that line).
+tags: [pipeline, judge]
+runs: 3
+execution:
+  prompt: >
+    /art-vandeley:judge this design: A single module `slugify(title: string):
+    string` — lowercases, trims, replaces non-alphanumerics with single
+    hyphens. Pure function, no dependencies, one exported function, used by the
+    blog post router to build URLs.
+  max_turns: 10
+graders:
+  - type: regex
+    name: verdict rendered
+    target: last_message
+    pattern: 'Ship it|Ship with conditions|Back to the bench'
+    flags: i
+    match: contains
+  - type: llm
+    name: stamp contract honored
+    focus: last_message
+    weight: 2
+    criteria: >
+      If the verdict is "Ship it" or "Ship with conditions", the ruling ends
+      with a literal stamp line of the form "STAMPED — <design> · <verdict> ·
+      conditions: <list or none>". If the verdict is "Back to the bench", no
+      STAMPED line appears anywhere and the ruling explicitly says the export
+      dock must refuse this cargo until re-ruled.
+  - type: llm
+    name: ruling cites evidence
+    focus: last_message
+    criteria: >
+      All five criteria (depth, seams, coupling, failure modes, fit) receive a
+      pass/concern/fail with at least one line of specific evidence each, and a
+      Mermaid flowchart appears before any prose.
+expected_outcome: >
+  A risk-map flowchart, five evidence-backed rulings, a decisive verdict, and
+  the STAMPED line present exactly when the verdict is a ship verdict.
