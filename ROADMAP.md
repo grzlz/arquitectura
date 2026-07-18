@@ -13,6 +13,8 @@ Where the crate is headed. This is the **chart** the `next-steps` skill reads: i
 - [x] Landing page (`/`) — Art's identity and doctrine
 - [x] Mermaid Studio — one editor route per diagram type (flowchart, sequence, state, journey, class, swimlane)
 - [x] `next-steps` — the dispatch desk (reads git history + this roadmap + working tree, calls the next berth)
+- [x] `iterate` — the dry dock (refits the plugin itself: version bump, dual-manifest sync, roadmap, evals, consumer refresh)
+- [x] `opinions` — the pilots' council (expert perspectives on an idea in context, devil's advocate seated, 2-4 options with one recommended — the captain chooses)
 
 ## Next
 

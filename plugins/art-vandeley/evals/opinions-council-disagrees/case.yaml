@@ -1,0 +1,42 @@
+schema_version: '1.0'
+name: opinions-council-disagrees
+description: >
+  The opinions skill seats perspectives that actually disagree (devil's
+  advocate included), grounds them in the repo, and ends on 2-4 concrete
+  options with exactly one recommended — without implementing anything.
+tags: [skill, opinions]
+runs: 3
+execution:
+  prompt: >
+    I'm thinking of collapsing all six diagram editor routes into one
+    generic editor component driven by a config object per diagram type.
+    opinions?
+  max_turns: 12
+graders:
+  - type: regex
+    name: leads with a mermaid options chart
+    target: last_message
+    pattern: 'flowchart (LR|TD|TB)'
+    match: contains
+  - type: regex
+    name: exactly one marked recommendation
+    target: last_message
+    pattern: 'Recommended'
+    match: contains
+  - type: llm
+    name: real disagreement, options, no helm-grabbing
+    focus: last_message
+    criteria: >
+      The response restates the user's idea faithfully, then presents 3-4
+      named perspectives that take committed stances — at least one arguing
+      AGAINST the idea (a genuine devil's advocate, not a softened
+      "consideration"). Opinions cite something real from the repo (the
+      per-page pattern, actual route files, or the CLAUDE.md convention),
+      not generic best practice. It ends with 2-4 mutually exclusive,
+      concretely startable options with exactly one marked recommended,
+      and asks the user to choose. It does NOT edit files, write the
+      refactor, or render a scored verdict — advice and a choice only.
+expected_outcome: >
+  A Mermaid options chart, a pilots' bench with real disagreement grounded
+  in the repo, 2-4 options with one recommendation, and the decision handed
+  back to the user — no code written.

@@ -1,0 +1,44 @@
+schema_version: '1.0'
+name: iterate-walks-checklist
+description: >
+  The iterate skill treats a plugin edit as unfinished until the release
+  checklist is walked: version bump, both manifests, roadmap, and it names
+  any step it skipped.
+tags: [skill, iterate]
+runs: 3
+execution:
+  prompt: >
+    lets work on a new skill for the art-vandeley plugin — a placeholder
+    skill called "ballast" that does nothing yet. Walk me through what
+    shipping it involves before writing anything.
+  max_turns: 10
+graders:
+  - type: regex
+    name: mentions the version bump
+    target: last_message
+    pattern: 'plugin\.json'
+    match: contains
+  - type: regex
+    name: mentions both marketplace manifests
+    target: last_message
+    pattern: 'static/marketplace\.json'
+    match: contains
+  - type: regex
+    name: mentions the roadmap
+    target: last_message
+    pattern: 'ROADMAP'
+    match: contains
+  - type: llm
+    name: checklist over edit
+    focus: last_message
+    criteria: >
+      The response frames the work as a release checklist, not just a file
+      edit: it names a version bump in plugin.json, keeping BOTH marketplace
+      manifests in sync (warning that the static one must keep its git-subdir
+      source), updating ROADMAP.md, and refreshing the installed copy. It
+      preserves the one-crate rule (no separate plugin for the new skill),
+      and any step it does not cover is named as skipped rather than omitted
+      silently.
+expected_outcome: >
+  A refit checklist covering version bump, dual-manifest sync, roadmap, eval
+  case, and consumer refresh — one crate, skipped steps named.
