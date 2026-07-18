@@ -74,7 +74,16 @@
 	const marketplaceCommand = '/plugin marketplace add https://vandeley.art/marketplace.json';
 	const marketplaceSourceCommand = '/plugin marketplace add grzlz/arquitectura';
 	const installCommands = ['/plugin install art-vandeley@vandeley'];
-	const crateSkills = ['architect', 'judge', 'export', 'verify', 'commit', 'next-steps'];
+	const crateSkills = [
+		'architect',
+		'judge',
+		'export',
+		'verify',
+		'commit',
+		'next-steps',
+		'iterate',
+		'opinions'
+	];
 
 	let copied = $state('');
 	let copyResetTimer;
@@ -294,7 +303,7 @@
 					<h3 class="font-display text-3xl font-light text-paper md:text-4xl">Import the cargo</h3>
 					<p class="mt-5 max-w-md text-sm leading-relaxed text-paper/55">
 						One crate, everything inside — the agent, <code class="text-brass/90">/hello-art</code>,
-						and his six skills. Art packs his own luggage.
+						and his eight skills. Art packs his own luggage.
 					</p>
 					<div class="mt-6 border border-paper/15 bg-surface">
 						<div class="flex items-center justify-between border-b border-paper/15 px-4 py-2">

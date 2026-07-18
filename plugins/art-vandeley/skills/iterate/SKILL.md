@@ -18,15 +18,15 @@ Art Vandeley's **dry dock** — where the ship comes out of the water. Every oth
 
 One refit can touch up to seven surfaces. Know them before cutting steel:
 
-| Surface | File | When it moves |
-| --- | --- | --- |
-| The crate | `plugins/art-vandeley/` (skills/, commands/, agents/) | every refit |
-| Hull number | `plugins/art-vandeley/.claude-plugin/plugin.json` (`version`, skill list in `description`) | every refit |
-| Repo manifest | `.claude-plugin/marketplace.json` — **relative** source, for `/plugin marketplace add grzlz/arquitectura` | when name/description change |
-| URL manifest | `static/marketplace.json` — **git-subdir** source, served at `vandeley.art/marketplace.json` | same changes, kept in sync |
-| The chart | `ROADMAP.md` | every refit |
-| Trial cases | `plugins/art-vandeley/evals/` | new or changed behavior |
-| Distribution surfaces | `README.md`, `marketplaceCommand` in `src/routes/+page.svelte` | only when the install route itself changes |
+| Surface               | File                                                                                                      | When it moves                              |
+| --------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| The crate             | `plugins/art-vandeley/` (skills/, commands/, agents/)                                                     | every refit                                |
+| Hull number           | `plugins/art-vandeley/.claude-plugin/plugin.json` (`version`, skill list in `description`)                | every refit                                |
+| Repo manifest         | `.claude-plugin/marketplace.json` — **relative** source, for `/plugin marketplace add grzlz/arquitectura` | when name/description change               |
+| URL manifest          | `static/marketplace.json` — **git-subdir** source, served at `vandeley.art/marketplace.json`              | same changes, kept in sync                 |
+| The chart             | `ROADMAP.md`                                                                                              | every refit                                |
+| Trial cases           | `plugins/art-vandeley/evals/`                                                                             | new or changed behavior                    |
+| Distribution surfaces | `README.md`, `marketplaceCommand` in `src/routes/+page.svelte`                                            | only when the install route itself changes |
 
 ## Process
 
