@@ -82,7 +82,28 @@
 		'commit',
 		'next-steps',
 		'iterate',
-		'opinions'
+		'opinions',
+		'unslopify'
+	];
+
+	const updateCommands = [
+		'/plugin marketplace update vandeley',
+		'/plugin update art-vandeley@vandeley'
+	];
+	const novedades = [
+		{
+			version: '0.7.0',
+			date: '2026-09-09',
+			kind: 'New skill',
+			command: '/unslopify',
+			role: 'The fitting-out berth',
+			body: 'Pumps the AI slop out of a UI. Audits it against the design practice GitHub (Primer) and Tailwind actually publish — indigo gradients, three equal cards, one fuzzy shadow under everything — then refits type, color, spacing, states, motion and copy in your own tokens. Every rule cites its source. Removes defaults nobody chose; never re-brands.',
+			usage: [
+				'/unslopify',
+				'unslopify the hero in src/routes/+page.svelte',
+				'this looks AI-generated — de-slop it'
+			]
+		}
 	];
 
 	let copied = $state('');
@@ -209,6 +230,75 @@
 			</figure>
 		</section>
 
+		<!-- Novedades — what just came off the dock -->
+		<section id="novedades" class="mb-24 scroll-mt-10">
+			<div class="mb-8 flex flex-wrap items-baseline justify-between gap-2">
+				<h2 class="text-[10px] tracking-[0.3em] text-brass/70 uppercase">Novedades</h2>
+				<p class="text-xs text-paper/40">Fresh off the dock. Update the crate and it is yours.</p>
+			</div>
+
+			{#each novedades as item (item.version + item.command)}
+				<article class="grid gap-px border border-paper/15 bg-paper/15 md:grid-cols-[1.2fr_1fr]">
+					<div class="group relative bg-ink p-8 transition-colors hover:bg-surface">
+						<span
+							class="absolute top-6 right-6 rotate-6 border border-brass/30 px-2 py-1 text-[9px] tracking-[0.2em] text-brass/50 uppercase transition-colors group-hover:border-brass/60 group-hover:text-brass/80"
+						>
+							v{item.version} · {item.date}
+						</span>
+						<p class="mb-1 text-[10px] tracking-[0.25em] text-paper/35 uppercase">
+							{item.kind} · {item.role}
+						</p>
+						<h3 class="font-display text-3xl font-light text-brass-bright md:text-4xl">
+							{item.command}
+						</h3>
+						<p class="mt-5 max-w-lg text-sm leading-relaxed text-paper/55">{item.body}</p>
+					</div>
+
+					<div class="min-w-0 bg-ink p-8 transition-colors hover:bg-surface">
+						<p class="mb-1 text-[10px] tracking-[0.25em] text-paper/35 uppercase">Instructions</p>
+						<p class="text-sm leading-relaxed text-paper/55">
+							Already aboard? Update the crate. New here? <a
+								href="#install"
+								class="text-brass/80 transition-colors hover:text-brass-bright">Install first</a
+							>.
+						</p>
+						<div class="mt-5 border border-paper/15 bg-surface">
+							<div class="flex items-center justify-between border-b border-paper/15 px-4 py-2">
+								<span class="text-[10px] tracking-[0.25em] text-paper/35 uppercase">Update</span>
+								<button
+									onclick={() => copyCommand(updateCommands.join('\n'), 'update')}
+									class="cursor-pointer text-[10px] tracking-[0.2em] text-paper/40 uppercase transition-colors hover:text-brass-bright"
+								>
+									{copied === 'update' ? 'Copied ✓' : 'Copy'}
+								</button>
+							</div>
+							<div class="overflow-x-auto px-4 py-3">
+								{#each updateCommands as command (command)}
+									<div class="text-sm leading-7 whitespace-nowrap">
+										<span class="text-paper/30">❯</span>
+										<span class="text-brass-bright">{command}</span>
+									</div>
+								{/each}
+							</div>
+						</div>
+						<div class="mt-4 border border-paper/15 bg-surface">
+							<div class="border-b border-paper/15 px-4 py-2">
+								<span class="text-[10px] tracking-[0.25em] text-paper/35 uppercase">Then say</span>
+							</div>
+							<div class="overflow-x-auto px-4 py-3">
+								{#each item.usage as line (line)}
+									<div class="text-sm leading-7 whitespace-nowrap">
+										<span class="text-paper/30">❯</span>
+										<span class="text-paper/70">{line}</span>
+									</div>
+								{/each}
+							</div>
+						</div>
+					</div>
+				</article>
+			{/each}
+		</section>
+
 		<!-- Flagship cargo -->
 		<section id="flagship" class="mb-24 scroll-mt-10">
 			<div class="mb-8 flex flex-wrap items-baseline justify-between gap-2">
@@ -303,7 +393,7 @@
 					<h3 class="font-display text-3xl font-light text-paper md:text-4xl">Import the cargo</h3>
 					<p class="mt-5 max-w-md text-sm leading-relaxed text-paper/55">
 						One crate, everything inside — the agent, <code class="text-brass/90">/hello-art</code>,
-						and his eight skills. Art packs his own luggage.
+						and his nine skills. Art packs his own luggage.
 					</p>
 					<div class="mt-6 border border-paper/15 bg-surface">
 						<div class="flex items-center justify-between border-b border-paper/15 px-4 py-2">
