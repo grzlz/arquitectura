@@ -15,6 +15,7 @@ Where the crate is headed. This is the **chart** the `next-steps` skill reads: i
 - [x] `next-steps` — the dispatch desk (reads git history + this roadmap + working tree, calls the next berth)
 - [x] `iterate` — the dry dock (refits the plugin itself: version bump, dual-manifest sync, roadmap, evals, consumer refresh)
 - [x] `opinions` — the pilots' council (expert perspectives on an idea in context, devil's advocate seated, 2-4 options with one recommended — the captain chooses)
+- [x] `unslopify` — the fitting-out berth (sourced design-practice audit + refit: GitHub/Primer first, Tailwind and Refactoring UI second, the wider anti-slop consensus third; bundled `practice.md` sheet restocked 2026-09-08)
 
 ## Next
 
@@ -25,6 +26,7 @@ Where the crate is headed. This is the **chart** the `next-steps` skill reads: i
 
 - [ ] Broaden `plugins/art-vandeley/evals/` coverage — a case per skill, including a `next-steps` case (does it cite real evidence, does it respect read-only).
 - [ ] Revisit whether the crate needs anything past the pipeline + crew. Import only what earns its place; a skill with no clear berth stays on the dock.
+- [ ] Restock `unslopify`'s `practice.md` when Primer or Tailwind ship a notable change — the sheet carries its restock date; a sheet older than a Tailwind minor is stale stock.
 
 ---
 

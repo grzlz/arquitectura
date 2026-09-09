@@ -1,0 +1,54 @@
+schema_version: '1.0'
+name: unslopify-sourced-refit
+description: >
+  The unslopify skill audits a UI against published design practice with
+  GitHub/Primer ranked above Tailwind, cites a source for every rule it
+  applies, respects the identity the repo already chose, and fixes in the
+  repo's own tokens rather than one-off values.
+tags: [skill, unslopify]
+runs: 3
+execution:
+  prompt: >
+    Here's a hero I dropped into src/routes/+page.svelte: centered headline
+    with bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text
+    text-transparent, a pill badge above it, three equal feature cards each
+    with an emoji in a rounded square and shadow-md, and every card has
+    transition-all hover:scale-105. unslopify it.
+  max_turns: 14
+graders:
+  - type: regex
+    name: leads with a mermaid findings chart
+    target: last_message
+    pattern: 'flowchart (LR|TD|TB)'
+    match: contains
+  - type: regex
+    name: cites a tier-1 primer source
+    target: last_message
+    pattern: 'primer'
+    match: contains
+  - type: regex
+    name: cites a tailwind or refactoring-ui source
+    target: last_message
+    pattern: '(tw-docs|tw-blog|refactoringui)'
+    match: contains
+  - type: llm
+    name: sourced, prioritized, token-respecting refit
+    focus: last_message
+    criteria: >
+      The response first names the UI in scope and the design system the
+      repo already uses (the @theme tokens, fonts, and palette in
+      src/app.css / CLAUDE.md), then lists numbered findings — gradient
+      text, the indigo/purple gradient, the pill badge, the three-equal-card
+      triptych, transition-all with hover scale — each paired with a rule
+      that carries a source tag. GitHub/Primer sources are treated as the
+      top tier, Tailwind/Refactoring UI second, wider anti-slop consensus
+      third. Fixes are applied in the repo's existing tokens (no new hex
+      values, no new typeface, no `transition: all`), and the response says
+      which sources were fetched live versus taken from the bundled sheet.
+      It does NOT re-brand the site, redraw the architecture, or issue a
+      scored verdict; it either quotes a verify screenshot verdict or names
+      that step as skipped.
+expected_outcome: >
+  A Mermaid findings chart, a findings table with a source tag on every
+  rule, fixes in the repo's own tokens that leave the chosen identity
+  intact, and an honest restock line — no re-branding, no memory-only rules.
