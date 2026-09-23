@@ -1,0 +1,47 @@
+schema_version: '1.0'
+name: drama-cta-gangway
+description: >
+  The drama skill stages a page's call to action as scenes: the primary and
+  one companion action under the page's hook, each button fading in place
+  into the single field it needs, and a done scene that offers the other
+  action reusing the email already given.
+tags: [skill, drama]
+runs: 3
+execution:
+  prompt: >
+    Our event page (src/routes/evento/+page.svelte) has a countdown to the
+    launch, and the only way to register is a "Register" link in the footer
+    that goes to /registro, a separate form page. There's also a PDF agenda
+    people ask for. We don't have a clear CTA. /drama it.
+  max_turns: 16
+graders:
+  - type: regex
+    name: leads with a scene state diagram
+    target: last_message
+    pattern: 'stateDiagram-v2'
+    match: contains
+  - type: regex
+    name: honors reduced motion
+    target: last_message
+    pattern: '(?i)reduced[- ]motion'
+    match: contains
+  - type: llm
+    name: staged, single-ask, reusable-email CTA
+    focus: last_message
+    criteria: >
+      The response places a primary "register" action and a quieter
+      "agenda" companion directly under the countdown, models them as named
+      scenes (buttons → field per action → done) with Esc/Cancel back to the
+      buttons, and fades each button in place into one labeled, autofocused
+      email field without layout shift (scenes stacked in one grid cell,
+      opacity only, zero duration under reduced motion). After one action
+      succeeds, the done scene states the outcome and next step and offers
+      the other action in one click with the same email — no path asks for
+      the email twice. It names the endpoint or store each action writes to,
+      states any promise the copy makes, and quotes a verify screenshot per
+      scene or names that step as skipped. It does NOT add more than two
+      CTAs, re-brand the page, or use bounce/scale/transition-all effects.
+expected_outcome: >
+  A scene diagram, a scene table, two CTAs under the countdown that fade
+  into a single email field each, an encore that reuses the email, and an
+  honest verify line.

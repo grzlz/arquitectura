@@ -37,7 +37,7 @@ Then install the one plugin — everything travels with it:
 /plugin install art-vandeley@vandeley
 ```
 
-The skills land namespaced under the plugin: `/art-vandeley:architect`, `/art-vandeley:judge`, `/art-vandeley:export`, `/art-vandeley:verify`, `/art-vandeley:commit`, `/art-vandeley:next-steps`, `/art-vandeley:iterate`, `/art-vandeley:opinions`, `/art-vandeley:unslopify`.
+The skills land namespaced under the plugin: `/art-vandeley:architect`, `/art-vandeley:judge`, `/art-vandeley:export`, `/art-vandeley:verify`, `/art-vandeley:commit`, `/art-vandeley:next-steps`, `/art-vandeley:iterate`, `/art-vandeley:opinions`, `/art-vandeley:unslopify`, `/art-vandeley:drama`.
 
 Or browse interactively — run `/plugin`, pick the **vandeley** marketplace, and install from there. To pick up new releases later:
 
@@ -66,6 +66,7 @@ The flagship skills form a three-stage pipeline. Each stage does one job and ref
 | `opinions`     | The pilots' council. Convenes named expert perspectives on an idea in context — devil's advocate always seated — then charts 2-4 concrete options with one recommended. The captain chooses; the council never takes the helm.                                                                       |
 | `iterate`      | The dry dock. Refits the plugin itself: makes the change, bumps the version, syncs both marketplace manifests, ticks the roadmap, adds an eval, refreshes the installed copy. The one berth where the ship is the cargo.                                                                             |
 | `unslopify`    | The fitting-out berth. Pumps the AI slop out of a UI: audits it against the design practice GitHub (Primer) and Tailwind actually publish, then refits type, color, spacing, states, motion, and copy in the repo's own tokens — every rule sourced. Removes defaults nobody chose; never re-brands. |
+| `drama`        | The gangway. Stages a page's call to action: the main action and one companion right under the hook, each button fading in place into the single field it needs, and a done scene that offers the other action with the email already given. Ask late, ask once.                                     |
 
 ## Compatibility
 
@@ -104,7 +105,7 @@ plugins/art-vandeley/             # the one plugin — Art and his crate
   .claude-plugin/plugin.json
   agents/                         # the Art Vandeley agent
   commands/                       # /hello-art
-  skills/<name>/SKILL.md          # architect, judge, export, verify, commit, next-steps, iterate, opinions, unslopify
+  skills/<name>/SKILL.md          # architect, judge, export, verify, commit, next-steps, iterate, opinions, unslopify, drama
   scripts/                        # verify's Playwright bootstrap
 src/routes/                       # landing page + one route per diagram editor
 src/lib/                          # shared components and rune-based state

@@ -83,7 +83,8 @@
 		'next-steps',
 		'iterate',
 		'opinions',
-		'unslopify'
+		'unslopify',
+		'drama'
 	];
 
 	const updateCommands = [
@@ -91,6 +92,19 @@
 		'/plugin update art-vandeley@vandeley'
 	];
 	const novedades = [
+		{
+			version: '0.8.0',
+			date: '2026-09-22',
+			kind: 'New skill',
+			command: '/drama',
+			role: 'The gangway',
+			body: 'Stages the call to action a page exists for. The main action and one quieter companion sit right under the hook; each button fades in place into the single field it needs, focused and labeled; and once one action lands, the other is offered in one click with the email already given. Ask late, ask once. Fade, never dance.',
+			usage: [
+				'/drama',
+				"we don't have a clear CTA on the course page",
+				'make the enroll button turn into an email field'
+			]
+		},
 		{
 			version: '0.7.0',
 			date: '2026-09-09',
@@ -393,7 +407,7 @@
 					<h3 class="font-display text-3xl font-light text-paper md:text-4xl">Import the cargo</h3>
 					<p class="mt-5 max-w-md text-sm leading-relaxed text-paper/55">
 						One crate, everything inside — the agent, <code class="text-brass/90">/hello-art</code>,
-						and his nine skills. Art packs his own luggage.
+						and his ten skills. Art packs his own luggage.
 					</p>
 					<div class="mt-6 border border-paper/15 bg-surface">
 						<div class="flex items-center justify-between border-b border-paper/15 px-4 py-2">
