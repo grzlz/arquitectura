@@ -1,6 +1,6 @@
 {
 	"name": "art-vandeley",
-	"version": "0.10.0",
+	"version": "0.10.1",
 	"description": "Art Vandeley — importer of skills, exporter of well-architected components. One install ships the agent, /hello-art, and the full skill crate: architect, judge, export, verify, commit, next-steps, iterate, opinions, unslopify, drama, lets-get-cracking, handoff.",
 	"author": {
 		"name": "Art Vandeley"
