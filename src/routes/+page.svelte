@@ -201,7 +201,7 @@
 {#snippet copyButton(text, key)}
 	<button
 		onclick={() => copyCommand(text, key)}
-		class="shrink-0 cursor-pointer kicker text-ink/75 underline-offset-4 transition-colors hover:text-accent hover:underline"
+		class="shrink-0 cursor-pointer py-1 kicker text-ink/75 underline-offset-4 transition-colors hover:text-accent hover:underline"
 	>
 		{copied === key ? 'Copied ✓' : 'Copy'}
 	</button>
@@ -431,7 +431,7 @@
 					</div>
 					<button
 						onclick={() => copyCommand(marketplaceSourceCommand, 'source')}
-						class="mt-3 cursor-pointer font-sans text-sm text-ink/75 underline-offset-4 transition-colors hover:text-accent hover:underline"
+						class="mt-2 cursor-pointer py-1 font-sans text-sm text-ink/75 underline-offset-4 transition-colors hover:text-accent hover:underline"
 					>
 						{copied === 'source'
 							? 'Copied ✓ · grzlz/arquitectura'
@@ -494,7 +494,7 @@
 							</span>
 							<span class="hidden text-lg text-ink/60 italic sm:block">{desc}</span>
 							<span
-								class="pr-2 font-sans text-ink/60 transition-all group-hover:translate-x-1 group-hover:text-accent"
+								class="pr-2 font-sans text-ink/60 transition-[color,translate] group-hover:translate-x-1 group-hover:text-accent"
 							>
 								→
 							</span>

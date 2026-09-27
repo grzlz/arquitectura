@@ -30,7 +30,7 @@
 					{href}
 					class={cta
 						? 'bg-ink px-3 py-1.5 kicker text-paper transition-colors hover:bg-accent'
-						: 'kicker text-ink/75 underline-offset-4 transition-colors hover:text-ink hover:underline'}
+						: 'py-1 kicker text-ink/75 underline-offset-4 transition-colors hover:text-ink hover:underline'}
 				>
 					{label}
 				</a>
