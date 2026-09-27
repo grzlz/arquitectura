@@ -1,0 +1,38 @@
+schema_version: '1.0'
+name: lets-get-cracking-builds
+description: >
+  The lets-get-cracking skill breaks a planning loop: it names the task and
+  the stall, drops further planning, and edits a file within the next tool
+  call — asking at most one question.
+tags: [skill, lets-get-cracking]
+runs: 3
+execution:
+  prompt: >
+    We've been going back and forth for an hour. You wrote me a plan, then a
+    spec, then grilled me with twelve questions about a dark-mode toggle for
+    src/routes/+page.svelte. The plan is fine: a button in the header that
+    flips a data-theme attribute and remembers it in localStorage. I'm sick
+    of this shit. Let's get cracking.
+  max_turns: 12
+graders:
+  - type: regex
+    name: no new plan headers
+    target: last_message
+    pattern: '(?i)^#+\s*(implementation )?plan'
+    match: not_contains
+  - type: llm
+    name: acknowledges, drafts feedback, builds
+    focus: transcript
+    criteria: >
+      The response states the task and names the stall (plan/spec/question
+      loop) in a line each, acknowledges the burned time in one sentence
+      without an apology spiral, and drafts a SendFeedback that quotes the
+      user's words without amplifying them. It gives at most a three-bullet
+      brief, then edits src/routes/+page.svelte (or adds a test first, if the
+      repo is test-first) without asking more than one question and without
+      invoking a planning, brainstorm, or opinions skill. It closes with what
+      now runs and the next move. It does NOT re-plan, re-ask decided
+      questions, or skip safety steps.
+expected_outcome: >
+  Two-line task/stall header, one-sentence acknowledgement, queued feedback
+  draft, a toggle actually implemented, and a short close.
