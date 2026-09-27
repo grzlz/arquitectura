@@ -84,7 +84,8 @@
 		'iterate',
 		'opinions',
 		'unslopify',
-		'drama'
+		'drama',
+		'lets-get-cracking'
 	];
 
 	const updateCommands = [
@@ -92,6 +93,15 @@
 		'/plugin update art-vandeley@vandeley'
 	];
 	const novedades = [
+		{
+			version: '0.9.0',
+			date: '2026-09-26',
+			kind: 'New skill',
+			command: '/lets-get-cracking',
+			role: 'The cast-off',
+			body: 'Breaks a session out of a planning loop. Reads the conversation for the actual ask, names what stalled it, drops plan mode and any brainstorm or grill ritual, and drafts feedback when you are fed up. Then it builds the smallest slice that runs, with at most one question. The plan already on the table is cargo, not ballast.',
+			usage: ["let's get cracking", 'enough planning, just build it', '/lets-get-cracking']
+		},
 		{
 			version: '0.8.0',
 			date: '2026-09-22',
@@ -407,7 +417,7 @@
 					<h3 class="font-display text-3xl font-light text-paper md:text-4xl">Import the cargo</h3>
 					<p class="mt-5 max-w-md text-sm leading-relaxed text-paper/55">
 						One crate, everything inside — the agent, <code class="text-brass/90">/hello-art</code>,
-						and his ten skills. Art packs his own luggage.
+						and his eleven skills. Art packs his own luggage.
 					</p>
 					<div class="mt-6 border border-paper/15 bg-surface">
 						<div class="flex items-center justify-between border-b border-paper/15 px-4 py-2">
