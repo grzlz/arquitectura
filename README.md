@@ -37,13 +37,20 @@ Then install the one plugin — everything travels with it:
 /plugin install art-vandeley@vandeley
 ```
 
-The skills land namespaced under the plugin: `/art-vandeley:architect`, `/art-vandeley:judge`, `/art-vandeley:export`, `/art-vandeley:verify`, `/art-vandeley:commit`, `/art-vandeley:next-steps`, `/art-vandeley:iterate`, `/art-vandeley:opinions`, `/art-vandeley:unslopify`, `/art-vandeley:drama`, `/art-vandeley:lets-get-cracking`.
+The skills land namespaced under the plugin: `/art-vandeley:architect`, `/art-vandeley:judge`, `/art-vandeley:export`, `/art-vandeley:verify`, `/art-vandeley:commit`, `/art-vandeley:next-steps`, `/art-vandeley:iterate`, `/art-vandeley:opinions`, `/art-vandeley:unslopify`, `/art-vandeley:drama`, `/art-vandeley:lets-get-cracking`, `/art-vandeley:handoff`, `/art-vandeley:news`, `/art-vandeley:radar`.
 
-Or browse interactively — run `/plugin`, pick the **vandeley** marketplace, and install from there. To pick up new releases later:
+Or browse interactively — run `/plugin`, pick the **vandeley** marketplace, and install from there.
+
+## Update
+
+New releases don't reach installs on their own. Pull them, then restart Claude Code:
 
 ```
 /plugin marketplace update vandeley
+/plugin update art-vandeley@vandeley
 ```
+
+Ask `/art-vandeley:news` what shipped since your version (it reads [vandeley.art/changelog.md](https://vandeley.art/changelog.md)). To stop checking by hand, turn on auto-update for **vandeley** under `/plugin` → Marketplaces.
 
 ## The pipeline
 
@@ -68,6 +75,9 @@ The flagship skills form a three-stage pipeline. Each stage does one job and ref
 | `unslopify`         | The fitting-out berth. Pumps the AI slop out of a UI: audits it against the design practice GitHub (Primer) and Tailwind actually publish, then refits type, color, spacing, states, motion, and copy in the repo's own tokens — every rule sourced. Removes defaults nobody chose; never re-brands. |
 | `drama`             | The gangway. Stages a page's call to action: the main action and one companion right under the hook, each button fading in place into the single field it needs, and a done scene that offers the other action with the email already given. Ask late, ask once.                                     |
 | `lets-get-cracking` | The cast-off. Breaks a planning loop: names the task and what stalled it, drops plan mode and any brainstorm/grill ritual, drafts feedback when you're fed up, then builds the smallest working slice with at most one question.                                                                     |
+| `handoff`           | The change of watch. Lands the in-flight action (deploy, commit, test run), writes a self-contained watch log, then launches a background relief whose sole task is to keep building.                                                                                                                |
+| `news`              | The harbor bulletin. Reads your installed version, fetches the published changelog from vandeley.art, and lists every release you don't have yet, with the exact update commands.                                                                                                                    |
+| `radar`             | The lookout. A dated, linked brief of agentic news — deploythebox.com/agents first (our house desk), then Hacker News, Anthropic, and the Claude Code changelog — searched live in your session, nothing stored.                                                                                     |
 
 ## Compatibility
 
@@ -106,7 +116,7 @@ plugins/art-vandeley/             # the one plugin — Art and his crate
   .claude-plugin/plugin.json
   agents/                         # the Art Vandeley agent
   commands/                       # /hello-art
-  skills/<name>/SKILL.md          # architect, judge, export, verify, commit, next-steps, iterate, opinions, unslopify, drama, lets-get-cracking
+  skills/<name>/SKILL.md          # architect, judge, export, verify, commit, next-steps, iterate, opinions, unslopify, drama, lets-get-cracking, handoff, news, radar
   scripts/                        # verify's Playwright bootstrap
 src/routes/                       # landing page + one route per diagram editor
 src/lib/                          # shared components and rune-based state

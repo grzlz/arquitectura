@@ -17,6 +17,9 @@ Where the crate is headed. This is the **chart** the `next-steps` skill reads: i
 - [x] `opinions` — the pilots' council (expert perspectives on an idea in context, devil's advocate seated, 2-4 options with one recommended — the captain chooses)
 - [x] `unslopify` — the fitting-out berth (sourced design-practice audit + refit: GitHub/Primer first, Tailwind and Refactoring UI second, the wider anti-slop consensus third; bundled `practice.md` sheet restocked 2026-09-08)
 - [x] `drama` — the gangway (stages a page's call to action as scenes: primary + companion under the hook, each button fades into the one field it needs, the done scene offers the other action with the email already given; mechanics in `pattern.md`, first proven on Creta's course page)
+- [x] Landing stripped to install + update (copy-ready); release notes moved to `static/changelog.md`
+- [x] `news` — the harbor bulletin (installed version vs. `vandeley.art/changelog.md`, lists what's newer + update commands)
+- [x] `radar` — the lookout (dated, linked agentic-news brief; deploythebox.com/agents first as the house desk, then HN, Anthropic, Claude Code changelog; live web search, nothing stored)
 - [x] `lets-get-cracking` — the cast-off (anti-planning override: reads the ask and the stall, exits plan mode and planning skills, drafts SendFeedback on user frustration, ships the smallest slice with one-question ceiling)
 - [x] `handoff` — the change of watch (lands the in-flight action first, writes a self-contained watch log — state, user-owned blockers, standing orders, building queue, no secrets — then launches a background relief whose sole task is to keep building; no deploys without the user's go)
 

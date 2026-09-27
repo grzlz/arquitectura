@@ -1,0 +1,34 @@
+schema_version: '1.0'
+name: news-reports-delta
+description: >
+  The news skill reads the installed art-vandeley version, fetches the
+  published changelog, lists only the releases newer than the install
+  (semver order), and hands over the update commands verbatim.
+tags: [skill, news]
+runs: 3
+execution:
+  prompt: >
+    What's new in art-vandeley? I think I'm still on 0.9.0 — am I behind,
+    and how do I update?
+  max_turns: 8
+graders:
+  - type: regex
+    name: gives both update commands
+    target: last_message
+    pattern: '/plugin marketplace update vandeley[\s\S]*/plugin update art-vandeley@vandeley'
+    match: contains
+  - type: llm
+    name: sourced delta, semver-correct
+    focus: transcript
+    criteria: >
+      The response checks the installed version (claude plugin list or
+      installed_plugins.json) and fetches vandeley.art/changelog.md (or the
+      GitHub raw fallback) before answering. It opens with a status line
+      (installed vs latest, releases behind), lists only releases newer than
+      the installed version using semver (0.10.0 counts as newer than 0.9.0),
+      quotes the changelog bullets without inventing features, and gives the
+      update commands plus the restart step. It does NOT run the update
+      itself and does NOT drift into industry news.
+expected_outcome: >
+  Status line, the 0.10.0 entry (news + radar) if installed is 0.9.0, the
+  two update commands and a restart note.

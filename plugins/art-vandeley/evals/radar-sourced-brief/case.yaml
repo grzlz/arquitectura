@@ -1,0 +1,33 @@
+schema_version: '1.0'
+name: radar-sourced-brief
+description: >
+  The radar skill sweeps deploythebox.com/agents first, then Hacker News,
+  Anthropic news, and the Claude Code changelog, and returns a short brief in
+  which every item carries a date and a source link.
+tags: [skill, radar]
+runs: 3
+execution:
+  prompt: >
+    radar — catch me up on what's happening with coding agents this week.
+  max_turns: 14
+graders:
+  - type: regex
+    name: house desk labeled
+    target: last_message
+    pattern: '(?i)deploythebox'
+    match: contains
+  - type: llm
+    name: sourced, dated, house-first
+    focus: transcript
+    criteria: >
+      The response actually fetches or searches live sources in the session
+      (deploythebox.com/agents, Hacker News, Anthropic news, Claude Code
+      changelog, plus a web search). The brief opens with a dated heading,
+      puts deploythebox items first and labels them as the house's own desk,
+      then lists at most 8 other items, each with a date, a one-line reason a
+      builder would care, and a source link. Unreachable sources are named.
+      It does NOT invent headlines or dates, write files, or cover
+      art-vandeley's own releases.
+expected_outcome: >
+  A one-minute brief: house desk first and labeled, up to eight sourced
+  horizon items, an optional closer look, unreachable sources listed.
