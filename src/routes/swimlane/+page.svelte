@@ -1,5 +1,5 @@
 <script>
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import { browser } from '$app/environment';
 	import Nav from '$lib/components/Nav.svelte';
 	import { mermaidInit } from '$lib/mermaidTheme.js';
@@ -17,17 +17,16 @@
 	let currentName = $state('');
 	let error = $state('');
 	let currentExampleIndex = $state(0);
-	let toast = $state('');
+	let feedback = $state(''); // 'saved' | 'copied' | 'copy-failed'
+	let saveError = $state('');
 	let confirmingDelete = $state(-1);
 	let dirty = $state(false);
-	let toastTimer;
+	let feedbackTimer;
 
-	function showToast(message) {
-		toast = message;
-		clearTimeout(toastTimer);
-		toastTimer = setTimeout(() => {
-			toast = '';
-		}, 2500);
+	function flash(state) {
+		feedback = state;
+		clearTimeout(feedbackTimer);
+		feedbackTimer = setTimeout(() => (feedback = ''), 1800);
 	}
 
 	function handleInput() {
@@ -41,13 +40,23 @@
 		}
 	}
 
-	function requestDelete(index) {
+	// The × swaps for Del / No, so focus follows the swap instead of falling to <body>
+	async function requestDelete(index) {
 		confirmingDelete = index;
+		await tick();
+		document.querySelector('[data-confirm-delete]')?.focus();
+	}
+
+	async function cancelDelete(index) {
+		confirmingDelete = -1;
+		await tick();
+		document.querySelector(`[data-delete="${index}"]`)?.focus();
 	}
 
 	function confirmDelete(index) {
 		deleteDiagram(index);
 		confirmingDelete = -1;
+		document.getElementById('diagram-name')?.focus();
 	}
 
 	const examples = [
@@ -543,16 +552,17 @@
 		} catch (e) {
 			error = e.message;
 			preview.innerHTML = '';
-			const errEl = document.createElement('div');
-			errEl.className = 'p-4 font-mono text-sm text-accent';
-			errEl.textContent = e.message;
-			preview.appendChild(errEl);
+			const note = document.createElement('p');
+			note.className = 'font-serif text-lg text-ink/60 italic';
+			note.textContent = 'Nothing to preview until the code compiles.';
+			preview.appendChild(note);
 		}
 	}
 
 	function saveDiagram() {
 		if (!currentName.trim()) {
-			showToast('Enter a name to save');
+			saveError = 'Enter a name to save';
+			document.getElementById('diagram-name')?.focus();
 			return;
 		}
 
@@ -566,9 +576,12 @@
 		try {
 			localStorage.setItem('mermaid-swimlane-diagrams', JSON.stringify(savedDiagrams));
 		} catch {
-			showToast('Could not save — storage unavailable');
+			saveError = 'Could not save — this browser blocks local storage';
+			return;
 		}
+		saveError = '';
 		currentName = '';
+		flash('saved');
 	}
 
 	function loadDiagram(diagram) {
@@ -602,8 +615,8 @@
 	function copyCode() {
 		navigator.clipboard
 			.writeText(diagramCode)
-			.then(() => showToast('Code copied to clipboard'))
-			.catch(() => showToast('Could not copy — check browser permissions'));
+			.then(() => flash('copied'))
+			.catch(() => flash('copy-failed'));
 	}
 </script>
 
@@ -614,264 +627,260 @@
 <div class="min-h-screen bg-paper font-sans text-ink">
 	<Nav wide />
 
-	<main class="mx-auto max-w-7xl px-6 pt-4 pb-16">
-		<header class="mb-12 border-b border-ink/15 pb-10">
+	<main class="mx-auto max-w-7xl px-6 pt-4 pb-20">
+		<header>
 			<div
-				class="mb-8 flex flex-wrap items-baseline justify-between gap-2 kicker font-medium text-ink/60"
+				class="flex flex-wrap items-baseline justify-between gap-2 border-b border-ink/15 pb-3 kicker font-medium text-ink/60"
 			>
 				<span>The Studio · Free Mermaid editors</span>
 				<span class="text-accent">No. 06 · Swimlane</span>
 			</div>
-
-			<div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-				<div>
-					<h1 class="font-display text-title font-light">Swimlane</h1>
-					<p class="mt-4 max-w-xl font-serif text-deck text-ink/75 italic">
-						Multi-actor processes — from simple handoffs to enterprise workflows
-					</p>
-				</div>
-
-				<div class="flex flex-wrap items-center gap-2">
-					<input
-						type="text"
-						bind:value={currentName}
-						placeholder="Enter diagram name..."
-						aria-label="Diagram name"
-						class="w-full border-b border-ink/30 bg-transparent px-1 py-2 text-sm text-ink placeholder-ink/50 transition-colors focus:border-ink focus:outline-none sm:w-auto sm:min-w-[200px]"
-					/>
-					<button
-						onclick={saveDiagram}
-						class="cursor-pointer border border-ink bg-ink px-4 py-2 text-[11px] font-semibold tracking-[0.14em] text-paper uppercase transition-colors hover:border-accent hover:bg-accent"
-					>
-						Save
-					</button>
-					<button
-						onclick={exportSVG}
-						class="cursor-pointer border border-ink/25 px-4 py-2 text-[11px] font-semibold tracking-[0.14em] text-ink/75 uppercase transition-colors hover:border-ink hover:text-ink"
-					>
-						Export
-					</button>
-					<button
-						onclick={copyCode}
-						class="cursor-pointer border border-ink/25 px-4 py-2 text-[11px] font-semibold tracking-[0.14em] text-ink/75 uppercase transition-colors hover:border-ink hover:text-ink"
-					>
-						Copy
-					</button>
-					<button
-						onclick={renderDiagram}
-						aria-label="Refresh diagram"
-						class="cursor-pointer border border-ink/25 px-3 py-2 text-[11px] text-ink/75 transition-all hover:rotate-90 hover:border-ink hover:text-ink"
-					>
-						↻
-					</button>
-				</div>
-			</div>
+			<h1 class="mt-10 font-display text-title font-light">Swimlane</h1>
+			<p class="mt-4 max-w-measure font-serif text-deck text-ink/75 italic">
+				Multi-actor processes — from simple handoffs to enterprise workflows
+			</p>
 		</header>
 
+		<!-- Toolbar: one hairline band; Compilar is the page's only solid button -->
+		<div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 border-y border-ink/15 py-3">
+			<div class="flex w-full min-w-0 items-baseline gap-3 sm:w-auto">
+				<label for="diagram-name" class="kicker text-ink/60">Name</label>
+				<input
+					id="diagram-name"
+					type="text"
+					bind:value={currentName}
+					oninput={() => (saveError = '')}
+					aria-invalid={saveError ? 'true' : undefined}
+					aria-describedby={saveError ? 'diagram-name-error' : undefined}
+					class="min-w-0 flex-1 border-b border-ink/30 bg-transparent py-1 font-serif text-lg text-ink transition-colors focus:border-ink sm:w-64 sm:flex-none"
+				/>
+			</div>
+			<div class="flex items-center gap-6">
+				<button
+					onclick={saveDiagram}
+					class="cursor-pointer py-1 kicker text-ink/75 underline-offset-4 transition-colors hover:text-accent hover:underline"
+				>
+					{feedback === 'saved' ? 'Saved ✓' : 'Save'}
+				</button>
+				<button
+					onclick={exportSVG}
+					class="cursor-pointer py-1 kicker text-ink/75 underline-offset-4 transition-colors hover:text-accent hover:underline"
+					>Export SVG</button
+				>
+				<button
+					onclick={copyCode}
+					class="cursor-pointer py-1 kicker text-ink/75 underline-offset-4 transition-colors hover:text-accent hover:underline"
+				>
+					{feedback === 'copied'
+						? 'Copied ✓'
+						: feedback === 'copy-failed'
+							? 'Copy failed'
+							: 'Copy code'}
+				</button>
+			</div>
+			<button
+				onclick={renderDiagram}
+				aria-keyshortcuts="Meta+Enter Control+Enter"
+				class="ml-auto flex cursor-pointer items-baseline gap-2 bg-ink px-4 py-2 kicker text-paper transition-colors hover:bg-accent"
+			>
+				Compilar
+				<kbd aria-hidden="true" class="font-sans text-[11px] tracking-normal normal-case opacity-75"
+					>⌘↵</kbd
+				>
+			</button>
+			{#if saveError}
+				<p id="diagram-name-error" class="w-full kicker text-accent">{saveError}</p>
+			{/if}
+			<span class="sr-only" role="status">
+				{feedback === 'saved'
+					? 'Diagram saved'
+					: feedback === 'copied'
+						? 'Code copied'
+						: feedback === 'copy-failed'
+							? 'Could not copy the code'
+							: ''}
+			</span>
+		</div>
+
 		{#if error}
-			<div class="mb-6 border border-accent/30 bg-accent/5 p-4">
-				<p class="text-sm text-ink">
-					<span class="mr-3 kicker text-accent"> Held at customs </span>
-					{error}
-				</p>
+			<div role="alert" class="mt-8 border-t-2 border-accent pt-3">
+				<p class="kicker text-accent">Held at customs</p>
+				<pre
+					class="mt-2 overflow-x-auto font-mono text-sm leading-6 whitespace-pre-wrap text-ink">{error}</pre>
 			</div>
 		{/if}
 
-		<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-			<div
-				class="flex flex-col overflow-hidden border border-ink/15 bg-surface transition-colors focus-within:border-ink/60"
-			>
-				<div class="flex items-center justify-between border-b border-ink/15 px-6 py-3">
-					<h3 class="kicker text-ink/60">Code Editor</h3>
-					<button
-						onclick={renderDiagram}
-						aria-label="Compile diagram"
-						class="flex cursor-pointer items-center gap-2 border px-4 py-1.5 text-[11px] font-semibold tracking-[0.14em] uppercase transition-colors {dirty
-							? 'border-ink bg-ink text-paper hover:border-accent hover:bg-accent'
-							: 'border-ink/25 text-ink/75 hover:border-ink hover:text-ink'}"
-					>
-						{#if dirty}<span class="h-1.5 w-1.5 rounded-full bg-paper"></span>{/if}
-						Compilar
-						<kbd class="text-[9px] tracking-normal normal-case opacity-50">⌘↵</kbd>
-					</button>
+		<!-- Workspace: source and figure, split by a column hairline -->
+		<div class="mt-8 grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-0 lg:divide-x lg:divide-ink/15">
+			<section aria-labelledby="source-label" class="flex min-w-0 flex-col lg:pr-8">
+				<div class="mb-3 flex items-baseline justify-between">
+					<h2 id="source-label" class="kicker text-ink/60">Source</h2>
+					<span class="kicker text-ink/60">Mermaid</span>
 				</div>
 				<textarea
 					bind:value={diagramCode}
 					oninput={handleInput}
 					onkeydown={handleKeydown}
 					spellcheck="false"
-					aria-label="Diagram code editor"
+					aria-labelledby="source-label"
 					placeholder="graph TB&#10;    subgraph Actor1&#10;        A[Step]&#10;    end"
-					class="min-h-[300px] flex-1 resize-none bg-transparent p-6 font-mono text-sm leading-relaxed text-ink placeholder-ink/40 focus:outline-none md:min-h-[500px]"
-				/>
-			</div>
+					class="min-h-[300px] flex-1 resize-none bg-surface p-6 font-mono text-sm leading-relaxed text-ink placeholder-ink/60 md:min-h-[520px]"
+				></textarea>
+			</section>
 
-			<div class="flex flex-col overflow-hidden border border-ink/15 bg-paper">
-				<div class="flex items-center justify-between border-b border-ink/15 px-6 py-3">
-					<h3 class="kicker text-ink/60">Preview</h3>
-					<span class="kicker {dirty ? 'text-accent' : 'text-ink/60'}">
-						{dirty ? 'Uncompiled changes' : 'Compiled'}
+			<figure class="flex min-w-0 flex-col lg:pl-8">
+				<div class="mb-3 flex items-baseline justify-between">
+					<h2 class="kicker text-ink/60">Preview</h2>
+					<span class="kicker {dirty || error ? 'text-accent' : 'text-ink/60'}">
+						{dirty ? 'Uncompiled changes' : error ? 'Did not compile' : 'Compiled'}
 					</span>
 				</div>
-				<div class="min-h-[300px] flex-1 overflow-auto p-6 md:min-h-[500px]">
-					<div id="preview" class="flex min-h-full items-center justify-center"></div>
+				<div class="min-h-[300px] flex-1 overflow-auto md:min-h-[520px]">
+					<div id="preview" class="flex min-h-full items-center justify-center">
+						<p class="font-serif text-lg text-ink/60 italic">Setting the type…</p>
+					</div>
 				</div>
-			</div>
+				<figcaption class="mt-4 font-sans text-sm text-ink/60">
+					<span class="font-semibold text-ink">Fig. 1</span> — Your swimlane diagram
+				</figcaption>
+			</figure>
 		</div>
 
-		<!-- Learning Examples Carousel -->
-		<section class="mt-12">
-			<div
-				class="mb-8 flex flex-wrap items-baseline justify-between gap-2 border-t-2 border-ink pt-4"
-			>
-				<h2 class="font-display text-4xl font-light">Process Flow Patterns</h2>
-				<div class="flex items-center gap-4 kicker font-medium text-ink/60">
-					<span>Level {examples[currentExampleIndex].complexity}</span>
-					<span class="text-accent tabular-nums">{currentExampleIndex + 1} / {examples.length}</span
-					>
-				</div>
-			</div>
-
-			<div class="grid grid-cols-1 gap-px border border-ink/15 bg-ink/15 lg:grid-cols-3">
-				<!-- Example Info Panel -->
-				<div class="flex flex-col bg-paper p-6 lg:col-span-1">
-					<p class="mb-1 kicker text-ink/60">
-						Pattern {(currentExampleIndex + 1).toString().padStart(2, '0')}
+		<!-- Patterns -->
+		<section class="mt-24">
+			<header class="mb-10 grid gap-3 border-t-2 border-ink pt-4 md:grid-cols-12 md:gap-6">
+				<p class="pt-2 kicker text-accent md:col-span-3">Patterns</p>
+				<div class="flex flex-wrap items-baseline justify-between gap-4 md:col-span-9">
+					<h2 class="font-display text-4xl font-light tracking-[-0.02em] md:text-5xl">
+						Process flow patterns
+					</h2>
+					<p class="kicker font-medium text-ink/60 tabular-nums">
+						{currentExampleIndex + 1} of {examples.length}
 					</p>
-					<h3 class="font-display text-3xl">
+				</div>
+			</header>
+
+			<div class="grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-6">
+				<article class="flex flex-col md:col-span-5">
+					<p class="kicker font-medium text-ink/60 tabular-nums">
+						Pattern {String(currentExampleIndex + 1).padStart(2, '0')} · Level {examples[
+							currentExampleIndex
+						].complexity} of 9
+					</p>
+					<h3 class="mt-3 font-display text-3xl tracking-[-0.01em] md:text-4xl">
 						{examples[currentExampleIndex].name}
 					</h3>
-
-					<p class="mt-4 font-serif text-[1.0625rem] leading-relaxed text-ink/85">
+					<p class="mt-5 max-w-measure font-serif text-lg/relaxed text-ink/85">
 						{examples[currentExampleIndex].description}
 					</p>
-
-					<div class="mt-6">
-						<div class="flex gap-1">
-							{#each Array(9), i (i)}
-								<div
-									class="h-1 flex-1 {i < examples[currentExampleIndex].complexity
-										? 'bg-ink'
-										: 'bg-ink/10'}"
-								></div>
-							{/each}
-						</div>
-						<p class="mt-2 text-xs text-ink/60">
-							{#if examples[currentExampleIndex].complexity <= 2}
-								Beginner - Simple 2-3 lane flows
-							{:else if examples[currentExampleIndex].complexity <= 4}
-								Intermediate - Multi-lane with loops
-							{:else if examples[currentExampleIndex].complexity <= 6}
-								Advanced - Parallel paths & sync
-							{:else}
-								Expert - Enterprise workflows
-							{/if}
-						</p>
-					</div>
-
-					<div class="mt-auto flex gap-2 pt-6">
+					<p class="mt-5 font-sans text-sm text-ink/60">
+						{#if examples[currentExampleIndex].complexity <= 2}
+							Beginner — simple 2-3 lane flows
+						{:else if examples[currentExampleIndex].complexity <= 4}
+							Intermediate — multi-lane with loops
+						{:else if examples[currentExampleIndex].complexity <= 6}
+							Advanced — parallel paths & sync
+						{:else}
+							Expert — enterprise workflows
+						{/if}
+					</p>
+					<div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-ink/15 pt-3">
 						<button
-							onclick={prevExample}
-							class="flex-1 cursor-pointer border border-ink/25 px-4 py-2 text-[11px] font-semibold tracking-[0.14em] text-ink/75 uppercase transition-colors hover:border-ink hover:text-ink"
+							onclick={loadExample}
+							class="cursor-pointer py-1 kicker text-ink underline underline-offset-4 transition-colors hover:text-accent"
 						>
-							← Prev
+							Load & study this pattern
 						</button>
-						<button
-							onclick={nextExample}
-							class="flex-1 cursor-pointer border border-ink/25 px-4 py-2 text-[11px] font-semibold tracking-[0.14em] text-ink/75 uppercase transition-colors hover:border-ink hover:text-ink"
-						>
-							Next →
-						</button>
-					</div>
-
-					<button
-						onclick={loadExample}
-						class="mt-2 w-full cursor-pointer border border-ink bg-ink px-4 py-2 text-[11px] font-semibold tracking-[0.14em] text-paper uppercase transition-colors hover:border-accent hover:bg-accent"
-					>
-						Load & study this pattern
-					</button>
-				</div>
-
-				<!-- Example Code Preview -->
-				<div class="flex flex-col overflow-hidden bg-paper lg:col-span-2">
-					<div class="flex items-center justify-between border-b border-ink/15 px-4 py-3">
-						<span class="kicker text-ink/60">Preview code</span>
-						<span class="text-[10px] tracking-[0.2em] text-ink/60 uppercase">
-							{examples[currentExampleIndex].code.split('\n').length} lines
+						<span class="ml-auto flex gap-6">
+							<button
+								onclick={prevExample}
+								class="cursor-pointer py-1 kicker text-ink/75 underline-offset-4 transition-colors hover:text-accent hover:underline"
+								>← Previous</button
+							>
+							<button
+								onclick={nextExample}
+								class="cursor-pointer py-1 kicker text-ink/75 underline-offset-4 transition-colors hover:text-accent hover:underline"
+								>Next →</button
+							>
 						</span>
 					</div>
+				</article>
+
+				<figure class="min-w-0 md:col-span-7">
 					<pre
-						class="max-h-64 flex-1 overflow-auto bg-surface p-4 font-mono text-sm leading-relaxed text-ink/85">{examples[
+						class="max-h-96 overflow-auto bg-surface p-6 font-mono text-sm leading-relaxed text-ink/85">{examples[
 							currentExampleIndex
 						].code}</pre>
-				</div>
+					<figcaption class="mt-4 font-sans text-sm text-ink/60">
+						<span class="font-semibold text-ink">Fig. 2</span> — Pattern source, {examples[
+							currentExampleIndex
+						].code.split('\n').length} lines
+					</figcaption>
+				</figure>
 			</div>
 		</section>
 
-		<!-- Saved Diagrams -->
-		{#if savedDiagrams.length > 0}
-			<section class="mt-12">
-				<div
-					class="mb-8 flex flex-wrap items-baseline justify-between gap-2 border-t-2 border-ink pt-4"
-				>
-					<h2 class="font-display text-4xl font-light">Saved Swimlane Diagrams</h2>
-					<p class="text-xs text-ink/60">{savedDiagrams.length} in the manifest</p>
+		<!-- Saved diagrams — a table of contents, like the Studio index -->
+		<section class="mt-24">
+			<header class="mb-8 grid gap-3 border-t-2 border-ink pt-4 md:grid-cols-12 md:gap-6">
+				<p class="pt-2 kicker text-accent md:col-span-3">The manifest</p>
+				<div class="flex flex-wrap items-baseline justify-between gap-4 md:col-span-9">
+					<h2 class="font-display text-4xl font-light tracking-[-0.02em] md:text-5xl">
+						Saved swimlane diagrams
+					</h2>
+					<p class="kicker font-medium text-ink/60 tabular-nums">{savedDiagrams.length} saved</p>
 				</div>
+			</header>
 
-				<div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+			{#if savedDiagrams.length > 0}
+				<ol class="border-t border-ink/15">
 					{#each savedDiagrams as diagram, index (diagram.timestamp)}
-						<div class="flex gap-px border border-ink/15 bg-ink/15">
+						<li class="flex items-baseline gap-6 border-b border-ink/15 py-4">
 							<button
 								onclick={() => loadDiagram(diagram)}
-								class="group flex-1 cursor-pointer bg-paper p-4 text-left transition-colors hover:bg-surface"
+								class="group min-w-0 flex-1 cursor-pointer text-left font-display text-2xl text-ink transition-colors hover:text-accent md:text-3xl"
 							>
-								<div
-									class="font-display text-xl text-ink transition-colors group-hover:text-accent"
-								>
-									{diagram.name}
-								</div>
-								<div class="mt-1 text-xs text-ink/60">
-									{new Date(diagram.timestamp).toLocaleDateString()}
-								</div>
+								{diagram.name}
 							</button>
+							<span class="hidden font-sans text-sm text-ink/60 tabular-nums sm:inline">
+								{new Date(diagram.timestamp).toLocaleDateString()}
+							</span>
 							{#if confirmingDelete === index}
-								<div class="flex w-14 flex-col gap-px">
+								<span class="flex items-baseline gap-4">
 									<button
+										data-confirm-delete
 										onclick={() => confirmDelete(index)}
-										class="flex-1 cursor-pointer bg-paper text-[10px] font-semibold tracking-[0.14em] text-accent uppercase transition-colors hover:bg-accent/10"
-										>Del</button
+										class="cursor-pointer py-1 kicker text-accent underline underline-offset-4"
 									>
+										Delete
+									</button>
 									<button
-										onclick={() => (confirmingDelete = -1)}
-										class="flex-1 cursor-pointer bg-paper text-[10px] tracking-[0.15em] text-ink/60 uppercase transition-colors hover:bg-surface"
-										>No</button
+										onclick={() => cancelDelete(index)}
+										class="cursor-pointer py-1 kicker text-ink/75 underline-offset-4 transition-colors hover:text-accent hover:underline"
+										>Keep</button
 									>
-								</div>
+								</span>
 							{:else}
 								<button
+									data-delete={index}
 									onclick={() => requestDelete(index)}
 									aria-label="Delete {diagram.name}"
-									class="w-14 cursor-pointer bg-paper text-lg text-ink/60 transition-colors hover:bg-accent/10 hover:text-accent"
+									class="cursor-pointer py-1 kicker text-ink/75 underline-offset-4 transition-colors hover:text-accent hover:underline"
 								>
-									×
+									Delete
 								</button>
 							{/if}
-						</div>
+						</li>
 					{/each}
-				</div>
-			</section>
-		{/if}
+				</ol>
+			{:else}
+				<p class="max-w-measure font-serif text-lg text-ink/75">
+					<em>Nothing saved yet.</em> Name the diagram above and press Save — it stays in this browser,
+					ready to reload.
+				</p>
+			{/if}
+		</section>
 	</main>
-
-	{#if toast}
-		<div
-			class="fixed right-6 bottom-6 z-[60] bg-ink px-4 py-3 text-sm text-paper"
-			role="status"
-			aria-live="polite"
-		>
-			{toast}
-		</div>
-	{/if}
 </div>
 
 <style>
