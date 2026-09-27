@@ -5,9 +5,8 @@
 	let { wide = false } = $props();
 
 	const links = [
-		{ href: '/#flagship', label: 'Pipeline' },
-		{ href: '/#studio', label: 'Studio' },
-		{ href: '/#doctrine', label: 'Doctrine' },
+		{ href: '/flowchart', label: 'Studio' },
+		{ href: '/#update', label: 'Update' },
 		{ href: '/#install', label: 'Install', cta: true }
 	];
 </script>
