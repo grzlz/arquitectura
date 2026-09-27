@@ -45,16 +45,15 @@ Each `+page.svelte` is self-contained and implements:
 
 `src/lib/diagramState.svelte.js` — a Svelte 5 rune-based store (`$state` inside a factory function). Currently minimal; intended to be shared state across routes if needed.
 
-### Design system (glassmorphism)
+### Design system (editorial)
 
-Defined in `src/app.css`. Use these utility classes:
+Tokens and utilities live in `src/app.css` (`@theme`); the rules are in **Design Context → Editorial parameters** below.
 
-- `.glass-enhanced` — primary panels/cards (stronger blur, whitish border)
-- `.glass-accent` — secondary panels (lighter glass)
-- `.glass-gold` — gold-tinted accent panels
-- Background: always `bg-gradient-to-br from-gray-900 via-gray-800 to-primary-950`
-- Primary color palette: `primary-50` through `primary-950` (blue-ish oklch scale)
-- Font: `font-[family-name:var(--font-primary)]` → Roboto
+- Colors: `paper` (page), `surface` (code tint), `ink` (text, rules, primary buttons), `accent` (red pencil). Tints via `/opacity` — text at `ink`, `ink/85`, `ink/75`, `ink/60` (floor for small text).
+- Fonts: `font-display` / `font-serif` (Newsreader), `font-sans` (Libre Franklin), `font-mono` (IBM Plex Mono).
+- Sizes: `text-headline`, `text-title`, `text-deck`; measure `max-w-measure`.
+- Utilities: `kicker` (uppercase sans label), `dropcap`, `rise` (page-load fade, `--d` delay).
+- Mermaid theme: `src/lib/mermaidTheme.js` (`mermaidInit`) — shared by every page.
 
 ### Tech stack
 
@@ -68,7 +67,7 @@ Defined in `src/app.css`. Use these utility classes:
 ### Key conventions
 
 - Mermaid must always be imported dynamically inside `onMount` with `browser` guard
-- `mermaid.initialize({ startOnLoad: false, theme: 'dark', securityLevel: 'loose' })` before rendering
+- `mermaid.initialize(mermaidInit)` (from `$lib/mermaidTheme.js`), then `await document.fonts.ready`, before rendering — mermaid sizes boxes from the loaded face
 - Use `mermaid.render(id, code)` — returns `{ svg }`, inject into DOM manually
 - `$lib` alias maps to `src/lib/`
 
@@ -89,21 +88,26 @@ Technical professionals who think in systems. They're in flow-state when diagram
 **Precise. Elevated. Focused.**
 
 - Emotional goals: confidence, clarity, and a small dose of delight when a diagram renders perfectly
-- Reference feel: Figma's polish, Linear's density, Vercel's dark-native sophistication
-- Anti-references: cluttered IDEs, web-app SaaS mediocrity, anything that feels like a template
+- Reference feel: an architecture journal or a well-set magazine feature — the NYT Magazine's cover type, The Economist's red kicker, a colophon that names its typefaces
+- Anti-references: cluttered IDEs, web-app SaaS mediocrity, anything that feels like a template (cards, shadows, gradients, glass)
 
-### Aesthetic Direction
+### Editorial parameters
 
-- **Dark-native**: Dark mode is the identity, not an option. The gradient background (`from-gray-900 via-gray-800 to-primary-950`) is always present.
-- **Glassmorphism with restraint**: Layered depth through frosted glass panels, not color saturation. Less is more — avoid stacking too many glass layers.
-- **Blue primary + gold accent**: The oklch blue scale is the workhorse. Gold (`rgba(188, 149, 92, ...)`) is reserved for moments of emphasis — active nav states, premium CTAs, or brand identity moments. Never overused.
-- **Typography**: Roboto for body/UI copy. Monospace (`font-mono`) strictly for code/syntax.
-- **Motion**: CSS transitions only (no Svelte animations). Hover states should feel responsive, not theatrical.
+What "editorial" means here. Typography is the main character: it carries the identity; color only follows.
+
+1. **Paper and ink.** White page, near-black text. One accent — the editor's red pencil (`accent`) — for section kickers, the approval stamp, errors, and hover. Never for body text, never as a fill behind content.
+2. **Four voices, four jobs.** A display serif for headlines (Newsreader, optical size follows font-size); the same serif for reading text; a newspaper grotesque (Libre Franklin) for furniture — kickers, nav, buttons, captions, meta; mono only for code. Never mono for prose, never sans for prose.
+3. **Hierarchy by scale, not boxes.** Big jumps between levels (`text-headline` ≈ 120px → `text-deck` ≈ 26px → body 18px → kicker 11px). Light weights at display sizes; tight leading (~0.95) and negative tracking as size grows; body leading ~1.6.
+4. **Structure by rules and white space.** A 2px ink rule opens each section; 1px hairlines (`ink/15`) separate items and columns. No cards, shadows, rounded corners, glass, or gradients.
+5. **Editorial devices.** Kicker above the headline; deck (italic standfirst) below it; byline; drop cap on the lede; pull quote; numbered figures with captions ("Fig. 1 — …"); dateline/issue line; colophon in the footer. Curly quotes and real dashes.
+6. **Measure and alignment.** Body copy ≤ `max-w-measure` (60–70 characters), left-aligned, ragged right; `text-wrap: balance` on headings, `pretty` on paragraphs. Center only display type (pull quotes).
+7. **Asymmetric grid.** 12 columns; section kicker in 3, title/content in 9; text columns beside sidebars (7/5, 8/4).
+8. **Quiet motion.** A short fade-up on load; hover = underline or ink→accent. Nothing bounces.
 
 ### Design Principles
 
-1. **The diagram is the hero** — UI chrome recedes; the canvas and rendered output get maximum visual weight.
-2. **Depth through restraint** — Use glass layers sparingly. One strong `glass-enhanced` panel outweighs three competing `glass-accent` layers.
-3. **Gold earns its place** — The `.glass-gold` accent is rare and intentional. Use it for the most important CTA on screen, the active nav item, or branding moments. Never decorative.
-4. **Every interaction responds** — Buttons, inputs, and controls should have perceptible (but not showy) hover/focus states. Users should feel the tool is alive.
-5. **Functional elegance over novelty** — Polish comes from spacing, alignment, and typography consistency — not from adding more effects.
+1. **The diagram is the hero** — UI chrome recedes; the canvas and rendered output get maximum visual weight. Diagrams are monochrome infographics.
+2. **Type before decoration** — When something needs emphasis, change size, weight, style (italic), or face before reaching for color or a container.
+3. **Red earns its place** — The accent is rare and intentional: kickers, the stamp, errors. If a page has red everywhere, it has red nowhere.
+4. **Every interaction responds** — Buttons, inputs, and controls have perceptible (but not showy) hover/focus states.
+5. **Functional elegance over novelty** — Polish comes from spacing, alignment, and typographic consistency — not from adding more effects.

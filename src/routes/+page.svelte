@@ -54,7 +54,7 @@
 		},
 		{
 			title: 'Ships stamped cargo',
-			body: 'Nothing exports without a verdict from the tribunal. "Back to the bench" means back to the bench — the stamp has teeth.'
+			body: 'Nothing exports without a verdict from the tribunal. “Back to the bench” means back to the bench — the stamp has teeth.'
 		},
 		{
 			title: 'Speaks in diagrams',
@@ -130,6 +130,21 @@
 		}
 	];
 
+	const formatDate = (iso) =>
+		new Date(`${iso}T00:00:00`).toLocaleDateString('en-US', {
+			month: 'long',
+			day: 'numeric',
+			year: 'numeric'
+		});
+	const currentIssue = novedades[0];
+
+	const colophon = [
+		['Drawn by', 'A. Vandeley'],
+		['Checked', 'H.E. Pennypacker'],
+		['Firm', 'Vandeley Industries'],
+		['Set in', 'Newsreader, Libre Franklin & IBM Plex Mono']
+	];
+
 	let copied = $state('');
 	let copyResetTimer;
 	async function copyCommand(text, key) {
@@ -149,6 +164,7 @@
 		try {
 			mermaid = (await import('mermaid')).default;
 			mermaid.initialize(mermaidInit);
+			await document.fonts.ready; // mermaid sizes boxes from the loaded face
 		} catch {
 			heroError = flagshipError = 'The diagram declined to render — even Art has off days.';
 			return;
@@ -172,239 +188,250 @@
 	<title>Art Vandeley — Importer of Skills, Exporter of Well-Architected Components</title>
 </svelte:head>
 
-<div class="sheet-bg grain min-h-screen font-tech text-paper selection:bg-brass selection:text-ink">
+{#snippet sectionHead(kicker, title, note)}
+	<header class="mb-10 grid gap-3 border-t-2 border-ink pt-4 md:grid-cols-12 md:gap-6">
+		<p class="pt-2 kicker text-accent md:col-span-3">{kicker}</p>
+		<div class="md:col-span-9">
+			<h2 class="font-display text-title font-light">{title}</h2>
+			<p class="mt-3 max-w-measure text-xl text-ink/75 italic">{note}</p>
+		</div>
+	</header>
+{/snippet}
+
+{#snippet copyButton(text, key)}
+	<button
+		onclick={() => copyCommand(text, key)}
+		class="shrink-0 cursor-pointer kicker text-ink/75 underline-offset-4 transition-colors hover:text-accent hover:underline"
+	>
+		{copied === key ? 'Copied ✓' : 'Copy'}
+	</button>
+{/snippet}
+
+<div class="min-h-screen bg-paper font-serif text-ink">
 	<Nav />
 
 	<main class="mx-auto max-w-6xl px-6">
-		<!-- Hero — the drawing sheet -->
-		<section class="relative mt-10 mb-24 border border-paper/15 p-8 md:p-14">
-			<span class="reg-mark -top-[9px] -left-[9px]"></span>
-			<span class="reg-mark -top-[9px] -right-[9px]"></span>
-			<span class="reg-mark -bottom-[9px] -left-[9px]"></span>
-			<span class="reg-mark -right-[9px] -bottom-[9px]"></span>
-
+		<!-- Cover -->
+		<section class="pt-4 pb-24">
 			<div
-				class="rise mb-10 flex flex-wrap items-baseline justify-between gap-2 text-[10px] tracking-[0.25em] text-paper/35 uppercase"
+				class="rise flex flex-wrap items-baseline justify-between gap-2 border-b border-ink/15 pb-3 kicker font-medium text-ink/60"
 				style="--d: 0s"
 			>
 				<span>Vandeley Industries · Import / Export Division</span>
-				<span class="text-brass/70">DWG № AV-001 · Rev A</span>
+				<span class="tabular-nums">
+					Issue {currentIssue.version} · {formatDate(currentIssue.date)}
+				</span>
 			</div>
 
-			<h1
-				class="rise max-w-4xl font-display text-5xl leading-[0.95] font-light tracking-tight text-paper sm:text-6xl md:text-8xl"
-				style="--d: 0.08s"
-			>
-				Importer of skills. <br /> Exporter of <br />
-				<em class="font-normal text-brass-bright">well-architected <br /> components</em>.
+			<p class="rise mt-12 kicker text-accent" style="--d: 0.05s">A Claude Code plugin</p>
+			<h1 class="rise mt-4 max-w-5xl font-display text-headline font-light" style="--d: 0.1s">
+				Importer of skills.<br />
+				Exporter of <em><span class="whitespace-nowrap">well-architected</span> components</em>.
 			</h1>
 
-			<p class="rise mt-8 max-w-xl text-sm leading-relaxed text-paper/55" style="--d: 0.18s">
-				Art Vandeley is a <em class="text-paper/75">Claude Code plugin</em> — an agent that designs
-				a component before building it. <code class="text-brass/90">/architect</code>
-				draws the map, <code class="text-brass/90">/judge</code> rules on it, and
-				<code class="text-brass/90">/export</code> ships the code in your stack. Nothing ships
-				without an approved verdict. Yes — <em class="text-paper/75">that</em> Art Vandeley. The cover
-				story finally landed a real job.
-			</p>
+			<div class="mt-12 grid gap-12 md:grid-cols-12">
+				<div class="rise md:col-span-7" style="--d: 0.2s">
+					<p class="max-w-measure text-deck text-ink/85 italic">
+						An agent that designs a component before building it — and ships nothing without an
+						approved verdict.
+					</p>
+					<p class="mt-6 kicker font-medium text-ink/60">
+						By A. Vandeley · Checked by H.E. Pennypacker
+					</p>
+					<p class="dropcap mt-6 max-w-measure text-lg/relaxed text-ink/85">
+						Art Vandeley is a Claude Code plugin. <code>/architect</code> draws the map,
+						<code>/judge</code> rules on it, and <code>/export</code> ships the code in your stack.
+						Yes — <em>that</em> Art Vandeley. The cover story finally landed a real job.
+					</p>
+				</div>
 
-			<div class="rise mt-10 max-w-xl" style="--d: 0.28s">
-				<div
-					class="flex min-w-0 items-center justify-between gap-4 border border-brass/50 bg-brass/[0.07] px-4 py-3"
-				>
-					<code class="min-w-0 flex-1 overflow-x-auto text-sm whitespace-nowrap text-brass-bright">
-						<span class="text-paper/30">❯</span>
-						{marketplaceCommand}
-					</code>
-					<button
-						onclick={() => copyCommand(marketplaceCommand, 'hero')}
-						class="shrink-0 cursor-pointer text-[10px] tracking-[0.2em] text-paper/40 uppercase transition-colors hover:text-brass-bright"
-					>
-						{copied === 'hero' ? 'Copied ✓' : 'Copy'}
-					</button>
-				</div>
-				<div class="mt-3 flex flex-wrap items-center gap-x-6 gap-y-1 text-xs text-paper/40">
-					<a href="#install" class="text-brass/80 transition-colors hover:text-brass-bright">
-						Step 1 of 2 — full manifest below ↓
-					</a>
-					<span>
-						or browse
-						<a
-							href={resolve('/flowchart')}
-							class="text-brass/80 transition-colors hover:text-brass-bright"
-						>
-							the Studio →
-						</a>
-						— free Mermaid editors
-					</span>
-				</div>
+				<aside class="rise md:col-span-5" style="--d: 0.3s">
+					<div class="border-t-2 border-ink pt-4">
+						<p class="kicker text-ink/60">Step 1 of 2</p>
+						<p class="mt-2 font-display text-3xl">Dock the marketplace.</p>
+						<div class="mt-5 flex min-w-0 items-center gap-4 bg-surface py-3 pr-3 pl-4">
+							<code class="min-w-0 flex-1 text-sm leading-6 [overflow-wrap:anywhere]">
+								{marketplaceCommand}
+							</code>
+							<button
+								onclick={() => copyCommand(marketplaceCommand, 'hero')}
+								class="shrink-0 cursor-pointer bg-ink px-3 py-1.5 kicker text-paper transition-colors hover:bg-accent"
+							>
+								{copied === 'hero' ? 'Copied ✓' : 'Copy'}
+							</button>
+						</div>
+						<p class="mt-4 font-sans text-sm leading-6 text-ink/75">
+							<a
+								href="#install"
+								class="font-medium text-ink underline underline-offset-4 hover:text-accent"
+							>
+								Full manifest below ↓</a
+							>
+							· or browse
+							<a
+								href={resolve('/flowchart')}
+								class="font-medium text-ink underline underline-offset-4 hover:text-accent"
+							>
+								the Studio</a
+							>, free Mermaid editors.
+						</p>
+					</div>
+				</aside>
 			</div>
 
-			<figure class="rise mt-14 border-t border-paper/15 pt-6" style="--d: 0.38s">
+			<figure class="rise mt-20 border-t border-ink/15 pt-10" style="--d: 0.4s">
 				{#if heroError}
-					<p class="py-8 text-center text-sm text-paper/40">{heroError}</p>
+					<p class="py-8 text-center text-ink/60 italic">{heroError}</p>
 				{/if}
 				<div class="flex justify-center overflow-x-auto [&_svg]:h-auto [&_svg]:max-w-full">
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -- SVG comes from mermaid.render over a hardcoded diagram, not user input -->
 					{@html heroSvg}
 				</div>
-				<figcaption class="mt-4 text-[10px] tracking-[0.25em] text-paper/35 uppercase">
-					<span class="text-brass/70">Fig. 1</span> — Operating principle
+				<figcaption class="mt-8 font-sans text-sm text-ink/60">
+					<span class="font-semibold text-ink">Fig. 1</span> — Operating principle
 				</figcaption>
 			</figure>
 		</section>
 
 		<!-- Novedades — what just came off the dock -->
-		<section id="novedades" class="mb-24 scroll-mt-10">
-			<div class="mb-8 flex flex-wrap items-baseline justify-between gap-2">
-				<h2 class="text-[10px] tracking-[0.3em] text-brass/70 uppercase">Novedades</h2>
-				<p class="text-xs text-paper/40">Fresh off the dock. Update the crate and it is yours.</p>
-			</div>
+		<section id="novedades" class="mb-28 scroll-mt-10">
+			{@render sectionHead('Novedades', 'Fresh off the dock.', 'Update the crate and it is yours.')}
 
-			{#each novedades as item (item.version + item.command)}
-				<article class="grid gap-px border border-paper/15 bg-paper/15 md:grid-cols-[1.2fr_1fr]">
-					<div class="group relative bg-ink p-8 transition-colors hover:bg-surface">
-						<span
-							class="absolute top-6 right-6 rotate-6 border border-brass/30 px-2 py-1 text-[9px] tracking-[0.2em] text-brass/50 uppercase transition-colors group-hover:border-brass/60 group-hover:text-brass/80"
-						>
-							v{item.version} · {item.date}
-						</span>
-						<p class="mb-1 text-[10px] tracking-[0.25em] text-paper/35 uppercase">
-							{item.kind} · {item.role}
-						</p>
-						<h3 class="font-display text-3xl font-light text-brass-bright md:text-4xl">
-							{item.command}
-						</h3>
-						<p class="mt-5 max-w-lg text-sm leading-relaxed text-paper/55">{item.body}</p>
-					</div>
+			<div class="grid gap-12 md:grid-cols-12">
+				<div class="divide-y divide-ink/15 md:col-span-8">
+					{#each novedades as item (item.version + item.command)}
+						<article class="py-10 first:pt-0">
+							<p class="kicker font-medium text-ink/60">
+								{item.kind} · {item.role} ·
+								<span class="tabular-nums">v{item.version}, {formatDate(item.date)}</span>
+							</p>
+							<h3 class="mt-3 font-display text-4xl tracking-[-0.02em] md:text-5xl">
+								{item.command}
+							</h3>
+							<p class="mt-5 max-w-measure text-lg/relaxed text-ink/85">{item.body}</p>
+							<p class="mt-6 kicker text-ink/60">Then say</p>
+							<ul class="mt-2 space-y-1">
+								{#each item.usage as line (line)}
+									<li class="overflow-x-auto whitespace-nowrap">
+										{#if line.startsWith('/')}
+											<code class="text-sm">{line}</code>
+										{:else}
+											<span class="text-lg italic">“{line}”</span>
+										{/if}
+									</li>
+								{/each}
+							</ul>
+						</article>
+					{/each}
+				</div>
 
-					<div class="min-w-0 bg-ink p-8 transition-colors hover:bg-surface">
-						<p class="mb-1 text-[10px] tracking-[0.25em] text-paper/35 uppercase">Instructions</p>
-						<p class="text-sm leading-relaxed text-paper/55">
-							Already aboard? Update the crate. New here? <a
+				<aside class="md:col-span-4">
+					<div class="border-t-2 border-ink pt-4 md:sticky md:top-8">
+						<p class="kicker text-ink/60">Already aboard?</p>
+						<p class="mt-2 font-display text-3xl">Update the crate.</p>
+						<p class="mt-2 text-lg text-ink/75">
+							New here? <a
 								href="#install"
-								class="text-brass/80 transition-colors hover:text-brass-bright">Install first</a
+								class="text-ink underline underline-offset-4 hover:text-accent">Install first</a
 							>.
 						</p>
-						<div class="mt-5 border border-paper/15 bg-surface">
-							<div class="flex items-center justify-between border-b border-paper/15 px-4 py-2">
-								<span class="text-[10px] tracking-[0.25em] text-paper/35 uppercase">Update</span>
-								<button
-									onclick={() => copyCommand(updateCommands.join('\n'), 'update')}
-									class="cursor-pointer text-[10px] tracking-[0.2em] text-paper/40 uppercase transition-colors hover:text-brass-bright"
-								>
-									{copied === 'update' ? 'Copied ✓' : 'Copy'}
-								</button>
+						<div class="mt-5 bg-surface">
+							<div class="flex items-center justify-between border-b border-ink/10 px-4 py-2">
+								<span class="kicker text-ink/60">Update</span>
+								{@render copyButton(updateCommands.join('\n'), 'update')}
 							</div>
 							<div class="overflow-x-auto px-4 py-3">
 								{#each updateCommands as command (command)}
-									<div class="text-sm leading-7 whitespace-nowrap">
-										<span class="text-paper/30">❯</span>
-										<span class="text-brass-bright">{command}</span>
-									</div>
-								{/each}
-							</div>
-						</div>
-						<div class="mt-4 border border-paper/15 bg-surface">
-							<div class="border-b border-paper/15 px-4 py-2">
-								<span class="text-[10px] tracking-[0.25em] text-paper/35 uppercase">Then say</span>
-							</div>
-							<div class="overflow-x-auto px-4 py-3">
-								{#each item.usage as line (line)}
-									<div class="text-sm leading-7 whitespace-nowrap">
-										<span class="text-paper/30">❯</span>
-										<span class="text-paper/70">{line}</span>
-									</div>
+									<code class="block text-sm leading-7 whitespace-nowrap">{command}</code>
 								{/each}
 							</div>
 						</div>
 					</div>
-				</article>
-			{/each}
+				</aside>
+			</div>
 		</section>
 
 		<!-- Flagship cargo -->
-		<section id="flagship" class="mb-24 scroll-mt-10">
-			<div class="mb-8 flex flex-wrap items-baseline justify-between gap-2">
-				<h2 class="text-[10px] tracking-[0.3em] text-brass/70 uppercase">Flagship Cargo</h2>
-				<p class="text-xs text-paper/40">
-					Three skills, one pipeline — design, verdict, code. Nothing ships without the stamp.
-				</p>
-			</div>
+		<section id="flagship" class="mb-28 scroll-mt-10">
+			{@render sectionHead(
+				'Flagship cargo',
+				'Three skills, one pipeline.',
+				'Design, verdict, code. Nothing ships without the stamp.'
+			)}
 
-			<div class="grid gap-px border border-paper/15 bg-paper/15 md:grid-cols-3">
+			<div class="grid divide-y divide-ink/15 md:grid-cols-3 md:divide-x md:divide-y-0">
 				{#each flagshipCargo as { command, role, body, tagline }, i (command)}
-					<article class="group relative bg-ink p-8 transition-colors hover:bg-surface">
-						<span
-							class="absolute top-6 right-6 rotate-6 border border-brass/30 px-2 py-1 text-[9px] tracking-[0.2em] text-brass/50 uppercase transition-colors group-hover:border-brass/60 group-hover:text-brass/80"
-						>
-							{i === 2 ? 'Approved for export' : `Stage 0${i + 1}`}
-						</span>
-						<p class="mb-1 text-[10px] tracking-[0.25em] text-paper/35 uppercase">{role}</p>
-						<h3 class="font-display text-3xl font-light text-brass-bright md:text-4xl">
-							{command}
-						</h3>
-						<p class="mt-5 max-w-md text-sm leading-relaxed text-paper/55">{body}</p>
-						<p class="mt-5 font-display text-base text-paper/40 italic">{tagline}</p>
+					<article class="py-8 first:pt-0 md:px-8 md:py-0 md:first:pl-0 md:last:pr-0">
+						<p class="kicker font-medium text-ink/60">
+							<span class="tabular-nums">Stage 0{i + 1}</span> · {role}
+						</p>
+						<h3 class="mt-3 font-display text-4xl tracking-[-0.02em] md:text-5xl">{command}</h3>
+						<p class="mt-5 text-lg/relaxed text-ink/85">{body}</p>
+						<p class="mt-5 font-display text-xl italic">{tagline}</p>
+						{#if i === 2}
+							<p
+								class="mt-6 inline-block -rotate-3 border-2 border-accent px-2 py-1 kicker text-accent"
+							>
+								Approved for export
+							</p>
+						{/if}
 					</article>
 				{/each}
 			</div>
 
-			<figure class="mt-8 border border-paper/15 p-6">
+			<figure class="mt-14 border-t border-ink/15 pt-10">
 				{#if flagshipError}
-					<p class="py-8 text-center text-sm text-paper/40">{flagshipError}</p>
+					<p class="py-8 text-center text-ink/60 italic">{flagshipError}</p>
 				{/if}
 				<div class="flex justify-center overflow-x-auto [&_svg]:h-auto [&_svg]:max-w-full">
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -- SVG comes from mermaid.render over a hardcoded diagram, not user input -->
 					{@html flagshipSvg}
 				</div>
-				<figcaption class="mt-4 text-[10px] tracking-[0.25em] text-paper/35 uppercase">
-					<span class="text-brass/70">Fig. 2</span> — The pipeline
+				<figcaption class="mt-8 font-sans text-sm text-ink/60">
+					<span class="font-semibold text-ink">Fig. 2</span> — The pipeline
 				</figcaption>
 			</figure>
 		</section>
 
-		<!-- Install — customs & onboarding -->
-		<section id="install" class="mb-24 scroll-mt-10">
-			<div class="mb-8 flex flex-wrap items-baseline justify-between gap-2">
-				<h2 class="text-[10px] tracking-[0.3em] text-brass/70 uppercase">
-					Customs &amp; Onboarding
-				</h2>
-				<p class="text-xs text-paper/40">
-					Two lines inside any Claude Code session, and Art's aboard.
-				</p>
-			</div>
+		<!-- Pull quote -->
+		<figure class="mb-28 border-y border-ink/15 py-16 text-center">
+			<blockquote
+				class="mx-auto max-w-4xl font-display text-[clamp(2rem,4.6vw,3.75rem)] leading-[1.05] font-light tracking-[-0.02em] text-balance italic"
+			>
+				<span class="text-accent">“</span>A diagram before a paragraph — always.<span
+					class="text-accent">”</span
+				>
+			</blockquote>
+			<figcaption class="mt-6 kicker text-ink/60">The Doctrine · Article 04</figcaption>
+		</figure>
 
-			<div class="grid gap-px border border-paper/15 bg-paper/15 md:grid-cols-2">
-				<div class="min-w-0 bg-ink p-8 transition-colors hover:bg-surface">
-					<p class="mb-1 text-[10px] tracking-[0.25em] text-paper/35 uppercase">Step 01</p>
-					<h3 class="font-display text-3xl font-light text-paper md:text-4xl">
-						Dock the marketplace
-					</h3>
-					<p class="mt-5 max-w-md text-sm leading-relaxed text-paper/55">
-						One line registers the <span class="text-brass-bright">vandeley</span> marketplace with
-						Claude Code, straight from <span class="text-brass-bright">vandeley.art</span>. Or dock
-						from source, under his legal name.
+		<!-- Install — customs & onboarding -->
+		<section id="install" class="mb-28 scroll-mt-10">
+			{@render sectionHead(
+				'Customs & onboarding',
+				'Two lines, and Art’s aboard.',
+				'Inside any Claude Code session.'
+			)}
+
+			<div class="grid divide-y divide-ink/15 md:grid-cols-2 md:divide-x md:divide-y-0">
+				<div class="min-w-0 pb-10 md:pr-10 md:pb-0">
+					<div class="flex items-baseline gap-4">
+						<span class="font-display text-6xl leading-none font-light text-ink/60">1</span>
+						<h3 class="font-display text-3xl md:text-4xl">Dock the marketplace</h3>
+					</div>
+					<p class="mt-5 max-w-measure text-lg/relaxed text-ink/85">
+						One line registers the <em>vandeley</em> marketplace with Claude Code, straight from
+						<em>vandeley.art</em>. Or dock from source, under his legal name.
 					</p>
-					<div
-						class="mt-6 flex min-w-0 items-center justify-between gap-4 border border-paper/15 bg-surface px-4 py-3"
-					>
-						<code
-							class="min-w-0 flex-1 overflow-x-auto text-sm whitespace-nowrap text-brass-bright"
-						>
-							<span class="text-paper/30">❯</span>
+					<div class="mt-6 flex min-w-0 items-center gap-4 bg-surface px-4 py-3">
+						<code class="min-w-0 flex-1 text-sm leading-6 [overflow-wrap:anywhere]">
 							{marketplaceCommand}
 						</code>
-						<button
-							onclick={() => copyCommand(marketplaceCommand, 'marketplace')}
-							class="shrink-0 cursor-pointer text-[10px] tracking-[0.2em] text-paper/40 uppercase transition-colors hover:text-brass-bright"
-						>
-							{copied === 'marketplace' ? 'Copied ✓' : 'Copy'}
-						</button>
+						{@render copyButton(marketplaceCommand, 'marketplace')}
 					</div>
 					<button
 						onclick={() => copyCommand(marketplaceSourceCommand, 'source')}
-						class="mt-3 cursor-pointer text-xs text-paper/40 transition-colors hover:text-brass-bright"
+						class="mt-3 cursor-pointer font-sans text-sm text-ink/75 underline-offset-4 transition-colors hover:text-accent hover:underline"
 					>
 						{copied === 'source'
 							? 'Copied ✓ · grzlz/arquitectura'
@@ -412,119 +439,104 @@
 					</button>
 				</div>
 
-				<div class="min-w-0 bg-ink p-8 transition-colors hover:bg-surface">
-					<p class="mb-1 text-[10px] tracking-[0.25em] text-paper/35 uppercase">Step 02</p>
-					<h3 class="font-display text-3xl font-light text-paper md:text-4xl">Import the cargo</h3>
-					<p class="mt-5 max-w-md text-sm leading-relaxed text-paper/55">
-						One crate, everything inside — the agent, <code class="text-brass/90">/hello-art</code>,
-						and his eleven skills. Art packs his own luggage.
+				<div class="min-w-0 pt-10 md:pt-0 md:pl-10">
+					<div class="flex items-baseline gap-4">
+						<span class="font-display text-6xl leading-none font-light text-ink/60">2</span>
+						<h3 class="font-display text-3xl md:text-4xl">Import the cargo</h3>
+					</div>
+					<p class="mt-5 max-w-measure text-lg/relaxed text-ink/85">
+						One crate, everything inside — the agent, <code>/hello-art</code>, and his eleven
+						skills. Art packs his own luggage.
 					</p>
-					<div class="mt-6 border border-paper/15 bg-surface">
-						<div class="flex items-center justify-between border-b border-paper/15 px-4 py-2">
-							<span class="text-[10px] tracking-[0.25em] text-paper/35 uppercase">
-								Manifest · 1 crate
-							</span>
-							<button
-								onclick={() => copyCommand(installCommands.join('\n'), 'manifest')}
-								class="cursor-pointer text-[10px] tracking-[0.2em] text-paper/40 uppercase transition-colors hover:text-brass-bright"
-							>
-								{copied === 'manifest' ? 'Copied ✓' : 'Copy'}
-							</button>
+					<div class="mt-6 bg-surface">
+						<div class="flex items-center justify-between border-b border-ink/10 px-4 py-2">
+							<span class="kicker text-ink/60">Manifest · 1 crate</span>
+							{@render copyButton(installCommands.join('\n'), 'manifest')}
 						</div>
 						<div class="overflow-x-auto px-4 py-3">
 							{#each installCommands as command (command)}
-								<div class="text-sm leading-7 whitespace-nowrap">
-									<span class="text-paper/30">❯</span>
-									<span class="text-brass-bright">{command}</span>
-								</div>
+								<code class="block text-sm leading-7 whitespace-nowrap">{command}</code>
 							{/each}
-							<div class="mt-2 flex flex-wrap gap-x-3 gap-y-1 border-t border-paper/10 pt-3">
-								{#each crateSkills as skill (skill)}
-									<span class="text-xs whitespace-nowrap text-paper/45">
-										<span class="text-brass/70">▸</span>
-										{skill}
-									</span>
-								{/each}
-							</div>
+							<p class="mt-2 border-t border-ink/10 pt-3 font-mono text-xs leading-6 text-ink/75">
+								{crateSkills.join(' · ')}
+							</p>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<p class="mt-4 text-xs text-paper/40">
-				New releases later — <code class="text-brass/90">/plugin marketplace update vandeley</code>.
-				Same dock, fresh cargo.
+			<p class="mt-10 font-sans text-sm text-ink/75">
+				New releases later — <code>/plugin marketplace update vandeley</code>. Same dock, fresh
+				cargo.
 			</p>
 		</section>
 
-		<!-- Studio — index of drawing sheets -->
-		<section id="studio" class="mb-24 scroll-mt-10">
-			<div class="mb-8 flex flex-wrap items-baseline justify-between gap-2">
-				<h2 class="text-[10px] tracking-[0.3em] text-brass/70 uppercase">The Studio</h2>
-				<p class="text-xs text-paper/40">
-					A separate deck — free standalone Mermaid editors, no plugin required.
-				</p>
-			</div>
-			<div class="border-t border-paper/15">
+		<!-- Studio — table of contents -->
+		<section id="studio" class="mb-28 scroll-mt-10">
+			{@render sectionHead(
+				'The Studio',
+				'A separate deck.',
+				'Free standalone Mermaid editors — no plugin required.'
+			)}
+
+			<ol class="border-t border-ink/15">
 				{#each studioTypes as { href, label, desc }, i (href)}
-					<a
-						{href}
-						class="group grid grid-cols-[3rem_1fr_auto] items-baseline gap-4 border-b border-paper/15 py-5 transition-colors hover:bg-paper/[0.04] sm:grid-cols-[5rem_1fr_1fr_auto]"
-					>
-						<span class="text-xs text-brass/60">SHT 0{i + 1}</span>
-						<span
-							class="font-display text-2xl font-light text-paper transition-colors group-hover:text-brass-bright md:text-3xl"
+					<li>
+						<a
+							{href}
+							class="group grid grid-cols-[2.5rem_1fr_auto] items-baseline gap-4 border-b border-ink/15 py-5 sm:grid-cols-[4rem_1fr_1fr_auto]"
 						>
-							{label}
-						</span>
-						<span class="hidden text-xs text-paper/40 sm:block">{desc}</span>
-						<span
-							class="pr-2 text-brass/50 transition-all group-hover:translate-x-1 group-hover:text-brass-bright"
-						>
-							→
-						</span>
-					</a>
+							<span class="font-sans text-sm text-ink/60 tabular-nums">0{i + 1}</span>
+							<span
+								class="font-display text-3xl transition-colors group-hover:text-accent md:text-4xl"
+							>
+								{label}
+							</span>
+							<span class="hidden text-lg text-ink/60 italic sm:block">{desc}</span>
+							<span
+								class="pr-2 font-sans text-ink/60 transition-all group-hover:translate-x-1 group-hover:text-accent"
+							>
+								→
+							</span>
+						</a>
+					</li>
 				{/each}
-			</div>
+			</ol>
 		</section>
 
-		<!-- Doctrine — numbered manifest lines -->
-		<section id="doctrine" class="mb-24 scroll-mt-10">
-			<div class="mb-2 flex flex-wrap items-baseline justify-between gap-2">
-				<h2 class="text-[10px] tracking-[0.3em] text-brass/70 uppercase">The Doctrine</h2>
-				<p class="text-xs text-paper/40">For the already-convinced — how Art operates.</p>
-			</div>
-			<div class="border-t border-paper/15">
+		<!-- Doctrine — numbered articles -->
+		<section id="doctrine" class="mb-28 scroll-mt-10">
+			{@render sectionHead('The Doctrine', 'How Art operates.', 'For the already-convinced.')}
+
+			<ol>
 				{#each doctrine as { title, body }, i (title)}
-					<div
-						class="grid gap-2 border-b border-paper/15 py-7 transition-colors hover:bg-paper/[0.03] md:grid-cols-12 md:items-baseline md:gap-6"
+					<li
+						class="grid gap-2 border-b border-ink/15 py-8 first:pt-0 md:grid-cols-12 md:items-baseline md:gap-6"
 					>
-						<span class="text-xs text-brass/60 md:col-span-1">0{i + 1}</span>
-						<h3
-							class="font-display text-2xl font-light text-paper italic md:col-span-4 md:text-3xl"
+						<span
+							class="font-display text-4xl leading-none font-light text-ink/60 tabular-nums md:col-span-1"
 						>
-							{title}
-						</h3>
-						<p class="text-sm leading-relaxed text-paper/50 md:col-span-7">{body}</p>
-					</div>
+							0{i + 1}
+						</span>
+						<h3 class="font-display text-2xl italic md:col-span-4 md:text-3xl">{title}</h3>
+						<p class="text-lg/relaxed text-ink/85 md:col-span-7">{body}</p>
+					</li>
 				{/each}
-			</div>
+			</ol>
 		</section>
 
-		<!-- Title block footer -->
-		<footer class="mb-10">
-			<div
-				class="grid grid-cols-2 gap-px border border-paper/15 bg-paper/15 text-[10px] tracking-[0.2em] uppercase md:grid-cols-5"
-			>
-				{#each [['Drawn by', 'A. Vandeley'], ['Checked', 'H.E. Pennypacker'], ['Firm', 'Vandeley Industries'], ['Scale', 'None'], ['Sheet', '1 of 1']] as [k, v] (k)}
-					<div class="bg-ink px-4 py-3">
-						<p class="mb-1 text-paper/30">{k}</p>
-						<p class="text-paper/70">{v}</p>
+		<!-- Colophon -->
+		<footer class="mb-12 border-t-2 border-ink pt-6">
+			<dl class="grid gap-6 font-sans text-sm sm:grid-cols-2 md:grid-cols-4">
+				{#each colophon as [term, detail] (term)}
+					<div>
+						<dt class="kicker text-ink/60">{term}</dt>
+						<dd class="mt-1">{detail}</dd>
 					</div>
 				{/each}
-			</div>
-			<p class="mt-4 text-center text-[10px] tracking-[0.2em] text-paper/25 uppercase">
-				Latex, architecture &amp; well-made skills
+			</dl>
+			<p class="mt-12 text-center font-display text-xl text-ink/75 italic">
+				Latex, architecture &amp; well-made skills.
 			</p>
 		</footer>
 	</main>

@@ -7,7 +7,7 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
-	<meta name="theme-color" content="#0d0b09" />
+	<meta name="theme-color" content="#ffffff" />
 	<meta
 		name="description"
 		content="Well-architected components with papers — drawn at the drafting table, tried by the tribunal, stamped at the dock. Yes, that Art Vandeley."

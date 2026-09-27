@@ -1,182 +1,96 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Libre+Franklin:ital,wght@0,100..900;1,100..900&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap');
 @import 'tailwindcss';
 
+/* ---------------------------------------------------------------- */
+/* Editorial parameters — the rules live in CLAUDE.md § Design Context */
+/* Typography carries the identity; color only follows.               */
+/* ---------------------------------------------------------------- */
 @theme {
-	--font-primary: 'Roboto', sans-serif;
-	--font-display: 'Fraunces', 'Georgia', serif;
-	--font-tech: 'IBM Plex Mono', ui-monospace, monospace;
+	/* Four voices, four jobs. Newsreader's optical size tracks font-size,
+	   so one family gives both the display cut and the reading cut. */
+	--font-display: 'Newsreader', 'Georgia', serif; /* headlines, titles, numerals */
+	--font-serif: 'Newsreader', 'Georgia', serif; /* reading text: decks, body, captions */
+	--font-sans:
+		'Libre Franklin', 'Helvetica Neue', Arial, sans-serif; /* furniture: kickers, nav, buttons */
+	--font-mono: 'IBM Plex Mono', ui-monospace, monospace; /* code only */
 
-	/* Drafting-sheet palette (landing) */
-	--color-ink: #0d0b09;
-	--color-surface: #14110d;
-	--color-paper: #ede6da;
-	--color-brass: #c9a36a;
-	--color-brass-bright: #e4c08a;
+	/* Display scale — big leaps, tight leading, negative tracking as size grows */
+	--text-headline: clamp(3rem, 8.2vw, 7.5rem);
+	--text-headline--line-height: 0.94;
+	--text-headline--letter-spacing: -0.03em;
+	--text-title: clamp(2.5rem, 5vw, 4.25rem);
+	--text-title--line-height: 1;
+	--text-title--letter-spacing: -0.022em;
+	--text-deck: clamp(1.25rem, 1.9vw, 1.625rem);
+	--text-deck--line-height: 1.35;
 
-	--color-primary-50: oklch(0.977 0.013 236.62);
-	--color-primary-100: oklch(0.951 0.026 236.824);
-	--color-primary-200: oklch(0.901 0.058 230.902);
-	--color-primary-300: oklch(0.828 0.111 230.318);
-	--color-primary-400: oklch(0.746 0.16 232.661);
-	--color-primary-500: oklch(0.685 0.169 237.323);
-	--color-primary-600: oklch(0.567 0.154556 248.5156);
-	--color-primary-700: oklch(0.5 0.134 242.749);
-	--color-primary-800: oklch(0.443 0.11 240.79);
-	--color-primary-900: oklch(0.391 0.09 240.876);
-	--color-primary-950: oklch(0.1448 0.0293 231.23);
+	/* Reading measure — 60–70 characters of body serif */
+	--container-measure: 36rem;
+
+	/* Paper and ink. One accent: the editor's red pencil. */
+	--color-paper: #ffffff;
+	--color-surface: #f6f5f1;
+	--color-ink: #111111;
+	--color-accent: #b3261e;
 }
 
-/* Match the drafting-sheet ink so overscroll/rubber-band bounce never flashes white */
-html,
-body {
-	background-color: var(--color-ink);
+@layer base {
+	html {
+		background-color: var(--color-paper);
+		color: var(--color-ink);
+		font-kerning: normal;
+		text-rendering: optimizeLegibility;
+		-webkit-font-smoothing: antialiased;
+	}
+
+	h1,
+	h2,
+	h3 {
+		text-wrap: balance;
+	}
+
+	p {
+		text-wrap: pretty;
+	}
+
+	/* Code sits a touch smaller than the serif around it */
+	code {
+		font-size: 0.9em;
+	}
+
+	::selection {
+		background-color: var(--color-ink);
+		color: var(--color-paper);
+	}
 }
 
-/* Glass Morphism Utility Classes */
-.glass-accent {
-	background: linear-gradient(
-		135deg,
-		rgba(255, 255, 255, 0.15) 0%,
-		rgba(255, 255, 255, 0.08) 50%,
-		rgba(255, 255, 255, 0.15) 100%
-	);
-	backdrop-filter: blur(20px);
-	-webkit-backdrop-filter: blur(20px);
-	border: 1px solid rgba(255, 255, 255, 0.2);
-	box-shadow:
-		0 8px 32px rgba(0, 0, 0, 0.2),
-		inset 0 1px 0 rgba(255, 255, 255, 0.3);
+/* Kicker — the small uppercase sans line above a headline, and every label like it */
+@utility kicker {
+	font-family: var(--font-sans);
+	font-size: 0.6875rem;
+	line-height: 1rem;
+	font-weight: 600;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
 }
 
-.glass-enhanced {
-	/* Enhanced whitish glass morphism with subtle gradient */
-	background: linear-gradient(
-		135deg,
-		rgba(255, 255, 255, 0.25) 0%,
-		rgba(255, 255, 255, 0.15) 35%,
-		rgba(255, 255, 255, 0.08) 65%,
-		rgba(255, 255, 255, 0.25) 100%
-	);
-
-	/* Enhanced backdrop blur for cleaner glass effect */
-	backdrop-filter: blur(28px) saturate(150%) brightness(1.15);
-	-webkit-backdrop-filter: blur(28px) saturate(150%) brightness(1.15);
-
-	/* Refined whitish border */
-	border: 1px solid rgba(255, 255, 255, 0.35);
-	background-clip: padding-box;
-	box-shadow: 
-		/* Soft ambient shadow */
-		0 24px 48px -8px rgba(0, 0, 0, 0.25),
-		/* Bright outer rim */ 0 0 0 1px rgba(255, 255, 255, 0.2),
-		/* Prominent inner highlight */ inset 0 1px 0 rgba(255, 255, 255, 0.4),
-		/* Subtle brand accent */ 0 0 32px rgba(255, 255, 255, 0.1);
-
-	position: relative;
+/* Drop cap — opens the lede, three lines deep */
+@utility dropcap {
+	&::first-letter {
+		float: left;
+		font-family: var(--font-display);
+		font-size: 4.1em;
+		font-weight: 400;
+		line-height: 0.82;
+		padding: 0.07em 0.05em 0 0;
+	}
 }
 
-.glass-enhanced::before {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: linear-gradient(
-		135deg,
-		rgba(255, 255, 255, 0.2) 0%,
-		rgba(255, 255, 255, 0.05) 50%,
-		rgba(255, 255, 255, 0.2) 100%
-	);
-	pointer-events: none;
-	border-radius: inherit;
-}
-
-.glass-gold {
-	background: linear-gradient(
-		135deg,
-		rgba(188, 149, 92, 0.9) 0%,
-		rgba(188, 149, 92, 0.85) 35%,
-		rgba(188, 149, 92, 0.8) 65%,
-		rgba(188, 149, 92, 0.9) 100%
-	);
-	backdrop-filter: blur(20px) saturate(120%);
-	-webkit-backdrop-filter: blur(20px) saturate(120%);
-	border: 1px solid rgba(255, 255, 255, 0.25);
-	box-shadow:
-		0 8px 32px rgba(0, 0, 0, 0.2),
-		inset 0 1px 0 rgba(255, 255, 255, 0.3),
-		0 0 24px rgba(188, 149, 92, 0.15);
-}
-
-.text-shadow {
-	text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-/* ---------------------------------------------------------------- */
-/* Drafting sheet — landing page design system                       */
-/* ---------------------------------------------------------------- */
-
-/* Ink-black graph paper: fine 24px grid + major 96px grid + vignette */
-.sheet-bg {
-	background-color: var(--color-ink);
-	background-image:
-		radial-gradient(ellipse 120% 80% at 50% -10%, rgba(201, 163, 106, 0.07), transparent 60%),
-		linear-gradient(rgba(237, 230, 218, 0.05) 1px, transparent 1px),
-		linear-gradient(90deg, rgba(237, 230, 218, 0.05) 1px, transparent 1px),
-		linear-gradient(rgba(237, 230, 218, 0.022) 1px, transparent 1px),
-		linear-gradient(90deg, rgba(237, 230, 218, 0.022) 1px, transparent 1px);
-	background-size:
-		100% 100%,
-		96px 96px,
-		96px 96px,
-		24px 24px,
-		24px 24px;
-}
-
-/* Film grain over the sheet, fixed so it doesn't scroll with content */
-.grain::after {
-	content: '';
-	position: fixed;
-	inset: 0;
-	z-index: 50;
-	pointer-events: none;
-	opacity: 0.35;
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
-}
-
-/* Registration mark — the "+" crosshair at frame corners */
-.reg-mark {
-	position: absolute;
-	width: 17px;
-	height: 17px;
-	pointer-events: none;
-}
-.reg-mark::before,
-.reg-mark::after {
-	content: '';
-	position: absolute;
-	background: rgba(201, 163, 106, 0.55);
-}
-.reg-mark::before {
-	left: 8px;
-	top: 0;
-	width: 1px;
-	height: 17px;
-}
-.reg-mark::after {
-	top: 8px;
-	left: 0;
-	height: 1px;
-	width: 17px;
-}
-
-/* Staggered page-load reveal — set --d per element */
+/* Staggered page-load reveal — set --d per element. A fade, never a dance. */
 @keyframes rise {
 	from {
 		opacity: 0;
-		transform: translateY(18px);
+		transform: translateY(8px);
 	}
 	to {
 		opacity: 1;
@@ -184,7 +98,7 @@ body {
 	}
 }
 .rise {
-	animation: rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+	animation: rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 	animation-delay: var(--d, 0s);
 }
 
