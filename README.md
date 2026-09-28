@@ -15,7 +15,7 @@ flowchart LR
 This repo holds both halves of the operation:
 
 - **The marketplace** — one Claude Code plugin under `plugins/art-vandeley/`, published two ways: `.claude-plugin/marketplace.json` for the GitHub-repo install, and `static/marketplace.json` served at [vandeley.art/marketplace.json](https://vandeley.art/marketplace.json) for the URL install. One install ships the agent and his full skill crate.
-- **The site** — the SvelteKit app behind [vandeley.art](https://vandeley.art): Art's landing page plus the Mermaid Studio.
+- **The site** — the SvelteKit app behind [vandeley.art](https://vandeley.art): Art's landing page plus the Restirador, its Mermaid editors.
 
 ## Install
 
@@ -87,7 +87,7 @@ The flagship skills form a three-stage pipeline. Each stage does one job and ref
 
 ## The site (vandeley.art)
 
-A SvelteKit app: `/` is Art's landing page — his identity and doctrine — and the **Mermaid Studio** is a family of standalone diagram editors, one route per diagram type:
+A SvelteKit app: `/` is Art's landing page — his identity and doctrine — and the **Restirador** (drafting table) is a family of standalone diagram editors, one route per diagram type:
 
 | Route        | Editor                             |
 | ------------ | ---------------------------------- |

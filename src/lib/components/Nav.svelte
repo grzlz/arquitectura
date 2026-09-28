@@ -5,7 +5,7 @@
 	let { wide = false } = $props();
 
 	const links = [
-		{ href: '/flowchart', label: 'Studio' },
+		{ href: '/flowchart', label: 'Restirador' },
 		{ href: '/#update', label: 'Update' },
 		{ href: '/#install', label: 'Install', cta: true }
 	];

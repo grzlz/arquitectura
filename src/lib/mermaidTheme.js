@@ -1,4 +1,4 @@
-// Editorial Mermaid theme — ink on paper, shared by the landing and every studio editor.
+// Editorial Mermaid theme — ink on paper, shared by the landing and every Restirador editor.
 // Diagrams read like newspaper infographics: monochrome, sans labels, one weight of rule.
 const INK = '#111111';
 const PAPER = '#ffffff';

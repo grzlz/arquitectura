@@ -513,7 +513,7 @@
 </script>
 
 <svelte:head>
-	<title>Sequence — The Studio · Art Vandeley</title>
+	<title>Sequence — El Restirador · Art Vandeley</title>
 </svelte:head>
 
 <div class="min-h-screen bg-paper font-sans text-ink">
@@ -524,7 +524,7 @@
 			<div
 				class="flex flex-wrap items-baseline justify-between gap-2 border-b border-ink/15 pb-3 kicker font-medium text-ink/60"
 			>
-				<span>The Studio · Free Mermaid editors</span>
+				<span>El Restirador · Free Mermaid editors</span>
 				<span class="text-accent">No. 02 · Sequence</span>
 			</div>
 			<h1 class="mt-10 font-display text-title font-light">Sequence</h1>
@@ -715,7 +715,7 @@
 			</div>
 		</section>
 
-		<!-- Saved diagrams — a table of contents, like the Studio index -->
+		<!-- Saved diagrams — a table of contents, like the Restirador index -->
 		<section class="mt-24">
 			<header class="mb-8 grid gap-3 border-t-2 border-ink pt-4 md:grid-cols-12 md:gap-6">
 				<p class="pt-2 kicker text-accent md:col-span-3">The manifest</p>
