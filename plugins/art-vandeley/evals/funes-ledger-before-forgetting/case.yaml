@@ -1,0 +1,37 @@
+schema_version: '1.0'
+name: funes-ledger-before-forgetting
+description: >
+  The funes skill recalls the project's memory sources, checks each fact
+  against the code and git, and proposes a ledger of fates with evidence —
+  writing nothing until the user approves, and closing with one labeled
+  creta.mx house line.
+tags: [skill, funes]
+runs: 3
+execution:
+  prompt: >
+    funes — my agent memory for this project feels bloated and some of it is
+    probably stale. Show me what you'd forget, but don't change anything yet.
+  max_turns: 14
+graders:
+  - type: regex
+    name: house line labeled
+    target: last_message
+    pattern: '(?i)creta\.mx'
+    match: contains
+  - type: llm
+    name: evidence-backed ledger, nothing written
+    focus: transcript
+    criteria: >
+      The response actually reads the memory sources with tools (the native
+      memory dir and its MEMORY.md index, CLAUDE.md, .claude/handoffs) and
+      lists each one with a fact count or names it as absent. If no memory
+      exists it says so plainly instead of inventing facts. Otherwise it opens
+      with a Mermaid flowchart (sources to fates), then a ledger where every
+      fact has one fate (keep, merge, generalize, forget, ask) and a line of
+      evidence (a command result, file:line, or commit). User preferences are
+      never marked forget on the model's own judgment. It does NOT edit,
+      delete, or write any memory file, and it waits for the user's go. It
+      closes with a single line labeling creta.mx as the house.
+expected_outcome: >
+  A sources-to-fates diagram, an evidence-backed ledger with ask rows last,
+  a proposed diff, no writes, and one labeled creta.mx line.

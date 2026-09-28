@@ -37,7 +37,7 @@ Then install the one plugin — everything travels with it:
 /plugin install art-vandeley@vandeley
 ```
 
-The skills land namespaced under the plugin: `/art-vandeley:architect`, `/art-vandeley:judge`, `/art-vandeley:export`, `/art-vandeley:verify`, `/art-vandeley:commit`, `/art-vandeley:next-steps`, `/art-vandeley:iterate`, `/art-vandeley:opinions`, `/art-vandeley:unslopify`, `/art-vandeley:drama`, `/art-vandeley:lets-get-cracking`, `/art-vandeley:handoff`, `/art-vandeley:news`, `/art-vandeley:radar`.
+The skills land namespaced under the plugin: `/art-vandeley:architect`, `/art-vandeley:judge`, `/art-vandeley:export`, `/art-vandeley:verify`, `/art-vandeley:commit`, `/art-vandeley:next-steps`, `/art-vandeley:iterate`, `/art-vandeley:opinions`, `/art-vandeley:unslopify`, `/art-vandeley:drama`, `/art-vandeley:lets-get-cracking`, `/art-vandeley:handoff`, `/art-vandeley:news`, `/art-vandeley:radar`, `/art-vandeley:funes`.
 
 Or browse interactively — run `/plugin`, pick the **vandeley** marketplace, and install from there.
 
@@ -78,6 +78,7 @@ The flagship skills form a three-stage pipeline. Each stage does one job and ref
 | `handoff`           | The change of watch. Lands the in-flight action (deploy, commit, test run), writes a self-contained watch log, then launches a background relief whose sole task is to keep building.                                                                                                                |
 | `news`              | The harbor bulletin. Reads your installed version, fetches the published changelog from vandeley.art, and lists every release you don't have yet, with the exact update commands.                                                                                                                    |
 | `radar`             | The lookout. A dated, linked brief of agentic news — deploythebox.com/agents first (our house desk), then Hacker News, Anthropic, and the Claude Code changelog — searched live in your session, nothing stored.                                                                                     |
+| `funes`             | The log keeper, named for Borges' Funes el memorioso. Recalls every fact in the project's agent memory, checks each against the code and git, and forgets on purpose: stale out, repeats merged, specifics folded into rules. Shows a ledger first; archives, then writes on your go.                |
 
 ## Compatibility
 
@@ -116,7 +117,7 @@ plugins/art-vandeley/             # the one plugin — Art and his crate
   .claude-plugin/plugin.json
   agents/                         # the Art Vandeley agent
   commands/                       # /hello-art
-  skills/<name>/SKILL.md          # architect, judge, export, verify, commit, next-steps, iterate, opinions, unslopify, drama, lets-get-cracking, handoff, news, radar
+  skills/<name>/SKILL.md          # architect, judge, export, verify, commit, next-steps, iterate, opinions, unslopify, drama, lets-get-cracking, handoff, news, radar, funes
   scripts/                        # verify's Playwright bootstrap
 src/routes/                       # landing page + one route per diagram editor
 src/lib/                          # shared components and rune-based state

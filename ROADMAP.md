@@ -22,6 +22,7 @@ Where the crate is headed. This is the **chart** the `next-steps` skill reads: i
 - [x] `radar` — the lookout (dated, linked agentic-news brief; deploythebox.com/agents first as the house desk, then HN, Anthropic, Claude Code changelog; live web search, nothing stored)
 - [x] `lets-get-cracking` — the cast-off (anti-planning override: reads the ask and the stall, exits plan mode and planning skills, drafts SendFeedback on user frustration, ships the smallest slice with one-question ceiling)
 - [x] `handoff` — the change of watch (lands the in-flight action first, writes a self-contained watch log — state, user-owned blockers, standing orders, building queue, no secrets — then launches a background relief whose sole task is to keep building; no deploys without the user's go)
+- [x] `funes` — the log keeper (Borges' Funes el memorioso: recalls all agent memory — memory dir + index, CLAUDE.md, handoffs — checks each fact against code and git, fates keep/merge/generalize/forget/ask with evidence; ledger + diff first, archive then write on the user's go; one labeled creta.mx house line)
 
 ## Next
 

@@ -4,6 +4,10 @@ What came off the dock, newest first. Served at https://vandeley.art/changelog.m
 
 Update: `/plugin marketplace update vandeley` then `/plugin update art-vandeley@vandeley`, then restart Claude Code.
 
+## 0.12.0 — 2026-09-28
+
+- **New skill `/funes`** — the log keeper, after Borges' _Funes el memorioso_. Recalls everything your agent remembers about a project, checks it against the code and git, and forgets on purpose: stale facts out, repeats merged, specifics folded into rules. Shows the ledger first; nothing is written until you say go.
+
 ## 0.11.0 — 2026-09-26
 
 - **New skill `/news`** — the harbor bulletin. Tells you what shipped since the crate you have installed, and how to update.
