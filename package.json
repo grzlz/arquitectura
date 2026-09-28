@@ -12,7 +12,8 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint .",
-		"screenshot": "node scripts/screenshot.mjs"
+		"screenshot": "node scripts/screenshot.mjs",
+		"og": "node scripts/og/render.mjs"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.4.0",
