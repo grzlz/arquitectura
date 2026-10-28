@@ -4,6 +4,10 @@ What came off the dock, newest first. Served at https://vandeley.art/changelog.m
 
 Update: `/plugin marketplace update vandeley` then `/plugin update art-vandeley@vandeley`, then restart Claude Code.
 
+## 0.13.0 — 2026-10-28
+
+- **First hook: the stall detector.** After 4 prompts in a row with no file edited, Claude gets one line suggesting `/lets-get-cracking` — and is told to ignore it if those turns were questions or reviews. It fires once per stall, stays silent otherwise, makes no network calls, and never shows you an error.
+
 ## 0.12.0 — 2026-09-28
 
 - **New skill `/funes`** — the log keeper, after Borges' _Funes el memorioso_. Recalls everything your agent remembers about a project, checks it against the code and git, and forgets on purpose: stale facts out, repeats merged, specifics folded into rules. Shows the ledger first; nothing is written until you say go.

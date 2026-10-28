@@ -1,0 +1,28 @@
+{
+	"description": "Stall detector: after 4 prompts with no file edited, suggests lets-get-cracking. Silent otherwise; no network; fails open.",
+	"hooks": {
+		"UserPromptSubmit": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/stall.mjs\" prompt 2>/dev/null || true",
+						"timeout": 5
+					}
+				]
+			}
+		],
+		"PostToolUse": [
+			{
+				"matcher": "Edit|Write|MultiEdit|NotebookEdit",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/stall.mjs\" edit 2>/dev/null || true",
+						"timeout": 5
+					}
+				]
+			}
+		]
+	}
+}
