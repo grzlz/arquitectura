@@ -87,18 +87,9 @@ The flagship skills form a three-stage pipeline. Each stage does one job and ref
 
 ## The site (vandeley.art)
 
-A SvelteKit app: `/` is Art's landing page — his identity and doctrine — and the **Restirador** (drafting table) is a family of standalone diagram editors, one route per diagram type:
+A SvelteKit app: `/` is Art's landing page — his identity and doctrine — and the **Restirador** (drafting table) at `/restirador` is one Mermaid editor with a selector for six diagram types: flowchart, sequence, state, journey, class and swimlane (`/restirador/<type>`).
 
-| Route        | Editor                             |
-| ------------ | ---------------------------------- |
-| `/flowchart` | Flowcharts (`graph LR/TD/TB`)      |
-| `/sequence`  | Sequence diagrams                  |
-| `/state`     | State machine diagrams             |
-| `/journey`   | User journey diagrams              |
-| `/class`     | Class diagrams                     |
-| `/swimlane`  | Swimlane (subgraph-based) diagrams |
-
-Each editor renders live via Mermaid 11 (client-side only), keeps saved diagrams in `localStorage`, and exports SVG.
+It renders live via Mermaid 11 (client-side only), keeps saved diagrams in `localStorage`, and exports SVG and PDF.
 
 **Stack:** Svelte 5 (runes) · SvelteKit 2 · Tailwind CSS v4 · Mermaid 11 · plain JavaScript, ES modules throughout.
 

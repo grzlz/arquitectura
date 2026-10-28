@@ -12,34 +12,29 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture
 
-**Art Vandeley** — a SvelteKit 5 app fronting _Art Vandeley_, an agent that imports skills and exports well-architected components (the `/architect` → `/judge` → `/export` pipeline; nothing ships without a judge-approved verdict) and communicates in Mermaid + Markdown. `/` is Art's landing — deliberately minimal: headline, then copy-ready **Install** and **Update** commands (release notes live in `static/changelog.md`, served at `vandeley.art/changelog.md` and read by the `news` skill); **the Restirador (the drafting table; formerly the Mermaid Studio) is a feature**, a family of standalone diagram editors (one route per diagram type). The agent ships as **one Claude Code plugin** in `plugins/art-vandeley/` — agent, `/hello-art` command, and all skills (`architect`, `judge`, `export`, `verify`, `commit`, `next-steps`, `iterate`, `opinions`, `unslopify`, `drama`, `lets-get-cracking`, `handoff`, `news`, `radar`, `funes`) in a single install. Never split the skills back into separate marketplace plugins; the one-crate install is a deliberate product decision.
+**Art Vandeley** — a SvelteKit 5 app fronting _Art Vandeley_, an agent that imports skills and exports well-architected components (the `/architect` → `/judge` → `/export` pipeline; nothing ships without a judge-approved verdict) and communicates in Mermaid + Markdown. `/` is Art's landing — deliberately minimal: headline, then copy-ready **Install** and **Update** commands (release notes live in `static/changelog.md`, served at `vandeley.art/changelog.md` and read by the `news` skill); **the Restirador (the drafting table; formerly the Mermaid Studio) is a feature**, one editor with a type selector, `/restirador/<type>` (six types). The agent ships as **one Claude Code plugin** in `plugins/art-vandeley/` — agent, `/hello-art` command, and all skills (`architect`, `judge`, `export`, `verify`, `commit`, `next-steps`, `iterate`, `opinions`, `unslopify`, `drama`, `lets-get-cracking`, `handoff`, `news`, `radar`, `funes`) in a single install. Never split the skills back into separate marketplace plugins; the one-crate install is a deliberate product decision.
 
 ### Distribution
 
 The plugin marketplace is served straight from this repo's GitHub remote — `github.com/grzlz/arquitectura`, which is Guillermo's **personal** account. That is temporary: the plan is to eventually move distribution off the personal account (dedicated org or vandeley.art-owned home). Users install via `/plugin marketplace add grzlz/arquitectura`, so moving the repo is a breaking change for installed marketplaces — coordinate the move deliberately (update README, landing page `marketplaceCommand` in `src/routes/+page.svelte`, and announce the new source).
 
-### Routes → diagram types
+### Routes
 
-| Route        | Type                                                 |
-| ------------ | ---------------------------------------------------- |
-| `/`          | Art Vandeley landing (brand/identity, not an editor) |
-| `/flowchart` | General flowcharts (graph LR/TD/TB)                  |
-| `/sequence`  | Sequence diagrams                                    |
-| `/state`     | State machine diagrams                               |
-| `/journey`   | User journey diagrams                                |
-| `/class`     | Class diagrams                                       |
-| `/swimlane`  | Swimlane (subgraph-based) diagrams                   |
+| Route                | What                                                                 |
+| -------------------- | -------------------------------------------------------------------- |
+| `/`                  | Art Vandeley landing (brand/identity, not an editor)                 |
+| `/restirador/[type]` | The Restirador: flowchart, sequence, state, journey, class, swimlane |
+| `/restirador`        | 307 → `/restirador/flowchart`                                        |
+| `/[type]`            | 301 → `/restirador/[type]` (the editors' URLs before the Restirador) |
 
-### Per-page pattern (all routes follow this)
+`[type=diagram]` is matched by `src/params/diagram.js` against the registry, so an unknown type 404s.
 
-Each `+page.svelte` is self-contained and implements:
+### The Restirador (one editor, many types)
 
-1. `$state` for `diagramCode`, `error`, `savedDiagrams`, `currentExampleIndex`
-2. Mermaid loaded lazily: `onMount` + `browser` guard → `import('mermaid')`
-3. `renderDiagram()` — calls `mermaid.render()`, dumps SVG into `#preview`
-4. Examples carousel (hardcoded array per diagram type)
-5. Save/load/delete via `localStorage` (`mermaid-diagrams` key)
-6. SVG export via Blob URL
+- **Adding a type is data, not a page:** an entry in `src/lib/restirador/diagrams.js` (slug, name, deck, placeholder, levels, `storageKey`) plus `src/lib/restirador/examples/<slug>.js` (`defaultCode`, `examples`). The selector, route, and redirect pick it up.
+- `src/lib/components/restirador/` — `DiagramEditor` (state, toolbar, render, exports, storage), `Patterns` (examples carousel), `SavedDiagrams`, `TypeSelector`. The page keys `DiagramEditor` on the slug, so each type mounts fresh; a module-level object keeps each type's draft across switches.
+- **Never rename a `storageKey`** — saved diagrams live under the pre-Restirador keys (`mermaid-diagrams` for flowchart, `mermaid-<type>-diagrams` for the rest).
+- Exports (`src/lib/diagramExport.js`) re-render with labels as SVG text; see its comments for the Mermaid → PDF workarounds.
 
 ### Global state
 
