@@ -3,6 +3,7 @@
 	import { browser } from '$app/environment';
 	import Nav from '$lib/components/Nav.svelte';
 	import { mermaidInit } from '$lib/mermaidTheme.js';
+	import { downloadSVG, downloadPDF } from '$lib/diagramExport.js';
 
 	let mermaid;
 	let diagramCode = $state(`journey
@@ -23,6 +24,9 @@
 	let saveError = $state('');
 	let confirmingDelete = $state(-1);
 	let dirty = $state(false);
+	let exporting = $state(''); // 'svg' | 'pdf'
+	let exportError = $state('');
+	let renderedCode = ''; // last code that compiled — what the preview shows, and what exports
 	let feedbackTimer;
 
 	function flash(state) {
@@ -450,6 +454,7 @@
 			preview.innerHTML = '';
 			const { svg } = await mermaid.render('preview-diagram', diagramCode);
 			preview.innerHTML = svg;
+			renderedCode = diagramCode;
 			error = '';
 		} catch (e) {
 			error = e.message;
@@ -501,17 +506,18 @@
 		confirmingDelete = -1;
 	}
 
-	function exportSVG() {
-		const svg = document.querySelector('#preview svg');
-		if (!svg) return;
-
-		const blob = new Blob([svg.outerHTML], { type: 'image/svg+xml' });
-		const url = URL.createObjectURL(blob);
-		const a = document.createElement('a');
-		a.href = url;
-		a.download = `${currentName || 'journey-diagram'}.svg`;
-		a.click();
-		setTimeout(() => URL.revokeObjectURL(url), 100);
+	async function exportAs(format) {
+		if (!renderedCode || exporting) return;
+		exporting = format;
+		exportError = '';
+		try {
+			const download = format === 'pdf' ? downloadPDF : downloadSVG;
+			await download(mermaid, renderedCode, currentName.trim() || 'journey-diagram');
+		} catch (e) {
+			exportError = `Export failed — ${e.message}`;
+		} finally {
+			exporting = '';
+		}
 	}
 
 	function copyCode() {
@@ -564,11 +570,15 @@
 				>
 					{feedback === 'saved' ? 'Saved ✓' : 'Save'}
 				</button>
-				<button
-					onclick={exportSVG}
-					class="cursor-pointer py-1 kicker text-ink/75 underline-offset-4 transition-colors hover:text-accent hover:underline"
-					>Export SVG</button
-				>
+				{#each ['svg', 'pdf'] as format (format)}
+					<button
+						onclick={() => exportAs(format)}
+						disabled={exporting !== ''}
+						class="cursor-pointer py-1 kicker text-ink/75 underline-offset-4 transition-colors hover:text-accent hover:underline disabled:cursor-wait disabled:text-ink/60 disabled:no-underline"
+					>
+						{exporting === format ? 'Exporting…' : `Export ${format.toUpperCase()}`}
+					</button>
+				{/each}
 				<button
 					onclick={copyCode}
 					class="cursor-pointer py-1 kicker text-ink/75 underline-offset-4 transition-colors hover:text-accent hover:underline"
@@ -592,6 +602,9 @@
 			</button>
 			{#if saveError}
 				<p id="diagram-name-error" class="w-full kicker text-accent">{saveError}</p>
+			{/if}
+			{#if exportError}
+				<p role="alert" class="w-full kicker text-accent">{exportError}</p>
 			{/if}
 			<span class="sr-only" role="status">
 				{feedback === 'saved'
