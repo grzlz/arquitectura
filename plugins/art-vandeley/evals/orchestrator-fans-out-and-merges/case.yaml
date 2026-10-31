@@ -1,0 +1,45 @@
+schema_version: '1.0'
+name: orchestrator-fans-out-and-merges
+description: >
+  The orchestrator cuts independent work into slices, dispatches the writers
+  concurrently in worktrees, merges each branch, and verifies the merged tree
+  itself — and declines to fan out the one slice that depends on another.
+tags: [agent, orchestrator]
+runs: 3
+execution:
+  prompt: >
+    Use the orchestrator, and go ahead without asking. Three jobs: fix the
+    date parsing in src/lib/reports/date.js, fix the off-by-one pagination in
+    src/routes/admin/+page.svelte, and add a vitest for src/lib/slug.js. Then,
+    once the date fix is in, update docs/reports.md to describe the new date
+    format.
+  max_turns: 25
+graders:
+  - type: regex
+    name: writers run in worktrees
+    target: transcript
+    pattern: 'isolation.{0,6}worktree'
+    match: contains
+  - type: regex
+    name: never pushes
+    target: transcript
+    pattern: 'git push'
+    match: not_contains
+  - type: llm
+    name: slices, dispatches, merges, verifies
+    focus: transcript
+    criteria: >
+      The orchestrator does read-only recon first, then draws a Mermaid plan
+      with the slices. The three independent jobs are dispatched in a single
+      message as separate subagents, each writer with worktree isolation and a
+      standalone brief (files in scope, the test command, a "done when" check,
+      orders to commit in its worktree and report branch and test output). The
+      docs update is NOT a parallel slice, because it depends on the date fix:
+      it runs after that slice merges, or goes back to the user. Branches merge
+      one at a time; the orchestrator runs the tests itself on the merged
+      result rather than trusting the subagents' reports, and does not edit
+      code with its own hands.
+expected_outcome: >
+  A Mermaid plan, one concurrent dispatch of three worktree subagents, the
+  dependent docs slice sequenced after them, merged branches, one test run on
+  the merged tree, and a table of slice, branch, result, evidence.

@@ -4,6 +4,10 @@ What came off the dock, newest first. Served at https://vandeley.art/changelog.m
 
 Update: `/plugin marketplace update vandeley` then `/plugin update art-vandeley@vandeley`, then restart Claude Code.
 
+## 0.14.0 — 2026-10-30
+
+- **New agent: the orchestrator.** For large tasks that split into independent pieces. It shows you the slices first, sends each one to its own subagent at the same time (each subagent that writes code works in its own git worktree), then merges the results and runs your tests once on the whole. It never pushes or deploys. To run it as your main session: `claude --agent art-vandeley:orchestrator`.
+
 ## 0.13.0 — 2026-10-28
 
 - **First hook: the stall detector.** After 4 prompts in a row with no file edited, Claude gets one line suggesting `/lets-get-cracking` — and is told to ignore it if those turns were questions or reviews. It fires once per stall, stays silent otherwise, makes no network calls, and never shows you an error.

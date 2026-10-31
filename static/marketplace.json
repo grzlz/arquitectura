@@ -7,7 +7,7 @@
   "plugins": [
     {
       "name": "art-vandeley",
-      "description": "Art Vandeley — importer of skills, exporter of well-architected components. One install: the agent, /hello-art, and his full skill crate (architect, judge, export, verify, commit, next-steps, iterate, opinions, unslopify, drama, lets-get-cracking, handoff, news, radar, funes), plus a stall-detector hook that suggests lets-get-cracking. Reads your environment, imports the skills that fit, ships components with papers, and answers in Mermaid + Markdown.",
+      "description": "Art Vandeley — importer of skills, exporter of well-architected components. One install: the agent, the orchestrator (fans large tasks out to parallel subagents, then merges and verifies), /hello-art, and his full skill crate (architect, judge, export, verify, commit, next-steps, iterate, opinions, unslopify, drama, lets-get-cracking, handoff, news, radar, funes), plus a stall-detector hook that suggests lets-get-cracking. Reads your environment, imports the skills that fit, ships components with papers, and answers in Mermaid + Markdown.",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/grzlz/arquitectura.git",

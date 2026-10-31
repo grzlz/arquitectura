@@ -14,7 +14,7 @@ flowchart LR
 
 This repo holds both halves of the operation:
 
-- **The marketplace** — one Claude Code plugin under `plugins/art-vandeley/`, published two ways: `.claude-plugin/marketplace.json` for the GitHub-repo install, and `static/marketplace.json` served at [vandeley.art/marketplace.json](https://vandeley.art/marketplace.json) for the URL install. One install ships the agent and his full skill crate.
+- **The marketplace** — one Claude Code plugin under `plugins/art-vandeley/`, published two ways: `.claude-plugin/marketplace.json` for the GitHub-repo install, and `static/marketplace.json` served at [vandeley.art/marketplace.json](https://vandeley.art/marketplace.json) for the URL install. One install ships the agent, the orchestrator, and his full skill crate.
 - **The site** — the SvelteKit app behind [vandeley.art](https://vandeley.art): Art's landing page plus the Restirador, its Mermaid editors.
 
 ## Install
@@ -67,6 +67,7 @@ The flagship skills form a three-stage pipeline. Each stage does one job and ref
 | Skill               | What it does                                                                                                                                                                                                                                                                                         |
 | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `art-vandeley`      | The agent himself. Reads your environment (repo, stack, task), imports the skills that fit, answers in Mermaid + Markdown. Say `/hello-art`.                                                                                                                                                         |
+| `orchestrator`      | The harbormaster, an agent. Splits a large task into independent slices, dispatches each to its own subagent (writers in isolated git worktrees), then merges the branches and runs the tests once on the result. Never pushes or deploys. Not for one component — that's Art's pipeline.            |
 | `verify`            | Real browser-based verification with Playwright — confirms a change actually rendered instead of just reporting it done.                                                                                                                                                                             |
 | `commit`            | Surveys changes with `git diff --stat` before reading hunks, groups them into logical commits, writes each with a unified template. No agent attribution.                                                                                                                                            |
 | `next-steps`        | The dispatch desk. Reads recent git history (`git log --oneline -5`, `git show`), `ROADMAP.md`, and working-tree status, then calls the next moves in priority order — a route map plus a ranked list. Read-only; hands each move to the skill that works it.                                        |
@@ -106,7 +107,7 @@ npm run lint     # prettier check + eslint
 .claude-plugin/marketplace.json   # the vandeley marketplace manifest
 plugins/art-vandeley/             # the one plugin — Art and his crate
   .claude-plugin/plugin.json
-  agents/                         # the Art Vandeley agent
+  agents/                         # art-vandeley, orchestrator
   commands/                       # /hello-art
   skills/<name>/SKILL.md          # architect, judge, export, verify, commit, next-steps, iterate, opinions, unslopify, drama, lets-get-cracking, handoff, news, radar, funes
   scripts/                        # verify's Playwright bootstrap
