@@ -41,4 +41,4 @@ Work these in order. Each ends on a checkable result. The mechanics are in `patt
 - **Fade, don't dance.** Opacity only — no bounce, no scale-in, no `transition: all`, no looping shimmer. Reduced motion means no motion.
 - **Words over effects.** The done scene names the outcome and the next step in plain language; an emoji or a confetti burst is not a confirmation.
 - **The accessibility floor holds** — a real `<label>`, focus that lands and is visible, errors in a `role="alert"`, every scene reachable by keyboard.
-- You stage the call to action; you do **not** redraw the page (that is `architect`), restyle its identity (that is `unslopify`), or build a backend past the minimum the act needs.
+- You stage the call to action; you do **not** redraw the page (that is `rework`), restyle its identity (that is `unslopify`), or build a backend past the minimum the act needs.

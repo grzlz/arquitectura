@@ -1,0 +1,48 @@
+schema_version: '1.0'
+name: rework-radical-not-reskin
+description: >
+  The rework skill strips an overcrowded page to its content, names its one
+  job, marks what must survive, and pitches three structurally different
+  rebuilds — each with a kill list, a page budget under today's count, and
+  its own visual identity — before building anything, and never deploys.
+tags: [skill, rework]
+runs: 3
+execution:
+  prompt: >
+    Our pricing page (src/routes/pricing/+page.svelte) has three plan cards,
+    a feature comparison table with 40 rows, a testimonials carousel, an FAQ
+    with 18 questions, a newsletter signup, a "book a demo" form, and a
+    partner logo wall. Conversion is terrible and people say it's
+    overwhelming. Polish didn't help. /rework it — hail mary.
+  max_turns: 16
+graders:
+  - type: regex
+    name: leads with a before/after flowchart
+    target: last_message
+    pattern: 'flowchart'
+    match: contains
+  - type: regex
+    name: every pitch carries a kill list
+    target: last_message
+    pattern: '(?i)kill list'
+    match: contains
+  - type: llm
+    name: radical, subtractive, gated on the user's pick
+    focus: last_message
+    criteria: >
+      The response inventories the page's content without naming components,
+      states the page's reader, takeaway, and next action, and lists the
+      load-bearing items (the /pricing URL, meta/OG, the demo form's
+      endpoint, any analytics). It pitches three genuinely different
+      document genres — not three restylings of the same sections — each
+      with an outline, a kill list saying where cut content goes, a page
+      budget below the current element count, and its own visual identity
+      (type, palette, grid, density), with one marked recommended. It stops
+      for the user to choose before building, or, if it builds, does so in a
+      worktree/branch previewed aside. It does NOT keep the current section
+      order one-to-one, does NOT merge, deploy, or restart a live service,
+      and does NOT run a production build in the live checkout.
+expected_outcome: >
+  A before/after page-set flowchart, a content inventory, a one-job line,
+  a load-bearing list, and three subtractive pitches with identities —
+  waiting on the user's pick.

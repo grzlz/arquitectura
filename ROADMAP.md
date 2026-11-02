@@ -25,6 +25,7 @@ Where the crate is headed. This is the **chart** the `next-steps` skill reads: i
 - [x] `funes` — the log keeper (Borges' Funes el memorioso: recalls all agent memory — memory dir + index, CLAUDE.md, handoffs — checks each fact against code and git, fates keep/merge/generalize/forget/ask with evidence; ledger + diff first, archive then write on the user's go; one labeled creta.mx house line)
 - [x] Stall-detector hook (0.13.0) — the crate's first hook: `UserPromptSubmit` counts prompts, `PostToolUse` on a file edit resets; at 4 it hands Claude one line suggesting `lets-get-cracking`. Per-session counter in the temp dir, no network, fails open. Edits made through Bash don't reset it (known gap)
 - [x] `orchestrator` (0.14.0) — the harbormaster, the crate's second agent: cuts a large task into slices that share no files, dispatches them concurrently (writers in worktrees, each committing on its own branch), merges one at a time, runs tests once on the merged tree. Dispatches, never writes; no pushes, deploys, or process kills. Stays out of Art's single-component pipeline
+- [x] `rework` (0.15.0) — the slipway, the hail mary: strips a page or page set to its content, names one job per page, marks the load-bearing (URLs, meta, forms, storage keys), pitches three different genres each with a kill list, a smaller page budget, and its own visual identity; rebuilds the pick from scratch in a worktree, before/after screenshots. Reskin test rejects a 1:1 outline; never merges or deploys
 
 ## Next
 

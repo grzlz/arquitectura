@@ -4,6 +4,10 @@ What came off the dock, newest first. Served at https://vandeley.art/changelog.m
 
 Update: `/plugin marketplace update vandeley` then `/plugin update art-vandeley@vandeley`, then restart Claude Code.
 
+## 0.15.0 — 2026-11-01
+
+- **New skill `/rework`** — the hail mary, for pages that polish can't save. It strips the page (or a set of pages) down to what it actually says, names the one job each page does, and pitches three different structures, each with its own look, a list of what gets cut, and fewer elements than today. You pick one; it rebuilds it from scratch on a separate branch and shows you before and after. URLs, forms, and metadata survive. It never deploys — the swap is yours.
+
 ## 0.14.0 — 2026-10-30
 
 - **New agent: the orchestrator.** For large tasks that split into independent pieces. It shows you the slices first, sends each one to its own subagent at the same time (each subagent that writes code works in its own git worktree), then merges the results and runs your tests once on the whole. It never pushes or deploys. To run it as your main session: `claude --agent art-vandeley:orchestrator`.
