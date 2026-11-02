@@ -1,7 +1,15 @@
 <script>
 	import Nav from '$lib/components/Nav.svelte';
 
-	const version = '0.11.0';
+	let { data } = $props();
+	const { version } = $derived(data);
+
+	// The latest release only — replace it each ship, never stack them.
+	const latest = {
+		skill: '/art-vandeley:rework',
+		title: 'The hail mary.',
+		deck: 'For the page polish can’t save. Rework strips it to what it actually says, cuts what crowds it, pitches three new structures — each with its own look — and rebuilds your pick from scratch beside the live site.'
+	};
 
 	const marketplaceCommand = '/plugin marketplace add https://vandeley.art/marketplace.json';
 	const install = [
@@ -99,6 +107,27 @@
 				Importer of skills.<br />
 				Exporter of <em><span class="whitespace-nowrap">well-architected</span> components</em>.
 			</h1>
+
+			<aside
+				class="rise mt-16 grid gap-3 border-t border-ink/15 pt-4 md:grid-cols-12 md:gap-6"
+				style="--d: 0.15s"
+			>
+				<p class="pt-1 kicker text-accent md:col-span-3">Just off the dock · v{version}</p>
+				<div class="md:col-span-9">
+					<p class="font-display text-deck">
+						<code class="font-mono text-[0.8em]">{latest.skill}</code>
+						<em class="font-light">— {latest.title}</em>
+					</p>
+					<p class="mt-2 max-w-measure text-lg leading-relaxed text-pretty text-ink/75">
+						{latest.deck}
+						<a
+							href="https://vandeley.art/changelog.md"
+							class="font-sans text-sm whitespace-nowrap text-ink underline underline-offset-4 transition-colors hover:text-accent"
+							>Changelog →</a
+						>
+					</p>
+				</div>
+			</aside>
 		</section>
 
 		<!-- Install -->
