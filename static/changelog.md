@@ -4,6 +4,10 @@ What came off the dock, newest first. Served at https://vandeley.art/changelog.m
 
 Update: `/plugin marketplace update vandeley` then `/plugin update art-vandeley@vandeley`, then restart Claude Code.
 
+## 0.15.1 — 2026-11-01
+
+- **Fix `/iterate`** — the release checklist now covers the changelog entry and the landing page's "just off the dock" slot, which gets replaced (never stacked) when a new skill ships.
+
 ## 0.15.0 — 2026-11-01
 
 - **New skill `/rework`** — the hail mary, for pages that polish can't save. It strips the page (or a set of pages) down to what it actually says, names the one job each page does, and pitches three different structures, each with its own look, a list of what gets cut, and fewer elements than today. You pick one; it rebuilds it from scratch on a separate branch and shows you before and after. URLs, forms, and metadata survive. It never deploys — the swap is yours.

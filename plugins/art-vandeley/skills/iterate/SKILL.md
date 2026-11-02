@@ -16,7 +16,7 @@ Art Vandeley's **dry dock** — where the ship comes out of the water. Every oth
 
 ## The Moving Parts
 
-One refit can touch up to seven surfaces. Know them before cutting steel:
+One refit can touch up to nine surfaces. Know them before cutting steel:
 
 | Surface               | File                                                                                                      | When it moves                              |
 | --------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
@@ -25,6 +25,8 @@ One refit can touch up to seven surfaces. Know them before cutting steel:
 | Repo manifest         | `.claude-plugin/marketplace.json` — **relative** source, for `/plugin marketplace add grzlz/arquitectura` | when name/description change               |
 | URL manifest          | `static/marketplace.json` — **git-subdir** source, served at `vandeley.art/marketplace.json`              | same changes, kept in sync                 |
 | The chart             | `ROADMAP.md`                                                                                              | every refit                                |
+| The bulletin          | `static/changelog.md` — one `## <version> — <date>` entry, read by `news`                                 | every refit                                |
+| The front page        | `latest` in `src/routes/+page.svelte` — the single "just off the dock" slot                               | new user-facing skill, command, or agent   |
 | Trial cases           | `plugins/art-vandeley/evals/`                                                                             | new or changed behavior                    |
 | Distribution surfaces | `README.md`, `marketplaceCommand` in `src/routes/+page.svelte`                                            | only when the install route itself changes |
 
@@ -36,7 +38,7 @@ Work these in order. Each ends on a checkable result.
 2. **Cut the steel.** Make the change. A new skill wears the crate's uniform: frontmatter description with concrete trigger phrases, third person, a station tagline; body with the station metaphor, When to Invoke, a Process whose steps each end on _Done when_, an Output Format, and Quality Standards closing on a one-line boundary ("you do X; you do **not** Y"). Lean — siblings run ~50 lines. _Done when:_ the change reads like it was always part of the crate.
 3. **Renumber the hull.** Bump `version` in `plugin.json` — minor for new capability, patch for a fix to existing behavior. If the crate contents changed, update the skill list inside `plugin.json`'s `description`. _Done when:_ version and description both match what the crate now holds.
 4. **Sync the papers.** If name or description moved, mirror it in **both** manifests — `.claude-plugin/marketplace.json` and `static/marketplace.json`. Never "simplify" the static manifest's `git-subdir` source to a relative path: a URL-hosted marketplace downloads only the JSON, so relative paths silently break that install route. _Done when:_ `grep` for the old description across both manifests comes back empty.
-5. **Update the chart.** Tick what this refit ships in `ROADMAP.md`; add the next horizon if a section emptied. _Done when:_ `next-steps` reading the chart cold would call the state correctly.
+5. **Update the chart and the bulletin.** Tick what this refit ships in `ROADMAP.md`; add the next horizon if a section emptied. Add the version's entry to `static/changelog.md`, written for users. If the refit ships a new user-facing skill, command, or agent, **replace** `latest` in `src/routes/+page.svelte` with it — one item, never stacked; a fix leaves the slot alone. _Done when:_ `next-steps` reading the chart cold would call the state correctly, the changelog's top heading is the new version, and the front-page slot names the newest capability.
 6. **Trial run.** Add or update an eval under `evals/<name>/case.yaml` (match the existing schema: `execution.prompt`, regex + llm graders, `expected_outcome`). Run `tests/pipeline-tests.sh` if pipeline skills changed. _Done when:_ the new behavior has at least one checkable case.
 7. **Ship and refresh.** Hand the commit to the `commit` skill. After push to `main`, the repo install serves immediately; the URL route needs a rebuild + restart on the host (static assets bake into `build/client/`). Then refresh the local install — the marketplace name is whatever the user registered, never assume it: read it from `claude plugin list` (the part after `art-vandeley@`), then `claude plugin marketplace update <name> && claude plugin update art-vandeley@<name>`, and restart the session. If a command still misbehaves, check in order: `~/.claude/commands/` shadowing → `claude plugin list` version and enabled state. _Done when:_ `claude plugin list` shows the new version, enabled.
 

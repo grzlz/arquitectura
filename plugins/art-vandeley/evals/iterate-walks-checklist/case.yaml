@@ -35,7 +35,9 @@ graders:
       The response frames the work as a release checklist, not just a file
       edit: it names a version bump in plugin.json, keeping BOTH marketplace
       manifests in sync (warning that the static one must keep its git-subdir
-      source), updating ROADMAP.md, and refreshing the installed copy. It
+      source), updating ROADMAP.md, adding a static/changelog.md entry,
+      replacing (not stacking) the landing's "just off the dock" slot for a
+      new skill, and refreshing the installed copy. It
       preserves the one-crate rule (no separate plugin for the new skill),
       and any step it does not cover is named as skipped rather than omitted
       silently.
